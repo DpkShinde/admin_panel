@@ -9,6 +9,7 @@ export async function GET() {
       { success: true, message: "Blogs fetched successfully", data: blogs },
       { status: 200 }
     );
+    console.log(blogs)
   } catch (error: any) {
     console.error("Error fetching blogs:", error);
     return NextResponse.json(
