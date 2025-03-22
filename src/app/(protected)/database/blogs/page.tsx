@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import {
+    convertToRaw,
     EditorState,
     RichUtils,
     Modifier,
@@ -73,7 +74,8 @@ const CreateBlog: React.FC = () => {
         setError(null);
 
         try {
-            const contentRaw = JSON.stringify(blog.content.getCurrentContent());
+            const contentRaw = JSON.stringify(convertToRaw(blog.content.getCurrentContent()));
+            
             const response = await fetch("/api/blogs", {
                 method: "POST",
                 headers: {
@@ -136,7 +138,7 @@ const CreateBlog: React.FC = () => {
                     <label htmlFor="content" className="block font-medium text-gray-700">
                         Blog Content:
                     </label>
-                    <div className="border border-gray-300 rounded p-3">
+                    <div className="border border-gray-300 text-white rounded p-3">
                         <div className="flex gap-2 mb-2">
                             <button
                                 type="button"

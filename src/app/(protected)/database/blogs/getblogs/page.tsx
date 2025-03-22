@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import Error from 'next/error';
 
 interface Blog {
     id: number;
@@ -46,6 +45,7 @@ const EditDeleteBlog: React.FC = () => {
     const handleEdit = (blog: Blog) => {
         setSelectedBlog(blog);
         setIsEdit(true);
+        console.log(blog)
     };
 
     const handleDelete = (blog: Blog) => {
@@ -76,11 +76,39 @@ const EditDeleteBlog: React.FC = () => {
     };
 
 
-    const handleSave = () => {
-        if (selectedBlog) {
-            setBlogs(blogs.map(blog => (blog.id === selectedBlog.id ? selectedBlog : blog)));
-            setSelectedBlog(null);
+    const handleSave = async () => {
+        if (!selectedBlog) return;
+
+    try {
+        const response = await fetch(`/api/blogs/${selectedBlog.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: selectedBlog.id,
+                title: selectedBlog.title,
+                content: selectedBlog.content,
+                author: selectedBlog.author,
+                category: selectedBlog.category,
+                created_at: selectedBlog.created_at,
+            }),
+        });
+
+        const data = await response.json();
+        console.log("UPDATE Response:", data);
+
+        if (!response.ok) {
+            throw new Error(`Failed to update blog: ${data?.error || response.status}`);
         }
+
+        // Update blog list in state
+        setBlogs(blogs.map(blog => (blog.id === selectedBlog.id ? selectedBlog : blog)));
+
+        setSelectedBlog(null);
+    } catch (error) {
+        console.error("Error updating blog:", error);
+    }
     };
 
     return (
@@ -104,13 +132,16 @@ const EditDeleteBlog: React.FC = () => {
             <Dialog open={!!selectedBlog} onOpenChange={() => setSelectedBlog(null)}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>
+                        <DialogTitle className="bg-white text-gray-600 border-gray-600" >
                             {isEdit ? 'Edit Blog' : 'Confirm Delete'}
                         </DialogTitle>
                     </DialogHeader>
-                    <div>
+                    <div className="bg-white text-gray-600 border-gray-600">
                         {isEdit ? (
                             <div>
+                                <label htmlFor="title" className="block font-small text-gray-700">
+                                    Blog Title:
+                                </label>
                                 <input
                                     type="text"
                                     className="w-full p-2 border rounded"
@@ -119,6 +150,9 @@ const EditDeleteBlog: React.FC = () => {
                                         setSelectedBlog((prev) => prev ? { ...prev, title: e.target.value } : null)
                                     }
                                 />
+                                <label htmlFor="title" className="block font-small text-gray-700">
+                                    Blog Content:
+                                </label>
                                 <textarea
                                     className="w-full p-2 mt-2 border rounded"
                                     value={selectedBlog?.content || ''}
@@ -126,6 +160,9 @@ const EditDeleteBlog: React.FC = () => {
                                         setSelectedBlog((prev) => prev ? { ...prev, content: e.target.value } : null)
                                     }
                                 />
+                                <label htmlFor="title" className="block font-small text-gray-700">
+                                    Blog Author:
+                                </label>
                                 <input
                                     type="text"
                                     className="w-full p-2 mt-2 border rounded"
@@ -134,6 +171,9 @@ const EditDeleteBlog: React.FC = () => {
                                         setSelectedBlog((prev) => prev ? { ...prev, author: e.target.value } : null)
                                     }
                                 />
+                                <label htmlFor="title" className="block font-small text-gray-700">
+                                    Blog Category:
+                                </label>
                                 <input
                                     type="text"
                                     className="w-full p-2 mt-2 border rounded"
@@ -152,7 +192,9 @@ const EditDeleteBlog: React.FC = () => {
                                 />
                             </div>
                         ) : (
-                            <p>Are you sure you want to delete this blog?</p>
+                            <div className="bg-white text-gray-600 border-gray-600">
+                                <p>Are you sure you want to delete this blog?</p>
+                            </div>
                         )}
                     </div>
                     <DialogFooter>

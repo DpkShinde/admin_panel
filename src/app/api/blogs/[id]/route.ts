@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import pool from "@/utils/db";
+import { request } from "http";
 
 // GET request to fetch blog details by ID
 export async function GET(
@@ -32,7 +33,6 @@ export async function GET(
   }
 }
 
-// PUT request to update blog details by ID
 export async function PUT(
   req: Request,
   { params }: { params: { id: string } }
@@ -46,18 +46,18 @@ export async function PUT(
       );
     }
 
-    const { title, content } = await req.json();
+    const { title, content, author, category, created_at } = await req.json();
+    
+    const currentTimestamp = new Date().toISOString().slice(0, 19).replace("T", " ");
 
-    await pool.query(`UPDATE blogs SET title = ?, content = ? WHERE id = ?`, [
-      title,
-      content,
-      blogId,
-    ]);
-
-    return NextResponse.json(
-      { message: "Blog updated successfully!" },
-      { status: 200 }
+    await pool.query(
+      `UPDATE blogs SET title = ?, content = ?, author = ?, category = ?, created_at = ? WHERE id = ?`,
+      [title, content, author, category, currentTimestamp, blogId]
     );
+
+    const [updatedBlog] = await pool.query(`SELECT * FROM blogs WHERE id = ?`, [blogId]);
+
+    return NextResponse.json(updatedBlog, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { message: "Server error", error },
@@ -65,3 +65,4 @@ export async function PUT(
     );
   }
 }
+

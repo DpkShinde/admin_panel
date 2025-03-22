@@ -4,17 +4,21 @@ import { ResultSetHeader } from "mysql2";
 
 export async function POST(req: NextRequest) {
   try {
-    const { title, content } = await req.json();
+    const { title, content, author, category } = await req.json();
 
-    if (!title || !content) {
+    const rawContent = JSON.parse(content).blocks[0].text
+
+    //console.log(rawContent.blocks[0].text)
+
+    if (!title || !content || !author || !category) {
       return NextResponse.json(
-        { success: false, message: "Title and content are required." },
+        { success: false, message: "All fields are required." },
         { status: 400 }
       );
     }
 
-    const query = `INSERT INTO blogs (title, content) VALUES (?, ?)`;
-    const values = [title, content];
+    const query = `INSERT INTO blogs (title, content, author, category) VALUES (?, ?, ?, ?)`;
+    const values = [title, rawContent, author, category];
 
     const [result] = await pool.execute<ResultSetHeader>(query, values);
 
