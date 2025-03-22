@@ -22,7 +22,7 @@ const menuItems = [
   },
   {
     name: "User Tables",
-    path: "/users",
+    path: "/database/users",
   },
   {
     name: "News Tables",
@@ -30,7 +30,11 @@ const menuItems = [
   },
   {
     name: "Blogs Tables",
-    path: "/blogs",
+    path: "/database/blogs",
+    subItems: [
+      { name: "Add Blogs", path: "/database/blogs/" },
+      { name: "Edit/Delete Blogs", path: "/database/blogs/getblogs" },
+    ],
   },
 ];
 

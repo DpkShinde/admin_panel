@@ -15,7 +15,7 @@ export default function DashboardLayout({
       <div className="hidden md:flex h-full w-60 z-20 flex-col fixed inset-y-0">
         <NavigationSubSideBar />
       </div>
-      <main className="md:pl-[170px] h-full textbl ml-18 p-5 text-black">
+      <main className="md:pl-[250px] h-full textbl ml-18 p-5 text-black">
         {children}
       </main>
     </div>

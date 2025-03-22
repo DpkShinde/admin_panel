@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import Error from 'next/error';
 
 interface Blog {
     id: number;
@@ -52,12 +53,28 @@ const EditDeleteBlog: React.FC = () => {
         setIsEdit(false);
     };
 
-    const confirmDelete = () => {
-        if (selectedBlog) {
+    const confirmDelete = async () => {
+        if (!selectedBlog) return;
+
+        try {
+            const response = await fetch(`/api/blogs/delete?id=${selectedBlog.id}&confirm_delete_blog=1`, {
+                method: 'DELETE',
+            });
+
+            const data = await response.json(); // Try to parse JSON response
+            console.log("DELETE Response:", data); // Log the full response
+
+            if (!response.ok) {
+                throw new Error(`Failed to delete blog: ${data?.error || response.status}`);
+            }
+
             setBlogs(blogs.filter(blog => blog.id !== selectedBlog.id));
             setSelectedBlog(null);
+        } catch (error) {
+            console.error("Error deleting blog:", error);
         }
     };
+
 
     const handleSave = () => {
         if (selectedBlog) {
@@ -67,7 +84,7 @@ const EditDeleteBlog: React.FC = () => {
     };
 
     return (
-        <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {blogs.map((blog) => (
                 <Card key={blog.id} className="p-4 shadow-lg rounded-lg">
                     <CardContent>
@@ -87,7 +104,9 @@ const EditDeleteBlog: React.FC = () => {
             <Dialog open={!!selectedBlog} onOpenChange={() => setSelectedBlog(null)}>
                 <DialogContent>
                     <DialogHeader>
-                        {isEdit ? 'Edit Blog' : 'Confirm Delete'}
+                        <DialogTitle>
+                            {isEdit ? 'Edit Blog' : 'Confirm Delete'}
+                        </DialogTitle>
                     </DialogHeader>
                     <div>
                         {isEdit ? (
