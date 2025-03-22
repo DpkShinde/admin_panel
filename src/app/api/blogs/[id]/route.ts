@@ -46,7 +46,7 @@ export async function PUT(
       );
     }
 
-    const { title, content, author, category, created_at } = await req.json();
+    const { title, content, author, category } = await req.json();
     
     const currentTimestamp = new Date().toISOString().slice(0, 19).replace("T", " ");
 
