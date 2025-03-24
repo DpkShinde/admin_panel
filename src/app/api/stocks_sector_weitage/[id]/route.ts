@@ -3,14 +3,13 @@ import pool from "@/utils/db";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
+  const { params } = context;
   const stockId = Number(params.id);
-  if (!stockId) {
-    return NextResponse.json(
-      { message: "Stock ID is required" },
-      { status: 400 }
-    );
+  console.log(stockId);
+  if (isNaN(stockId)) {
+    return NextResponse.json({ message: "Invalid Stock ID" }, { status: 400 });
   }
 
   try {
@@ -34,14 +33,12 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
+  const { params } = context;
   const stockId = Number(params.id);
-  if (!stockId) {
-    return NextResponse.json(
-      { message: "Stock ID is required" },
-      { status: 400 }
-    );
+  if (isNaN(stockId)) {
+    return NextResponse.json({ message: "Invalid Stock ID" }, { status: 400 });
   }
 
   try {

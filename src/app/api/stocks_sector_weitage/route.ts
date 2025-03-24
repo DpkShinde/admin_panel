@@ -6,6 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { Sector, NumberOfCompanies, Weightage, MarketCap } = body;
+    console.log(Sector, NumberOfCompanies, Weightage, MarketCap)
 
     if (!Sector || !NumberOfCompanies || !Weightage || !MarketCap) {
       return NextResponse.json(

@@ -1,73 +1,102 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import pool from "@/utils/db";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
 ) {
-  const { id } = req.query;
-  if (!id) return res.status(400).json({ message: "Stock ID is required" });
-
-  const stockId = Number(id);
+  const stockId = Number(params.id);
+  if (isNaN(stockId)) {
+    return NextResponse.json({ message: "Invalid Stock ID" }, { status: 400 });
+  }
 
   try {
-    if (req.method === "GET") {
-      // Fetch stock data by ID
-      const [rows] = await pool.query(
-        "SELECT * FROM stocks_screnner_valuetion WHERE id = ?",
-        [stockId]
-      );
+    const [rows]: any = await pool.query(
+      "SELECT * FROM stocks_screnner_valuetion WHERE id = ?",
+      [stockId]
+    );
 
-      // Check if the stock exists
-      if (!rows) {
-        console.warn(`Stock with ID ${stockId} not found.`);
-        return res.status(404).json({ message: "Stock not found" });
-      }
-
-      return res.status(200).json(rows);
+    if (rows.length === 0) {
+      console.warn(`Stock with ID ${stockId} not found.`);
+      return NextResponse.json({ message: "Stock not found" }, { status: 404 });
     }
 
-    if (req.method === "PUT") {
-      // Update stock data
-      const {
-        Symbol,
-        MarketCap,
-        MarketCapPercentage,
-        PERatio,
-        PSRatio,
-        PBRatio,
-        PFCFRatio,
-        Price,
-        EnterpriseValue,
-        EVRevenue,
-        EVEBIT,
-        EVEBITDA,
-      } = req.body;
-
-      await pool.query(
-        "UPDATE stocks_screnner_valuetion SET Symbol=?, MarketCap=?, MarketCapPercentage=?, PERatio=?, PSRatio=?, PBRatio=?, PFCFRatio=?, Price=?, EnterpriseValue=?, EVRevenue=?, EVEBIT=?, EVEBITDA=? WHERE id=?",
-        [
-          Symbol,
-          MarketCap,
-          MarketCapPercentage,
-          PERatio,
-          PSRatio,
-          PBRatio,
-          PFCFRatio,
-          Price,
-          EnterpriseValue,
-          EVRevenue,
-          EVEBIT,
-          EVEBITDA,
-          stockId,
-        ]
-      );
-
-      return res.status(200).json({ message: "Stock updated successfully!" });
-    }
-
-    return res.status(405).json({ message: "Method not allowed" });
+    return NextResponse.json(rows[0], { status: 200 });
   } catch (error) {
-    return res.status(500).json({ message: "Server error", error });
+    return NextResponse.json(
+      { message: "Server error", error },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const stockId = Number(params.id);
+  if (isNaN(stockId)) {
+    return NextResponse.json({ message: "Invalid Stock ID" }, { status: 400 });
+  }
+
+  try {
+    const body = await req.json();
+    const {
+      Symbol,
+      MarketCap,
+      MarketCapPercentage,
+      PERatio,
+      PSRatio,
+      PBRatio,
+      PFCFRatio,
+      Price,
+      EnterpriseValue,
+      EVRevenue,
+      EVEBIT,
+      EVEBITDA,
+    } = body;
+
+    const query = `
+      UPDATE stocks_screnner_valuetion 
+      SET Symbol=?, MarketCap=?, MarketCapPercentage=?, PERatio=?, PSRatio=?, 
+          PBRatio=?, PFCFRatio=?, Price=?, EnterpriseValue=?, EVRevenue=?, 
+          EVEBIT=?, EVEBITDA=?
+      WHERE id=?
+    `;
+
+    const values = [
+      Symbol,
+      MarketCap,
+      MarketCapPercentage,
+      PERatio,
+      PSRatio,
+      PBRatio,
+      PFCFRatio,
+      Price,
+      EnterpriseValue,
+      EVRevenue,
+      EVEBIT,
+      EVEBITDA,
+      stockId,
+    ];
+
+    const [result]: any = await pool.execute(query, values);
+
+    if (result.affectedRows > 0) {
+      return NextResponse.json(
+        { success: true, message: "Stock updated successfully!" },
+        { status: 200 }
+      );
+    } else {
+      return NextResponse.json(
+        { success: false, message: "Stock not found or no changes made." },
+        { status: 404 }
+      );
+    }
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Server error", error },
+      { status: 500 }
+    );
   }
 }

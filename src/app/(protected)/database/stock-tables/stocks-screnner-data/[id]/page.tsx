@@ -39,13 +39,15 @@ export default function UpdateStocks() {
     if (!id) return;
 
     async function fetchStockData() {
+      console.log(id);
       try {
-        const res = await fetch(`/api/stocks_screener_data/${id}`, {
+        const res = await fetch(`/api/stocks_screnner_data/${id}`, {
           method: "GET",
         });
         if (!res.ok) throw new Error("Failed to fetch stock details.");
 
         const data = await res.json();
+        console.log(data);
         if (!data) throw new Error("No record found.");
 
         setFormData({
@@ -96,7 +98,7 @@ export default function UpdateStocks() {
     setErrorMessage(null);
 
     try {
-      const res = await fetch(`/api/stocks_screener_data/${id}`, {
+      const res = await fetch(`/api/stocks_screnner_data/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -108,7 +110,7 @@ export default function UpdateStocks() {
 
       toast.success("Stock record updated successfully!");
       setTimeout(() => {
-        router.push("/stock-tables/stocks-screener-data"); // ✅ Correct usage
+        router.push("/database/stock-tables/stocks-screnner-data");
       }, 1000);
     } catch (error: any) {
       setErrorMessage(error.message || "An unexpected error occurred.");
@@ -129,7 +131,7 @@ export default function UpdateStocks() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {Object.keys(formData).map((key) => (
             <div key={key} className="flex flex-col">
               <label htmlFor={key} className="text-gray-700 font-semibold">

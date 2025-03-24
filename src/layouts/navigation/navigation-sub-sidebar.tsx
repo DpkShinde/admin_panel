@@ -10,14 +10,17 @@ const menuItems = [
     name: "Stock Tables",
     path: "/database/stock-tables",
     subItems: [
-      { name: "Stock Data", path: "/database/stock-tables/screener" },
-      { name: "Stock Valuation", path: "/database/stock-tables/analytics" },
-      { name: "Stock inc-Stetment", path: "/database/stock-tables/analytics" },
-      { name: "Sector Weightage", path: "/database/stock-tables/analytics" },
+      {
+        name: "Stock Data",
+        path: "/database/stock-tables/stocks-screnner-data",
+      },
+      { name: "Stock Valuation", path: "/database/stock-tables/stocks-valuation" },
+      { name: "Stock inc-Stetment", path: "/database/stock-tables/stocks-screener-inc-stet" },
+      { name: "Sector Weightage", path: "/database/stock-tables/stocks-sector-weitage" },
     ],
   },
   {
-    name: "Funds Tables",
+    name: "Funds Tables", 
     path: "/funds",
   },
   {
@@ -50,8 +53,8 @@ const NavigationSubSideBar = () => {
     <div className="w-60 h-full ml-18 dark:bg-[#2B2D31] bg-[#F2F3F5] border-r dark:border-[#202225] border-gray-200">
       <div className="flex flex-col gap-2 p-4">
         {menuItems.map((item, index) => {
-          const isActive = pathname === item.path;
-          const isDropdownOpen = openDropdown === item.name;
+          const isActive = pathname.startsWith(item.path);
+          const isDropdownOpen = openDropdown === item.name || isActive;
 
           return (
             <div key={index}>
@@ -84,7 +87,7 @@ const NavigationSubSideBar = () => {
               {item.subItems && isDropdownOpen && (
                 <div className="ml-6 flex flex-col gap-1">
                   {item.subItems.map((subItem, subIndex) => {
-                    const isSubActive = pathname === subItem.path;
+                    const isSubActive = pathname.startsWith(subItem.path);
                     return (
                       <Link
                         key={subIndex}

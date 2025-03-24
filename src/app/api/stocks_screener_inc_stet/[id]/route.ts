@@ -1,16 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import pool from "@/utils/db";
 
 // GET request to fetch stock details by ID
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: { params: { id: string } }
 ) {
   try {
+    const { params } = context;
     const stockId = Number(params.id);
-    if (!stockId) {
+    console.log(stockId);
+    if (isNaN(stockId)) {
       return NextResponse.json(
-        { message: "Stock ID is required" },
+        { message: "Invalid Stock ID" },
         { status: 400 }
       );
     }
@@ -35,14 +37,15 @@ export async function GET(
 
 // PUT request to update stock details by ID
 export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: { params: { id: string } }
 ) {
   try {
+    const { params } = context;
     const stockId = Number(params.id);
-    if (!stockId) {
+    if (isNaN(stockId)) {
       return NextResponse.json(
-        { message: "Stock ID is required" },
+        { message: "Invalid Stock ID" },
         { status: 400 }
       );
     }
