@@ -103,7 +103,9 @@ export default function Home() {
         console.error("Error reading Excel file:");
         toast.error("Invalid file format.");
       }
-    } catch (error) {}
+    } catch (error : any) {
+      console.log(error);
+    }
   };
 
   return (

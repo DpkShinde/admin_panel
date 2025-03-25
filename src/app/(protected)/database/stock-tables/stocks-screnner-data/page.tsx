@@ -4,6 +4,7 @@ import type { StockScreenerData } from "../../../../../types/index";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import readXlsxFile from "read-excel-file";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -19,6 +20,7 @@ import {
 const Home = () => {
   const [data, setData] = useState<StockScreenerData[]>([]);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -63,6 +65,61 @@ const Home = () => {
     router.push(`/database/stock-tables/stocks-screnner-data/${id}`);
   };
 
+  //handle excel file upload
+  //handle excel file upload
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): Promise<void> => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const rows = await readXlsxFile(file);
+
+      //convert excel row to api format
+      const formattedData = rows.slice(1).map((row) => ({
+        CompanyName: row[0],
+        LastTradedPrice: row[1],
+        ChangePercentage: row[2],
+        MarketCap: row[3],
+        High52W: row[4],
+        Low52W: row[5],
+        Sector: row[6],
+        CurrentPE: row[7],
+        IndexName: row[8],
+        RecordDate: row[9],
+        ROE: row[10],
+        PBV: row[11],
+        EV_EBITDA: row[12],
+        FiveYearSalesGrowth: row[13],
+        FiveYearProfitGrowth: row[14],
+        Volume: row[15],
+        EPS: row[16],
+        EPSGrowth: row[17],
+        DividendYield: row[18],
+        DividendAmount: row[19],
+        ROCE: row[20],
+      }));
+
+      //send data to backend
+      const response = await fetch(`/api/stocks_screnner_data`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: formattedData }),
+      });
+
+      if (response.ok) {
+        toast.success("Excel data imported successfully!");
+        // setData((prevData) => [...prevData, ...formattedData]);
+      } else {
+        console.error("Error reading Excel file:");
+        toast.error("Invalid file format.");
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div className="ml-1 p-5 overflow-hidden shadow-lg rounded-md">
@@ -70,15 +127,37 @@ const Home = () => {
           <h1 className="text-2xl font-bold text-center mb-4 dark:text-green-900">
             Stocks Screener Data
           </h1>
-          <Button
-            variant="add"
-            className="p-2 ml-5 cursor-pointer"
-            onClick={() =>
-              router.push("/database/stock-tables/stocks-screnner-data/add")
-            }
-          >
-            Add Stocks
-          </Button>
+          <div className="flex justify-between">
+            <Button
+              variant="add"
+              className="p-2 ml-5 cursor-pointer"
+              onClick={() =>
+                router.push("/database/stock-tables/stocks-screnner-data/add")
+              }
+            >
+              Add Stocks
+            </Button>
+
+            {/* File Upload Button */}
+            <label
+              htmlFor="file-upload"
+              className="text-center p-1 px-2 cursor-pointer bg-gray-700 text-white rounded-md hover:bg-gray-500 transition"
+            >
+              Upload Excel
+            </label>
+            <input
+              id="file-upload"
+              type="file"
+              accept=".xlsx, .xls"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
+
+            {/* Show selected file name */}
+            {selectedFile && (
+              <span className="text-sm text-gray-600">{selectedFile.name}</span>
+            )}
+          </div>
           <div className="overflow-x-auto p-5">
             <table className="min-w-full text-sm border border-gray-300 shadow-md">
               <thead className="bg-green-700 text-white text-xs uppercase font-semibold sticky top-0 z-10">
