@@ -5,7 +5,7 @@ import { ResultSetHeader } from "mysql2";
 export async function POST(req: Request) {
   try {
     const requestData = await req.json();
-    const { data } = requestData; 
+    const { data } = requestData;
 
     if (Array.isArray(data) && data.length > 0) {
       const query = `
@@ -50,7 +50,6 @@ export async function POST(req: Request) {
         EPS_Diluted,
         EPSDilutedGrowth,
       } = data;
-
 
       if (!Symbol) {
         return NextResponse.json(

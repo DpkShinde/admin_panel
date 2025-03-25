@@ -66,7 +66,6 @@ const Home = () => {
   };
 
   //handle excel file upload
-  //handle excel file upload
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ): Promise<void> => {
