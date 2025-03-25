@@ -31,7 +31,7 @@ export default function AddStockRecord() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({data : formData}),
       });
 
       if (!res.ok) {
