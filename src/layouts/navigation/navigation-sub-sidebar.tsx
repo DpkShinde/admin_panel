@@ -38,14 +38,16 @@ const menuItems = [
   },
   {
     name: "News Tables",
-    path: "/news",
+    path: "/database/news",
+    subItems: [
+      { name: "Add News", path: "/database/news/createnews" },
+    ],
   },
   {
     name: "Blogs Tables",
-    path: "/database/blogs",
+    path: "/database/blogs/getblogs",
     subItems: [
       { name: "Add Blogs", path: "/database/blogs/" },
-      { name: "Edit/Delete Blogs", path: "/database/blogs/getblogs" },
     ],
   },
 ];

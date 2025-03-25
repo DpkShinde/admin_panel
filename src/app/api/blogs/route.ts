@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
 
     const rawContent = JSON.parse(content).blocks[0].text
 
-    //console.log(rawContent.blocks[0].text)
+    console.log(rawContent)
 
     if (!title || !content || !author || !category) {
       return NextResponse.json(
