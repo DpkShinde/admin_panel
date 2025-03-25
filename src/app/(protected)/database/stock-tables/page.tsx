@@ -28,7 +28,7 @@ const stockTables = [
 
 export default function StockTablesOverview() {
   return (
-    <div className="p-6 ml-52">
+    <div className="p-6 ml-5">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">
         Stock Tables Overview
       </h1>

@@ -65,208 +65,210 @@ const Home = () => {
 
   return (
     <>
-      <div className="ml-42">
-        <div className="overflow-x-auto shadow-lg rounded-md">
-          <h1 className="text-2xl font-bold text-center mb-4">
+      <div className="ml-1 p-5 overflow-hidden shadow-lg rounded-md">
+        <div className="">
+          <h1 className="text-2xl font-bold text-center mb-4 dark:text-green-900">
             Stocks Screener Data
           </h1>
           <Button
-            variant="secondary"
-            className="mb-6 p-2 ml-3"
+            variant="add"
+            className="p-2 ml-5 cursor-pointer"
             onClick={() =>
-              router.push("/database/stock-tables/stocks-screener-data/add/")
+              router.push("/database/stock-tables/stocks-screnner-data/add")
             }
           >
             Add Stocks
           </Button>
-          <table className="min-w-full text-sm border border-gray-300 shadow-md">
-            <thead className="bg-green-700 text-white text-xs uppercase font-semibold sticky top-0 z-10">
-              <tr>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  Company Name
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-center">
-                  LTP
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-center">
-                  Change%
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  Market Cap
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  High 52W
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  Low 52W
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  Sector
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-center">
-                  Current PE
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  Index Name
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-center">
-                  Record Date
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-center">
-                  ROE
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-center">
-                  PBV
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-center">
-                  EV/EBITDA
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-center">
-                  5Y Sales Growth
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-center">
-                  5Y Profit Growth
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  Volume
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  EPS
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-center">
-                  EPS Growth
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-center">
-                  Dividend Yield
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-center">
-                  Dividend Amount
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-center">
-                  ROCE
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-center">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="text-center divide-y divide-gray-200">
-              {data.length > 0 ? (
-                data.map((record) => (
-                  <tr key={record.id} className="bg-white hover:bg-green-100">
-                    <td className="border border-gray-300 px-4 py-2 text-left">
-                      {record.CompanyName}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.LastTradedPrice}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.ChangePercentage}%
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.MarketCap}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.High52W}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.Low52W}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2 text-left">
-                      {record.Sector}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.CurrentPE}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.IndexName}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {new Date(record.RecordDate).toLocaleDateString()}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.ROE}%
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.PBV}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.EV_EBITDA}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.FiveYearSalesGrowth}%
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.FiveYearProfitGrowth}%
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.Volume}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.EPS}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.EPSGrowth}%
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.DividendYield}%
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.DividendAmount}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {record.ROCE}%
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2 flex justify-center space-x-2">
-                      <Button
-                        className="px-2 py-1 bg-green-700 text-white rounded-md hover:bg-green-800 transition"
-                        onClick={() => handleEdit(record.id)}
-                      >
-                        Edit
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            className="px-2 py-1 bg-red-400 text-white rounded-md hover:bg-red-500 transition"
-                            onClick={() => setDeleteId(record.id)}
-                          >
-                            Delete
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>
-                              Confirm Deletion
-                            </AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to delete{" "}
-                              {record.CompanyName}?
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel
-                              onClick={() => setDeleteId(null)}
+          <div className="overflow-x-auto p-5">
+            <table className="min-w-full text-sm border border-gray-300 shadow-md">
+              <thead className="bg-green-700 text-white text-xs uppercase font-semibold sticky top-0 z-10">
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2 text-left">
+                    Company Name
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    LTP
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Change%
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-left">
+                    Market Cap
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-left">
+                    High 52W
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-left">
+                    Low 52W
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-left">
+                    Sector
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Current PE
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-left">
+                    Index Name
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Record Date
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    ROE
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    PBV
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    EV/EBITDA
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    5Y Sales Growth
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    5Y Profit Growth
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-left">
+                    Volume
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-left">
+                    EPS
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    EPS Growth
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Dividend Yield
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Dividend Amount
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    ROCE
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="text-center divide-y divide-gray-200">
+                {data.length > 0 ? (
+                  data.map((record) => (
+                    <tr key={record.id} className="bg-white hover:bg-green-100">
+                      <td className="border border-gray-300 px-4 py-2 text-left">
+                        {record.CompanyName}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.LastTradedPrice}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.ChangePercentage}%
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.MarketCap}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.High52W}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.Low52W}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2 text-left">
+                        {record.Sector}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.CurrentPE}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.IndexName}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {new Date(record.RecordDate).toLocaleDateString()}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.ROE}%
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.PBV}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.EV_EBITDA}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.FiveYearSalesGrowth}%
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.FiveYearProfitGrowth}%
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.Volume}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.EPS}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.EPSGrowth}%
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.DividendYield}%
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.DividendAmount}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.ROCE}%
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2 flex justify-center space-x-2">
+                        <Button
+                          className="px-2 py-1 bg-green-700 text-white rounded-md hover:bg-green-800 transition"
+                          onClick={() => handleEdit(record.id)}
+                        >
+                          Edit
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              className="px-2 py-1 bg-red-400 text-white rounded-md hover:bg-red-500 transition"
+                              onClick={() => setDeleteId(record.id)}
                             >
-                              Cancel
-                            </AlertDialogCancel>
-                            <AlertDialogAction onClick={handleDelete}>
-                              Confirm
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                              Delete
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Confirm Deletion
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete{" "}
+                                {record.CompanyName}?
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel
+                                onClick={() => setDeleteId(null)}
+                              >
+                                Cancel
+                              </AlertDialogCancel>
+                              <AlertDialogAction onClick={handleDelete}>
+                                Confirm
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={22} className="text-center py-4">
+                      No data available
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={22} className="text-center py-4">
-                    No data available
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </>
