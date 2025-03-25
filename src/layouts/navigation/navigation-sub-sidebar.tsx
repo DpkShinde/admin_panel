@@ -14,13 +14,22 @@ const menuItems = [
         name: "Stock Data",
         path: "/database/stock-tables/stocks-screnner-data",
       },
-      { name: "Stock Valuation", path: "/database/stock-tables/stocks-valuation" },
-      { name: "Stock inc-Stetment", path: "/database/stock-tables/stocks-screener-inc-stet" },
-      { name: "Sector Weightage", path: "/database/stock-tables/stocks-sector-weitage" },
+      {
+        name: "Stock Valuation",
+        path: "/database/stock-tables/stocks-valuation",
+      },
+      {
+        name: "Stock Income Statement",
+        path: "/database/stock-tables/stocks-screener-inc-stet",
+      },
+      {
+        name: "Sector Weightage",
+        path: "/database/stock-tables/stocks-sector-weitage",
+      },
     ],
   },
   {
-    name: "Funds Tables", 
+    name: "Funds Tables",
     path: "/funds",
   },
   {
@@ -50,7 +59,7 @@ const NavigationSubSideBar = () => {
   };
 
   return (
-    <div className="w-60 h-full ml-18 dark:bg-[#2B2D31] bg-[#F2F3F5] border-r dark:border-[#202225] border-gray-200">
+    <div className="w-60 h-full ml-18 bg-gradient-to-b from-[#0e6d31] to-[#105f2d] border-r border-[#14532d]">
       <div className="flex flex-col gap-2 p-4">
         {menuItems.map((item, index) => {
           const isActive = pathname.startsWith(item.path);
@@ -60,26 +69,26 @@ const NavigationSubSideBar = () => {
             <div key={index}>
               {/* Main Category */}
               <div
-                className={`flex items-center justify-between py-2 px-2 rounded cursor-pointer ${
+                className={`flex items-center justify-between py-2 px-2 rounded cursor-pointer transition ${
                   isActive
-                    ? "bg-[#36393F] text-white"
-                    : "hover:bg-[#36393F] text-gray-300"
+                    ? "bg-white text-[#166534]"
+                    : "hover:bg-[#ffffff20] text-white"
                 }`}
                 onClick={() => item.subItems && toggleDropdown(item.name)}
               >
                 <Link href={item.path} className="flex items-center w-full">
                   <Table
                     className={`w-5 h-5 mr-2 ${
-                      isActive ? "text-white" : "text-gray-400"
+                      isActive ? "text-[#166534]" : "text-white"
                     }`}
                   />
                   <p>{item.name}</p>
                 </Link>
                 {item.subItems &&
                   (isDropdownOpen ? (
-                    <ChevronDown className="w-4 h-4 text-gray-400" />
+                    <ChevronDown className="w-4 h-4 text-white" />
                   ) : (
-                    <ChevronRight className="w-4 h-4 text-gray-400" />
+                    <ChevronRight className="w-4 h-4 text-white" />
                   ))}
               </div>
 
@@ -92,15 +101,15 @@ const NavigationSubSideBar = () => {
                       <Link
                         key={subIndex}
                         href={subItem.path}
-                        className={`flex items-center py-2 px-2 rounded cursor-pointer ${
+                        className={`flex items-center py-2 px-2 rounded cursor-pointer transition ${
                           isSubActive
-                            ? "bg-[#3A3D41] text-white"
-                            : "hover:bg-[#3A3D41] text-gray-300"
+                            ? "bg-white text-[#166534] font-bold"
+                            : "hover:bg-[#ffffff20] text-white"
                         }`}
                       >
                         <Table
                           className={`w-4 h-4 mr-2 ${
-                            isSubActive ? "text-white" : "text-gray-400"
+                            isSubActive ? "text-[#166534]" : "text-white"
                           }`}
                         />
                         <p>{subItem.name}</p>
