@@ -135,7 +135,7 @@ const CreateBlog: React.FC = () => {
 
         try {
             const contentRaw = JSON.stringify(convertToRaw(blog.content.getCurrentContent()));
-            
+            console.log(contentRaw)
             const response = await fetch("/api/blogs", {
                 method: "POST",
                 headers: {
