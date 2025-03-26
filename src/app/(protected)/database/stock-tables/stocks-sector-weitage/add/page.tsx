@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Toaster, toast } from "sonner";
@@ -26,13 +26,13 @@ export default function AddStockRecord() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ data: formData }),
       });
 
       if (!res.ok) {
         throw new Error("Failed to add the record. Please try again.");
       } else {
-        toast.success("Stock record added successfully!");
+        toast.success("Sector record added successfully!");
         setTimeout(() => {
           router.push("/database/stock-tables/stocks-sector-weitage");
         }, 1000);

@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
         { status: 201 }
       );
     }
-
+    console.log(requestData);
     if (typeof data === "object" && data !== null) {
       const {
         CompanyName,
@@ -76,6 +76,7 @@ export async function POST(req: NextRequest) {
         DividendAmount,
         ROCE,
       } = data;
+
 
       if (!CompanyName) {
         return NextResponse.json(

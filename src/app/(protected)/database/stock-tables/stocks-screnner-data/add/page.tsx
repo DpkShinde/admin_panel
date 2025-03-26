@@ -40,18 +40,17 @@ export default function AddStockRecord() {
     setErrorMessage(null);
 
     try {
-      const res = await fetch("/api/stocks_screnner_data/", {
+      const res = await fetch("/api/stocks_screnner_data", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ data: formData }),
       });
 
       if (!res.ok) {
         throw new Error("Failed to add the record. Please try again.");
       }
-
       toast.success("Stock record added successfully!");
       setTimeout(() => {
         router.push("/database/stock-tables/stocks-screnner-data");
@@ -144,10 +143,7 @@ export default function AddStockRecord() {
         </div>
 
         <div className="flex justify-center mt-4">
-          <Button
-            type="submit"
-            variant={"secondary"}
-          >
+          <Button type="submit" variant={"secondary"}>
             Add Record
           </Button>
         </div>

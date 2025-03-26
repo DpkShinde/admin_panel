@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { SectorWeightage } from "@/types";
+import { SectorWeightage, StockScreenerValuation } from "@/types";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import readXlsxFile from "read-excel-file";
@@ -23,17 +23,17 @@ export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const router = useRouter();
 
+  //handle delete stock
+  async function fetchData() {
+    const res = await fetch("/api/stocks_sector_weitage/all");
+    const result = await res.json();
+    console.log(result);
+    setData(result?.data);
+  }
   useEffect(() => {
-    async function fetchData() {
-      const res = await fetch("/api/stocks_sector_weitage/all");
-      const result = await res.json();
-      console.log(result);
-      setData(result?.data);
-    }
     fetchData();
   }, []);
 
-  //handle delete stock
   const handleDelete = async () => {
     if (!deleteId) return;
 
@@ -91,7 +91,8 @@ export default function Home() {
 
       if (response.ok) {
         toast.success("Excel data imported successfully!");
-        // setData((prevData) => [...prevData, ...formattedData]);
+
+        fetchData();
       } else {
         console.error("Error reading Excel file:");
         toast.error("Invalid file format.");

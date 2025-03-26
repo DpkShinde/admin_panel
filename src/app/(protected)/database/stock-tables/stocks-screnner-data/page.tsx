@@ -23,12 +23,14 @@ const Home = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const router = useRouter();
 
+  async function fetchData() {
+    const res = await fetch("/api/stocks_screnner_data/all");
+    const result = await res.json();
+    setData(result?.data);
+    console.log(data);
+  }
+
   useEffect(() => {
-    async function fetchData() {
-      const res = await fetch("/api/stocks_screnner_data/all");
-      const result = await res.json();
-      setData(result?.data);
-    }
     fetchData();
   }, []);
 
@@ -109,7 +111,7 @@ const Home = () => {
 
       if (response.ok) {
         toast.success("Excel data imported successfully!");
-        // setData((prevData) => [...prevData, ...formattedData]);
+        fetchData();
       } else {
         console.error("Error reading Excel file:");
         toast.error("Invalid file format.");

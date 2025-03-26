@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Toaster, toast } from "sonner";
 import readXlsxFile from "read-excel-file";
+import { v4 as uuidv4 } from "uuid";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -23,12 +24,13 @@ export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const router = useRouter();
 
+  async function fetchData() {
+    const res = await fetch("/api/stocks_screener_valuetion/all");
+    const result = await res.json();
+    setData(result?.data);
+  }
+
   useEffect(() => {
-    async function fetchData() {
-      const res = await fetch("/api/stocks_screener_valuetion/all");
-      const result = await res.json();
-      setData(result?.data);
-    }
     fetchData();
   }, []);
 
@@ -99,7 +101,7 @@ export default function Home() {
 
       if (response.ok) {
         toast.success("Excel data imported successfully!");
-        // setData((prevData) => [...prevData, ...formattedData]);
+        fetchData();
       } else {
         console.error("Error reading Excel file:");
         toast.error("Invalid file format.");

@@ -1,5 +1,6 @@
 import NavigationSidebar from "@/layouts/navigation/navigation-sidebar";
 import NavigationSubSideBar from "@/layouts/navigation/navigation-sub-sidebar";
+import { Toaster } from "sonner";
 
 export default function DashboardLayout({
   children,
@@ -8,6 +9,8 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="h-full">
+      <Toaster position="bottom-right"/>
+
       <div className="hidden md:flex h-full w-[72px] z-30 flex-col fixed inset-y-0">
         <NavigationSidebar />
       </div>

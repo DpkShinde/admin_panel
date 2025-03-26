@@ -24,13 +24,14 @@ export default function Home() {
   const router = useRouter();
 
   //to get all data
+  async function fetchData() {
+    const res = await fetch("/api/stocks_screener_inc_stet/all");
+    const result = await res.json();
+    console.log(result);
+    setData(result?.data);
+  }
+
   useEffect(() => {
-    async function fetchData() {
-      const res = await fetch("/api/stocks_screener_inc_stet/all");
-      const result = await res.json();
-      console.log(result);
-      setData(result?.data);
-    }
     fetchData();
   }, []);
 
@@ -95,15 +96,15 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data: formattedData }),
       });
-
+      
       if (response.ok) {
         toast.success("Excel data imported successfully!");
-        // setData((prevData) => [...prevData, ...formattedData]);
+        fetchData();
       } else {
         console.error("Error reading Excel file:");
         toast.error("Invalid file format.");
       }
-    } catch (error : any) {
+    } catch (error: any) {
       console.log(error);
     }
   };
@@ -182,7 +183,7 @@ export default function Home() {
               </tr>
             </thead>
             <tbody className="text-center divide-y divide-gray-200">
-              {data.length > 0 ? (
+              {data && data.length > 0 ? (
                 data.map((record) => (
                   <tr
                     key={record.id}
