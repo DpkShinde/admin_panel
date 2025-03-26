@@ -156,16 +156,16 @@ export default function Home() {
                   Revenue
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
-                  RevenueGrowth
+                  Revenue Growth
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
-                  GrossProfit
+                  Gross Profit
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
-                  OperatingIncome
+                  Operating Income
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
-                  NetIncome
+                  Net Income
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
                   EBITDA
@@ -174,7 +174,7 @@ export default function Home() {
                   EPS_Diluted
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
-                  EPSDilutedGrowth
+                  EPS Diluted Growth
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
                   Actions

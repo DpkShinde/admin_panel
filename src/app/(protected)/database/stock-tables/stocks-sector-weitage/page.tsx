@@ -146,13 +146,13 @@ export default function Home() {
                   Sector
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
-                  NumberOfCompanies
+                  Number Of Companies
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
                   Weightage
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
-                  MarketCap
+                  Market Cap
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
                   Actions

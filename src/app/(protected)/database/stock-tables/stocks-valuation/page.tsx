@@ -154,10 +154,10 @@ export default function Home() {
                   Symbol
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-left">
-                  MarketCap
+                  Market Cap
                 </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">
-                  MarketCapPercentage
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  Market Cap Percentage
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
                   PERatio
@@ -175,7 +175,7 @@ export default function Home() {
                   Price
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-left">
-                  EnterpriseValue
+                  Enter prise Value
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
                   EVRevenue
