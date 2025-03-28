@@ -4,7 +4,35 @@ import { RowDataPacket } from "mysql2";
 export async function GET() {
   try {
     const [users] = await pool.query<RowDataPacket[]>(
-      "SELECT * FROM user_details WHERE user_id IS NOT NULL"
+      `SELECT
+          ud.user_id,
+          ud.username,
+          ud.first_name,
+          ud.last_name,
+          ud.email,
+          ud.phone_number,
+          ud.gender,
+          ud.dob,
+          ud.age_group,
+          ud.country,
+          ud.city,
+          ud.state,
+          ud.pincode,
+          ud.occupation,
+          ud.industry,
+          ud.income,
+          ud.address,
+          ud.created_date,
+          ud.updated_date,
+          u.creation_date as registration_date
+      FROM 
+        user_details ud
+      join
+        userstable u
+      on 
+        ud.user_id = u.user_id
+      where 
+        u.user_id IS NOT NULL`
     );
 
     return new Response(JSON.stringify(users), {

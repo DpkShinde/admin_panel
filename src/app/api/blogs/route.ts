@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     const { title, content, author, category } = await req.json();
 
-    const rawContent = JSON.parse(content).blocks[0].text
+    const rawContent = JSON.parse(content)
 
     console.log(rawContent)
 
