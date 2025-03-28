@@ -18,7 +18,7 @@ export async function GET(
       );
     }
 
-    const [rows] = await pool.query(
+    const [rows] : any = await pool.query(
       `SELECT * FROM mutualfunds_directplan_details WHERE id = ?`,
       fundId
     );
@@ -28,7 +28,7 @@ export async function GET(
     }
 
     //response
-    return NextResponse.json({ success: true, rows }, { status: 200 });
+    return NextResponse.json({ success: true , data: rows[0] }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json(
       { message: "Server error", error },
@@ -43,7 +43,6 @@ export async function PUT(
 ) {
   const { params } = context;
   const fundId = Number(params.id);
-
   if (isNaN(fundId)) {
     return NextResponse.json({ message: "Invalid Stock ID" }, { status: 400 });
   }
@@ -75,28 +74,15 @@ export async function PUT(
 
   try {
     await pool.query(
-      `UPDATE mutualfunds_directplan_details SET  Scheme_Name,
-    Scheme_Code = ?,
-    Scheme_Type = ?,
-    Sub_Category = ?,
-    NAV = ?,
-    AuM_Cr = ?,
-    Column_1D_Change = ?,
-    NAV_Date = ?,
-    Column_52W_High = ?,
-    Column_52WH_as_on = ?,
-    Column_52W_Low = ?,
-    Column_52WL_as_on = ?,
-    Column_1W = ?,
-    Column_1M = ?,
-    Column_3M = ?,
-    Column_6M = ?,
-    YTD = ?,
-    Column_1Y = ?,
-    Column_2Y = ?,
-    Column_3Y = ?,
-    Column_5Y = ?,
-    Column_10Y = ? WHERE id = ?`,
+    `UPDATE mutualfunds_directplan_details 
+   SET Scheme_Name = ?, Scheme_Code = ?, Scheme_Type = ?, 
+       Sub_Category = ?, NAV = ?, AuM_Cr = ?, Column_1D_Change = ?, 
+       NAV_Date = ?, Column_52W_High = ?, Column_52WH_as_on = ?, 
+       Column_52W_Low = ?, Column_52WL_as_on = ?, Column_1W = ?, 
+       Column_1M = ?, Column_3M = ?, Column_6M = ?, YTD = ?, 
+       Column_1Y = ?, Column_2Y = ?, Column_3Y = ?, Column_5Y = ?, 
+       Column_10Y = ? 
+   WHERE ID = ?`,
       [
         Scheme_Name,
         Scheme_Code,
@@ -120,6 +106,7 @@ export async function PUT(
         Column_3Y,
         Column_5Y,
         Column_10Y,
+        fundId
       ]
     );
 
