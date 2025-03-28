@@ -3,6 +3,7 @@
 import { Table, ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import path from "path";
 import React, { useState } from "react";
 
 const menuItems = [
@@ -30,7 +31,13 @@ const menuItems = [
   },
   {
     name: "Funds Tables",
-    path: "/funds",
+    path: "/database/Funds",
+    subItems:[
+      {
+        name:"Fund Details",
+        path:"/database/Funds/fund_details"
+      }
+    ]
   },
   {
     name: "User Tables",
