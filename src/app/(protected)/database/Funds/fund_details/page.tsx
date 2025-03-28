@@ -237,7 +237,7 @@ const Home = () => {
                 </tr>
               </thead>
               <tbody className="text-center divide-y divide-gray-200">
-                {data.length > 0 ? (
+                {data && data.length > 0 ? (
                   data.map((record) => (
                     <tr key={record.ID} className="bg-white hover:bg-green-100">
                       <td className="border px-4 py-2">{record.Scheme_Name}</td>

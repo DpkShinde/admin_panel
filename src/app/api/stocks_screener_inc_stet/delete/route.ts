@@ -11,7 +11,7 @@ export async function DELETE(req: Request) {
         { status: 400 }
       );
 
-    const query = `DELETE FROM stocks_screener_incomeStatement WHERE id = ?`;
+    const query = `DELETE FROM stocks_screener_incomestatement WHERE id = ?`;
     await pool.execute(query, [stockId]);
 
     return NextResponse.json(

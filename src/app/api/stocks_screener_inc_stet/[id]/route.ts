@@ -18,7 +18,7 @@ export async function GET(
     }
 
     const [rows] = await pool.query(
-      `SELECT * FROM stocks_screener_incomeStatement WHERE id = ?`,
+      `SELECT * FROM stocks_screener_incomestatement WHERE id = ?`,
       [stockId]
     );
 
@@ -63,7 +63,7 @@ export async function PUT(
     } = await req.json();
 
     await pool.query(
-      `UPDATE stocks_screener_incomeStatement 
+      `UPDATE stocks_screener_incomestatement 
       SET Symbol = ?, Revenue = ?, RevenueGrowth = ?, GrossProfit = ?, OperatingIncome = ?, 
           NetIncome = ?, EBITDA = ?, EPS_Diluted = ?, EPSDilutedGrowth = ? 
       WHERE id = ?`,

@@ -4,7 +4,7 @@ import pool from "@/utils/db";
 export async function GET() {
   try {
     const [rows] = await pool.query(
-      `SELECT * FROM stocks_screener_incomeStatement`
+      `SELECT * FROM stocks_screener_incomestatement`
     );
 
     return NextResponse.json(
