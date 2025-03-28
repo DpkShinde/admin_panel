@@ -85,7 +85,7 @@ export async function PUT(
       { message: "Stock updated successfully!" },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error : any) {
     return NextResponse.json(
       { message: "Server error", error },
       { status: 500 }
