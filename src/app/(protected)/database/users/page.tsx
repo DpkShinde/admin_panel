@@ -109,9 +109,9 @@ const UsersPage: React.FC = () => {
       }
 
       // Update the users list
-      const updatedUsers = users.map(user => 
-        user.user_id === currentUser.user_id 
-          ? { ...user, ...editedUser, updated_date: new Date().toISOString() } 
+      const updatedUsers = users.map(user =>
+        user.user_id === currentUser.user_id
+          ? { ...user, ...editedUser, updated_date: new Date().toISOString() }
           : user
       );
       setUsers(updatedUsers);
@@ -165,14 +165,11 @@ const UsersPage: React.FC = () => {
     });
   };
 
-  if (!mounted) return null; 
+  if (!mounted) return null;
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold text-center mb-6">Users Page</h1>
-
-      {loading && <p className="text-center text-gray-600">Loading...</p>}
-      {error && <p className="text-red-500 text-center">{error}</p>}
 
       <div className="overflow-x-auto shadow-md rounded-lg">
         <table className="w-full bg-white border border-gray-200 shadow-lg">
@@ -194,6 +191,8 @@ const UsersPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
+            {loading && <p className="text-center text-gray-600">Loading...</p>}
+            {error && <p className="text-red-500 text-center">{error}</p>}
             {users.length > 0 ? (
               users.map((user, index) => (
                 <tr key={`${user.user_id}~${index}`} className="even:bg-gray-100 text-center hover:bg-gray-200 transition">
@@ -330,7 +329,7 @@ const UsersPage: React.FC = () => {
           <DialogHeader>
             <DialogTitle>Delete User</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this user? 
+              Are you sure you want to delete this user?
               This action cannot be undone.
             </DialogDescription>
           </DialogHeader>

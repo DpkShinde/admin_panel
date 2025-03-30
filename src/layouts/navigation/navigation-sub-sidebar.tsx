@@ -57,6 +57,10 @@ const menuItems = [
     path: "/database/blogs/getblogs",
     subItems: [{ name: "Add Blogs", path: "/database/blogs/" }],
   },
+  {
+    name: "Subscription plans",
+    path: "/database/subscription",
+  }
 ];
 
 const NavigationSubSideBar = () => {

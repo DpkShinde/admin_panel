@@ -91,6 +91,7 @@ const EditDeleteBlog: React.FC = () => {
                 const result = await response.json();
                 if (Array.isArray(result.data)) {
                     setBlogs(result.data);
+                    console.log(result.data)
                 } else {
                     throw new Error("Invalid API response: Data is not an array");
                 }
@@ -102,31 +103,28 @@ const EditDeleteBlog: React.FC = () => {
         fetchBlogs();
     }, []);
 
+    const getDefaultContent = (content: string) => ({
+        blocks: [{ text: content, type: 'unstyled', depth: 0, inlineStyleRanges: [], entityRanges: [] }],
+        entityMap: {}
+    });
+
     const handleEdit = (blog: Blog) => {
         try {
-            // Log the raw content to inspect its structure
             console.log("Raw blog content:", blog.content);
 
-            // Attempt to parse the content
+            const contentString = blog.content || ""; // Ensure content is always a string
             let parsedContent;
+
             try {
-                parsedContent = JSON.parse(blog.content);
+                parsedContent = JSON.parse(contentString);
             } catch (parseError) {
                 console.error("Failed to parse blog content:", parseError);
-                // If parsing fails, provide a fallback empty content state
-                parsedContent = {
-                    blocks: [{ text: blog.content, type: 'unstyled', depth: 0, inlineStyleRanges: [], entityRanges: [] }],
-                    entityMap: {}
-                };
+                parsedContent = getDefaultContent(contentString);
             }
 
-            // Validate the parsed content
             if (!parsedContent.blocks || !Array.isArray(parsedContent.blocks)) {
                 console.error("Invalid content structure", parsedContent);
-                parsedContent = {
-                    blocks: [{ text: blog.content, type: 'unstyled', depth: 0, inlineStyleRanges: [], entityRanges: [] }],
-                    entityMap: {}
-                };
+                parsedContent = getDefaultContent(contentString);
             }
 
             const contentState = convertFromRaw(parsedContent);
@@ -137,9 +135,7 @@ const EditDeleteBlog: React.FC = () => {
             setIsEdit(true);
         } catch (error) {
             console.error("Error in handleEdit:", error);
-
-            // Fallback to a basic editor state with the blog's content
-            const contentState = ContentState.createFromText(blog.content);
+            const contentState = ContentState.createFromText(blog.content || "");
             const editorState = EditorState.createWithContent(contentState);
 
             setSelectedBlog(blog);
@@ -287,27 +283,45 @@ const EditDeleteBlog: React.FC = () => {
     };
     return (
         <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {blogs.map((blog) => (
-                <Card key={blog.id} className="p-4 shadow-lg rounded-lg">
-                    <CardContent>
-                        <h2 className="text-xl font-bold">{blog.title}</h2>
-                        <p className="text-gray-600 line-clamp-3">{blog.content}</p>
-                        <p className="text-sm text-gray-500">Author: {blog.author}</p>
-                        <p className="text-sm text-gray-500">Category: {blog.category}</p>
-                        <p className="text-sm text-gray-400">Published: {new Date(blog.created_at).toLocaleDateString()}</p>
-                        <div className="mt-4 flex space-x-2">
-                            <Button onClick={() => handleEdit(blog)}>Edit</Button>
-                            <Button variant="destructive" onClick={() => handleDelete(blog)}>Delete</Button>
-                        </div>
-                    </CardContent>
-                </Card>
-            ))}
+            {blogs.map((blog) => {
+                let contentToDisplay;
+
+                try {
+                    
+                    const rawContent = JSON.parse(blog.content);
+                    const contentState = convertFromRaw(rawContent);
+                    const editorState = EditorState.createWithContent(contentState);
+                    contentToDisplay = <Editor editorState={editorState} readOnly={true} onChange={function (editorState: EditorState): void {
+                        throw new Error('Function not implemented.');
+                    }} />;
+                } catch (error) {
+                    
+                    contentToDisplay = <p className="text-gray-600">{blog.content}</p>;
+                }
+
+                return (
+                    <Card key={blog.id} className="p-4 shadow-lg rounded-lg">
+                        <CardContent>
+                            <h2 className="text-xl font-bold">{blog.title}</h2>
+                            <div className="line-clamp-3">{contentToDisplay}</div>
+                            <p className="text-sm text-gray-500">Author: {blog.author}</p>
+                            <p className="text-sm text-gray-500">Category: {blog.category}</p>
+                            <p className="text-sm text-gray-400">Published: {new Date(blog.created_at).toLocaleDateString()}</p>
+                            <div className="mt-4 flex space-x-2">
+                                <Button onClick={() => handleEdit(blog)}>Edit</Button>
+                                <Button variant="destructive" onClick={() => handleDelete(blog)}>Delete</Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                );
+            })}
+
 
             <Dialog open={!!selectedBlog} onOpenChange={() => {
                 setSelectedBlog(null);
                 setSelectedBlogEditorState(null);
             }}>
-                <DialogContent className="max-w-4xl">
+                <DialogContent className="max-w-8xl">
                     <DialogHeader>
                         <DialogTitle className="bg-white text-gray-600 border-gray-600">
                             {isEdit ? 'Edit Blog' : 'Confirm Delete'}
@@ -351,7 +365,6 @@ const EditDeleteBlog: React.FC = () => {
                                             >
                                                 <em>I</em>
                                             </button>
-                                            {/* Other formatting buttons similar to CreateBlog... */}
                                             <button
                                                 type="button"
                                                 className={`px-2 py-1 ${hasInlineStyle("", "UNDERLINE") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
@@ -360,10 +373,92 @@ const EditDeleteBlog: React.FC = () => {
                                             >
                                                 <span className="underline">U</span>
                                             </button>
-                                            {/* Include other buttons like STRIKETHROUGH, SUPERSCRIPT, etc. as in CreateBlog */}
+                                            <button
+                                                type="button"
+                                                className={`px-2 py-1 ${hasInlineStyle("", "STRIKETHROUGH") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
+                                                onClick={() => toggleInlineStyle("STRIKETHROUGH")}
+                                                title="Strikethrough"
+                                            >
+                                                <span className="line-through">S</span>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={`px-2 py-1 ${hasInlineStyle("", "SUPERSCRIPT") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
+                                                onClick={() => toggleInlineStyle("SUPERSCRIPT")}
+                                                title="Superscript"
+                                            >
+                                                x<sup>2</sup>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={`px-2 py-1 ${hasInlineStyle("", "SUBSCRIPT") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
+                                                onClick={() => toggleInlineStyle("SUBSCRIPT")}
+                                                title="Subscript"
+                                            >
+                                                H<sub>2</sub>O
+                                            </button>
+
+                                            {/* Block type controls */}
+                                            <div className="border-l border-gray-300 mx-1"></div>
+                                            <button
+                                                type="button"
+                                                className={`px-2 py-1 ${isBlockType("header-one") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
+                                                onClick={() => toggleBlockType("header-one")}
+                                                title="Heading 1"
+                                            >
+                                                H1
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={`px-2 py-1 ${isBlockType("header-two") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
+                                                onClick={() => toggleBlockType("header-two")}
+                                                title="Heading 2"
+                                            >
+                                                H2
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={`px-2 py-1 ${isBlockType("header-three") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
+                                                onClick={() => toggleBlockType("header-three")}
+                                                title="Heading 3"
+                                            >
+                                                H3
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={`px-2 py-1 ${isBlockType("unordered-list-item") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
+                                                onClick={() => toggleBlockType("unordered-list-item")}
+                                                title="Bullet List"
+                                            >
+                                                • List
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={`px-2 py-1 ${isBlockType("ordered-list-item") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
+                                                onClick={() => toggleBlockType("ordered-list-item")}
+                                                title="Numbered List"
+                                            >
+                                                1. List
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={`px-2 py-1 ${isBlockType("blockquote") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
+                                                onClick={() => toggleBlockType("blockquote")}
+                                                title="Quote"
+                                            >
+                                                " Quote
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={`px-2 py-1 ${isBlockType("code-block") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
+                                                onClick={() => toggleBlockType("code-block")}
+                                                title="Code Block"
+                                            >
+                                                {"</>"}
+                                            </button>
                                         </div>
 
-                                        {/* Font and styling controls */}
+                                        {/* Font control section */}
                                         <div className="flex flex-wrap gap-1 mb-2">
                                             <select
                                                 className="px-2 py-1 bg-gray-200 border border-gray-300 rounded text-xs"
@@ -395,7 +490,8 @@ const EditDeleteBlog: React.FC = () => {
                                                 <option value="36">36px</option>
                                             </select>
 
-                                            {/* Color controls */}
+                                            <div className="border-l border-gray-300 mx-1"></div>
+
                                             <select
                                                 className="px-2 py-1 bg-gray-200 border border-gray-300 rounded text-xs"
                                                 onChange={(e) => applyTextColor(e.target.value)}
@@ -425,25 +521,40 @@ const EditDeleteBlog: React.FC = () => {
                                             </select>
                                         </div>
 
-                                        {/* Block type controls */}
+                                        {/* Text alignment section */}
                                         <div className="flex flex-wrap gap-1">
                                             <button
                                                 type="button"
-                                                className={`px-2 py-1 ${isBlockType("header-one") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
-                                                onClick={() => toggleBlockType("header-one")}
-                                                title="Heading 1"
+                                                className={`px-2 py-1 ${isBlockType("left") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
+                                                onClick={() => toggleBlockType("left")}
+                                                title="Align Left"
                                             >
-                                                H1
+                                                ←
                                             </button>
                                             <button
                                                 type="button"
-                                                className={`px-2 py-1 ${isBlockType("header-two") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
-                                                onClick={() => toggleBlockType("header-two")}
-                                                title="Heading 2"
+                                                className={`px-2 py-1 ${isBlockType("center") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
+                                                onClick={() => toggleBlockType("center")}
+                                                title="Align Center"
                                             >
-                                                H2
+                                                ↔
                                             </button>
-                                            {/* Add more block type buttons similar to CreateBlog */}
+                                            <button
+                                                type="button"
+                                                className={`px-2 py-1 ${isBlockType("right") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
+                                                onClick={() => toggleBlockType("right")}
+                                                title="Align Right"
+                                            >
+                                                →
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className={`px-2 py-1 ${isBlockType("justify") ? "bg-gray-400" : "bg-gray-200"} hover:bg-gray-300 rounded text-xs`}
+                                                onClick={() => toggleBlockType("justify")}
+                                                title="Justify"
+                                            >
+                                                ⇌
+                                            </button>
                                         </div>
                                     </div>
 
