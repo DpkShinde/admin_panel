@@ -62,6 +62,8 @@ export async function POST(req: NextRequest) {
         event_date,
       } = data;
 
+      console.log(data)
+
       if (!company) {
         return NextResponse.json(
           { success: false, message: "Symbol is required." },
@@ -69,7 +71,7 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const query = `INSERT INTO (company,ltp_inr,change_percent,market_cap_cr,roe,pe,pbv,ev_ebitda,sales_growth_5y,profit_growth_5y,clarification,sector,High_52W_INR,Low_52W_INR,stock_index,event_date)
+      const query = `INSERT INTO dummy_stocks_list(company,ltp_inr,change_percent,market_cap_cr,roe,pe,pbv,ev_ebitda,sales_growth_5y,profit_growth_5y,clarification,sector,High_52W_INR,Low_52W_INR,stock_index,event_date)
       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
       `;
       const values = [

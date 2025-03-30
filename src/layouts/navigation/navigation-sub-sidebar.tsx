@@ -27,17 +27,21 @@ const menuItems = [
         name: "Sector Weightage",
         path: "/database/stock-tables/stocks-sector-weitage",
       },
+      {
+        name: "Stock List",
+        path: "/database/stock-tables/stocks_list",
+      },
     ],
   },
   {
     name: "Funds Tables",
     path: "/database/Funds",
-    subItems:[
+    subItems: [
       {
-        name:"Fund Details",
-        path:"/database/Funds/fund_details"
-      }
-    ]
+        name: "Fund Details",
+        path: "/database/Funds/fund_details",
+      },
+    ],
   },
   {
     name: "User Tables",
@@ -46,16 +50,12 @@ const menuItems = [
   {
     name: "News Tables",
     path: "/database/news",
-    subItems: [
-      { name: "Add News", path: "/database/news/createnews" },
-    ],
+    subItems: [{ name: "Add News", path: "/database/news/createnews" }],
   },
   {
     name: "Blogs Tables",
     path: "/database/blogs/getblogs",
-    subItems: [
-      { name: "Add Blogs", path: "/database/blogs/" },
-    ],
+    subItems: [{ name: "Add Blogs", path: "/database/blogs/" }],
   },
 ];
 

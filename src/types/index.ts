@@ -61,27 +61,47 @@ export interface SectorWeightage {
 }
 
 export interface FundDetails {
-  ID: number; 
-  Scheme_Name?: string; 
-  Scheme_Code?: number | null; 
-  Scheme_Type?: string; 
-  Sub_Category?: string; 
-  NAV?: number | null; 
-  AuM_Cr?: number | null; 
-  Column_1D_Change?: number | null; 
-  NAV_Date?: string; 
-  Column_52W_High?: number | null; 
-  Column_52WH_as_on?: string; 
-  Column_52W_Low?: number | null; 
-  Column_52WL_as_on?: string; 
-  Column_1W?: number | null; 
-  Column_1M?: number | null; 
-  Column_3M?: string; 
-  Column_6M?: string; 
-  YTD?: string; 
-  Column_1Y?: string; 
-  Column_2Y?: string; 
-  Column_3Y?: string; 
-  Column_5Y?: string; 
-  Column_10Y?: string; 
+  ID: number;
+  Scheme_Name?: string;
+  Scheme_Code?: number | null;
+  Scheme_Type?: string;
+  Sub_Category?: string;
+  NAV?: number | null;
+  AuM_Cr?: number | null;
+  Column_1D_Change?: number | null;
+  NAV_Date?: string;
+  Column_52W_High?: number | null;
+  Column_52WH_as_on?: string;
+  Column_52W_Low?: number | null;
+  Column_52WL_as_on?: string;
+  Column_1W?: number | null;
+  Column_1M?: number | null;
+  Column_3M?: string;
+  Column_6M?: string;
+  YTD?: string;
+  Column_1Y?: string;
+  Column_2Y?: string;
+  Column_3Y?: string;
+  Column_5Y?: string;
+  Column_10Y?: string;
+}
+
+export interface StockList {
+  id: number;
+  company: string;
+  ltp_inr: number;
+  change_percent: number;
+  market_cap_cr: number;
+  roe: number;
+  pe: number;
+  pbv: number;
+  ev_ebitda: number;
+  sales_growth_5y: number;
+  profit_growth_5y: number;
+  clarification?: string;
+  sector: string;
+  High_52W_INR: number;
+  Low_52W_INR: number;
+  stock_index?: string;
+  event_date?: string;
 }

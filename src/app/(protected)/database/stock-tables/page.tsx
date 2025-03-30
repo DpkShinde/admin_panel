@@ -24,6 +24,11 @@ const stockTables = [
     icon: <Grid className="w-6 h-6 text-gray-700" />,
     path: "/database/stock-tables/stocks-sector-weitage",
   },
+  {
+    name: "Stocks List",
+    icon: <Grid className="w-6 h-6 text-gray-700" />,
+    path: "/database/stock-tables/stocks_list",
+  }
 ];
 
 export default function StockTablesOverview() {
