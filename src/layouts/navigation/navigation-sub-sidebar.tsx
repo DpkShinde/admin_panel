@@ -50,12 +50,10 @@ const menuItems = [
   {
     name: "News Tables",
     path: "/database/news",
-    subItems: [{ name: "Add News", path: "/database/news/createnews" }],
   },
   {
     name: "Blogs Tables",
-    path: "/database/blogs/getblogs",
-    subItems: [{ name: "Add Blogs", path: "/database/blogs/" }],
+    path: "/database/blogs",
   },
   {
     name: "Subscription plans",
