@@ -24,13 +24,28 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const { plan, halfyearly_price, annually_price, features, additional_benefits } = await req.json();
+    const {
+      plan,
+      halfyearly_price,
+      annually_price,
+      features,
+      additional_benefits,
+    } = await req.json();
 
-    if (!plan || !halfyearly_price || !annually_price || !features || !additional_benefits) {
-      return new Response(JSON.stringify({ error: "Missing required fields" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+    if (
+      !plan ||
+      !halfyearly_price ||
+      !annually_price ||
+      !features ||
+      !additional_benefits
+    ) {
+      return new Response(
+        JSON.stringify({ error: "Missing required fields" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     const [result] = await pool.query<ResultSetHeader>(
@@ -39,7 +54,10 @@ export async function POST(req: Request) {
     );
 
     return new Response(
-      JSON.stringify({ message: "Plan added successfully", plan_id: result.insertId }),
+      JSON.stringify({
+        message: "Plan added successfully",
+        plan_id: result.insertId,
+      }),
       {
         status: 201,
         headers: { "Content-Type": "application/json" },
