@@ -105,3 +105,39 @@ export interface StockList {
   stock_index?: string;
   event_date?: string;
 }
+
+export interface StockPrise {
+  id: number;
+  stock_name: string;
+  stock_symbol: string;
+  "2025-04-01"?: number;
+  "2025-04-02"?: number;
+  "2025-04-03"?: number;
+  "2025-04-04"?: number;
+  "2025-04-05"?: number;
+  "2025-04-06"?: number;
+  "2025-04-07"?: number;
+  "2025-04-08"?: number;
+  "2025-04-09"?: number;
+  "2025-04-10"?: number;
+  "2025-04-11"?: number;
+  "2025-04-12"?: number;
+  "2025-04-13"?: number;
+  "2025-04-14"?: number;
+  "2025-04-15"?: number;
+  "2025-04-16"?: number;
+  "2025-04-17"?: number;
+  "2025-04-18"?: number;
+  "2025-04-19"?: number;
+  "2025-04-20"?: number;
+  "2025-04-21"?: number;
+  "2025-04-22"?: number;
+  "2025-04-23"?: number;
+  "2025-04-24"?: number;
+  "2025-04-25"?: number;
+  "2025-04-26"?: number;
+  "2025-04-27"?: number;
+  "2025-04-28"?: number;
+  "2025-04-29"?: number;
+  "2025-04-30"?: number;
+}

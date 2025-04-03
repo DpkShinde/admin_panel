@@ -91,7 +91,7 @@ export async function PUT(
       "2025-04-30",
     ];
 
-    // Collect fields that need to be updated
+    // collection fields that need to be updated
     const fieldsToUpdate: string[] = [];
     const values: any[] = [];
 
