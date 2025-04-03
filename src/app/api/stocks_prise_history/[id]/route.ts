@@ -54,35 +54,44 @@ export async function PUT(
     }
 
     const updateData = await req.json();
-    const { stock_name, stock_symbol, trade_date, closing_price } = updateData;
+    const { stock_name, stock_symbol, ...prices } = updateData;
 
-    // Ensure at least one field is provided for update
-    if (
-      !stock_name &&
-      !stock_symbol &&
-      !trade_date &&
-      closing_price === undefined
-    ) {
-      return NextResponse.json(
-        { success: false, message: "At least one field is required to update" },
-        { status: 400 }
-      );
-    }
+    const allowedColumns = [
+      "stock_name",
+      "stock_symbol",
+      "2025-04-01",
+      "2025-04-02",
+      "2025-04-03",
+      "2025-04-04",
+      "2025-04-05",
+      "2025-04-06",
+      "2025-04-07",
+      "2025-04-08",
+      "2025-04-09",
+      "2025-04-10",
+      "2025-04-11",
+      "2025-04-12",
+      "2025-04-13",
+      "2025-04-14",
+      "2025-04-15",
+      "2025-04-16",
+      "2025-04-17",
+      "2025-04-18",
+      "2025-04-19",
+      "2025-04-20",
+      "2025-04-21",
+      "2025-04-22",
+      "2025-04-23",
+      "2025-04-24",
+      "2025-04-25",
+      "2025-04-26",
+      "2025-04-27",
+      "2025-04-28",
+      "2025-04-29",
+      "2025-04-30",
+    ];
 
-    // Check if stock exists before updating
-    const [existingStock]: any[] = await pool.query(
-      `SELECT id FROM stock_prices WHERE id = ?`,
-      [stockId]
-    );
-
-    if (existingStock.length === 0) {
-      return NextResponse.json(
-        { success: false, message: "Stock not found" },
-        { status: 404 }
-      );
-    }
-
-    // Update query dynamically based on provided fields
+    // Collect fields that need to be updated
     const fieldsToUpdate: string[] = [];
     const values: any[] = [];
 
@@ -94,16 +103,26 @@ export async function PUT(
       fieldsToUpdate.push("stock_symbol = ?");
       values.push(stock_symbol);
     }
-    if (trade_date) {
-      fieldsToUpdate.push("trade_date = ?");
-      values.push(trade_date);
-    }
-    if (closing_price !== undefined) {
-      fieldsToUpdate.push("closing_price = ?");
-      values.push(closing_price);
+
+    // Include valid date columns from request data
+    for (const [date, price] of Object.entries(prices)) {
+      if (allowedColumns.includes(date)) {
+        fieldsToUpdate.push(`\`${date}\` = ?`);
+        values.push(price);
+      }
     }
 
-    values.push(stockId);
+    if (fieldsToUpdate.length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "At least one valid field is required to update.",
+        },
+        { status: 400 }
+      );
+    }
+
+    values.push(stockId); 
 
     const updateQuery = `UPDATE stock_prices SET ${fieldsToUpdate.join(
       ", "
