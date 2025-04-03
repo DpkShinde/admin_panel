@@ -5,36 +5,65 @@ import { ResultSetHeader } from "mysql2";
 export async function POST(req: NextRequest) {
   try {
     const requestData = await req.json();
-    const { data } = requestData;
 
-    if (!data) {
+    if (!requestData) {
       return NextResponse.json(
         { success: false, message: "Request data is missing." },
         { status: 400 }
       );
     }
 
-    if (Array.isArray(data) && data.length > 0) {
-      const query = `INSERT INTO stock_prices (stock_name, stock_symbol, trade_date, closing_price) VALUES ?`;
+    const dateColumns = [
+      "2025-04-01",
+      "2025-04-02",
+      "2025-04-03",
+      "2025-04-04",
+      "2025-04-05",
+      "2025-04-06",
+      "2025-04-07",
+      "2025-04-08",
+      "2025-04-09",
+      "2025-04-10",
+      "2025-04-11",
+      "2025-04-12",
+      "2025-04-13",
+      "2025-04-14",
+      "2025-04-15",
+      "2025-04-16",
+      "2025-04-17",
+      "2025-04-18",
+      "2025-04-19",
+      "2025-04-20",
+      "2025-04-21",
+      "2025-04-22",
+      "2025-04-23",
+      "2025-04-24",
+      "2025-04-25",
+      "2025-04-26",
+      "2025-04-27",
+      "2025-04-28",
+      "2025-04-29",
+      "2025-04-30",
+    ];
 
-      const values = data.map((stock) => [
+    // handle bould records
+    if (Array.isArray(requestData) && requestData.length > 0) {
+      const query = `
+        INSERT INTO stock_prices (stock_name, stock_symbol, ${dateColumns
+          .map((date) => `\`${date}\``)
+          .join(", ")})
+        VALUES ${requestData
+          .map(() => `(?, ?, ${dateColumns.map(() => "?").join(", ")})`)
+          .join(", ")}
+      `;
+
+      const values = requestData.flatMap((stock) => [
         stock.stock_name ?? null,
         stock.stock_symbol ?? null,
-        stock.trade_date ?? null,
-        stock.closing_price ?? 0,
+        ...dateColumns.map((date) => stock[date] ?? null),
       ]);
 
-      if (!values.every((row) => row.every((field) => field !== null))) {
-        return NextResponse.json(
-          {
-            success: false,
-            message: "All fields are required for each stock.",
-          },
-          { status: 400 }
-        );
-      }
-
-      const [result] = await pool.query<ResultSetHeader>(query, [values]);
+      const [result] = await pool.execute<ResultSetHeader>(query, values);
 
       return NextResponse.json(
         {
@@ -45,25 +74,32 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Handle Single Insert
-    if (typeof data === "object" && data !== null) {
-      const { stock_name, stock_symbol, trade_date, closing_price } = data;
+    //handle single record
+    if (typeof requestData === "object" && requestData !== null) {
+      const { stock_name, stock_symbol, ...prices } = requestData;
 
-      if (
-        !stock_name ||
-        !stock_symbol ||
-        !trade_date ||
-        closing_price === undefined
-      ) {
+      if (!stock_name || !stock_symbol) {
         return NextResponse.json(
-          { success: false, message: "All fields are required." },
+          {
+            success: false,
+            message: "Stock name and stock symbol are required.",
+          },
           { status: 400 }
         );
       }
 
-      const query = `INSERT INTO stock_prices (stock_name, stock_symbol, trade_date, closing_price) VALUES (?, ?, ?, ?)`;
+      const query = `
+        INSERT INTO stock_prices (stock_name, stock_symbol, ${dateColumns
+          .map((date) => `\`${date}\``)
+          .join(", ")})
+        VALUES (?, ?, ${dateColumns.map(() => "?").join(", ")})
+      `;
 
-      const values = [stock_name, stock_symbol, trade_date, closing_price];
+      const values = [
+        stock_name,
+        stock_symbol,
+        ...dateColumns.map((date) => prices[date] ?? null),
+      ];
 
       const [result] = await pool.execute<ResultSetHeader>(query, values);
 
@@ -78,7 +114,7 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   } catch (error: any) {
-    console.error("Error adding stocks:", error);
+    console.error("Error adding stock:", error);
     return NextResponse.json(
       { success: false, message: "Server Error", error: error.message },
       { status: 500 }
