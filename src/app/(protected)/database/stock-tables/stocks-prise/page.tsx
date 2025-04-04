@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Toaster, toast } from "sonner";
@@ -34,7 +34,7 @@ export default function Home() {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
       const result = await res.json();
-      console.log(result)
+      console.log(result);
       setData(result?.data || []);
     } catch (e: any) {
       console.error("Failed to fetch data:", e);
@@ -81,32 +81,47 @@ export default function Home() {
     router.push(`/database/stock-tables/stocks-prise/${id}`);
   };
 
-  const handleFileUpload = async () => {
-    if (!selectedFile) {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): Promise<void> => {
+    const file = event.target.files?.[0];
+    if (!file) {
       toast.error("Please select a file to upload.");
       return;
     }
 
     setLoading(true);
     setError(null);
+
     try {
-      const rows = await readXlsxFile(selectedFile);
-      // Assuming the first row contains headers
+      const rows = await readXlsxFile(file);
       const headers = rows[0] as string[];
+
       const jsonData = rows.slice(1).map((row) => {
-        const entry: { [key: string]: any } = {};
-        headers.forEach((header, index) => {
-          entry[header] = row[index];
-        });
+        const entry: { [key: string]: any } = {
+          stock_name: row[0],
+          stock_symbol: row[1],
+        };
+
+        // start from index 2 to map dates
+        for (let i = 2; i < headers.length; i++) {
+          const dateKey = headers[i];
+          const value = row[i];
+          if (dateKey && value !== undefined) {
+            entry[dateKey] =
+              typeof value === "number" ? value : Number(value) || 0;
+          }
+        }
+
         return entry;
       });
 
-      const res = await fetch("/api/stocks_prise_history/bulk", {
+      const res = await fetch("/api/stocks_prise_history", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(jsonData),
+        body: JSON.stringify({ data: jsonData }),
       });
 
       if (!res.ok) {
@@ -130,11 +145,6 @@ export default function Home() {
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    setSelectedFile(file || null);
-  };
-
   // Extract all unique dates from the data for dynamic column headers
   const allDates = data.reduce((acc: string[], record) => {
     Object.keys(record).forEach((key) => {
@@ -152,7 +162,6 @@ export default function Home() {
 
   return (
     <div className="p-6 shadow-lg rounded-lg bg-white max-w-full">
-      <Toaster position="top-right" />
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <h1 className="text-2xl font-bold text-green-800">
           Stock Price History
@@ -161,7 +170,7 @@ export default function Home() {
         <div className="flex flex-wrap items-center gap-3">
           <Button
             variant="outline"
-             className="p-2 ml-5 cursor-pointer hover:bg-green-800 transition"
+            className="p-2 ml-5 cursor-pointer hover:bg-green-800 transition"
             onClick={() =>
               router.push("/database/stock-tables/stocks-prise/add")
             }
@@ -169,31 +178,25 @@ export default function Home() {
             Add Stocks
           </Button>
 
-          <div className="flex items-center gap-2">
-            <input
-              type="file"
-              accept=".xlsx, .csv"
-              onChange={handleFileChange}
-              className="hidden"
-              id="fileUpload"
-            />
-            <label htmlFor="fileUpload">
-              <Button
-                disabled={loading}
-                variant="outline"
-                className="px-4 py-2 border border-green-600 text-green-700 hover:bg-green-50 transition-colors duration-300"
-              >
-                Select Excel File
-              </Button>
-            </label>
-            <Button
-              onClick={handleFileUpload}
-              disabled={loading || !selectedFile}
-              className="px-4 py-2 bg-green-600 text-white hover:bg-green-700 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? "Uploading..." : "Import Data"}
-            </Button>
-          </div>
+          {/* File Upload Button */}
+          <label
+            htmlFor="file-upload"
+            className="text-center p-1 px-2 cursor-pointer bg-gray-700 text-white rounded-md hover:bg-gray-500 transition"
+          >
+            Upload Excel
+          </label>
+          <input
+            id="file-upload"
+            type="file"
+            accept=".xlsx, .xls, .csv"
+            className="hidden"
+            onChange={handleFileUpload}
+          />
+
+          {/* Show selected file name */}
+          {selectedFile && (
+            <span className="text-sm text-gray-600">{selectedFile.name}</span>
+          )}
         </div>
       </div>
 

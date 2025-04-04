@@ -28,7 +28,12 @@ const stockTables = [
     name: "Stocks List",
     icon: <Grid className="w-6 h-6 text-gray-700" />,
     path: "/database/stock-tables/stocks_list",
-  }
+  },
+  {
+    name: "Stocks Prises History",
+    icon: <Grid className="w-6 h-6 text-gray-700" />,
+    path: "/database/stock-tables/stocks-prise",
+  },
 ];
 
 export default function StockTablesOverview() {

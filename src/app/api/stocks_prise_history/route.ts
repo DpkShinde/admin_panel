@@ -2,66 +2,91 @@ import { NextResponse, NextRequest } from "next/server";
 import pool from "@/utils/db";
 import { ResultSetHeader } from "mysql2";
 
+// Define the columns in your table
+const dateColumns = [
+  "2025-04-01",
+  "2025-04-02",
+  "2025-04-03",
+  "2025-04-04",
+  "2025-04-05",
+  "2025-04-06",
+  "2025-04-07",
+  "2025-04-08",
+  "2025-04-09",
+  "2025-04-10",
+  "2025-04-11",
+  "2025-04-12",
+  "2025-04-13",
+  "2025-04-14",
+  "2025-04-15",
+  "2025-04-16",
+  "2025-04-17",
+  "2025-04-18",
+  "2025-04-19",
+  "2025-04-20",
+  "2025-04-21",
+  "2025-04-22",
+  "2025-04-23",
+  "2025-04-24",
+  "2025-04-25",
+  "2025-04-26",
+  "2025-04-27",
+  "2025-04-28",
+  "2025-04-29",
+  "2025-04-30",
+];
+
+// Utility: Normalize keys like 'Tue Apr 01 2025 05:30:00 GMT+0530...' → '2025-04-01'
+function normalizeDateKeys(stock: any): any {
+  const normalized: any = {
+    stock_name: stock.stock_name,
+    stock_symbol: stock.stock_symbol,
+  };
+
+  Object.keys(stock).forEach((key) => {
+    if (key !== "stock_name" && key !== "stock_symbol") {
+      const date = new Date(key);
+      if (!isNaN(date.getTime())) {
+        const isoDate = date.toISOString().split("T")[0];
+        normalized[isoDate] = stock[key];
+      }
+    }
+  });
+
+  return normalized;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const requestData = await req.json();
+    const { data } = requestData;
 
-    if (!requestData) {
+    if (!data) {
       return NextResponse.json(
         { success: false, message: "Request data is missing." },
         { status: 400 }
       );
     }
 
-    const dateColumns = [
-      "2025-04-01",
-      "2025-04-02",
-      "2025-04-03",
-      "2025-04-04",
-      "2025-04-05",
-      "2025-04-06",
-      "2025-04-07",
-      "2025-04-08",
-      "2025-04-09",
-      "2025-04-10",
-      "2025-04-11",
-      "2025-04-12",
-      "2025-04-13",
-      "2025-04-14",
-      "2025-04-15",
-      "2025-04-16",
-      "2025-04-17",
-      "2025-04-18",
-      "2025-04-19",
-      "2025-04-20",
-      "2025-04-21",
-      "2025-04-22",
-      "2025-04-23",
-      "2025-04-24",
-      "2025-04-25",
-      "2025-04-26",
-      "2025-04-27",
-      "2025-04-28",
-      "2025-04-29",
-      "2025-04-30",
-    ];
-
-    // handle bould records
-    if (Array.isArray(requestData) && requestData.length > 0) {
+    // 🚀 BULK INSERT
+    if (Array.isArray(data) && data.length > 0) {
       const query = `
         INSERT INTO stock_prices (stock_name, stock_symbol, ${dateColumns
-          .map((date) => `\`${date}\``)
+          .map((d) => `\`${d}\``)
           .join(", ")})
-        VALUES ${requestData
+        VALUES ${data
           .map(() => `(?, ?, ${dateColumns.map(() => "?").join(", ")})`)
           .join(", ")}
       `;
 
-      const values = requestData.flatMap((stock) => [
-        stock.stock_name ?? null,
-        stock.stock_symbol ?? null,
-        ...dateColumns.map((date) => stock[date] ?? null),
-      ]);
+      const values = data.flatMap((stock) => {
+        const normalized = normalizeDateKeys(stock);
+        return [
+          normalized.stock_name ?? null,
+          normalized.stock_symbol ?? null,
+          ...dateColumns.map((date) => normalized[date] ?? null),
+        ];
+      });
 
       const [result] = await pool.execute<ResultSetHeader>(query, values);
 
@@ -74,11 +99,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    //handle single record
-    if (typeof requestData === "object" && requestData !== null) {
-      const { stock_name, stock_symbol, ...prices } = requestData;
+    // 🧍 SINGLE INSERT
+    if (typeof data === "object" && data !== null) {
+      const normalized = normalizeDateKeys(data);
 
-      if (!stock_name || !stock_symbol) {
+      if (!normalized.stock_name || !normalized.stock_symbol) {
         return NextResponse.json(
           {
             success: false,
@@ -90,15 +115,15 @@ export async function POST(req: NextRequest) {
 
       const query = `
         INSERT INTO stock_prices (stock_name, stock_symbol, ${dateColumns
-          .map((date) => `\`${date}\``)
+          .map((d) => `\`${d}\``)
           .join(", ")})
         VALUES (?, ?, ${dateColumns.map(() => "?").join(", ")})
       `;
 
       const values = [
-        stock_name,
-        stock_symbol,
-        ...dateColumns.map((date) => prices[date] ?? null),
+        normalized.stock_name,
+        normalized.stock_symbol,
+        ...dateColumns.map((date) => normalized[date] ?? null),
       ];
 
       const [result] = await pool.execute<ResultSetHeader>(query, values);

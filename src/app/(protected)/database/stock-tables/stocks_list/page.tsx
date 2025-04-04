@@ -23,13 +23,23 @@ export default function Home() {
   const [data, setData] = useState<StockList[]>([]);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   async function fetchData() {
-    const res = await fetch("/api/stocks_list/all");
-    const result = await res.json();
-    console.log(result);
-    setData(result?.data);
+    setLoading(true);
+    try {
+      const res = await fetch("/api/stocks_list/all");
+      const result = await res.json();
+      console.log(result);
+      setData(result?.data);
+    } catch (error: any) {
+      console.error("Failed to fetch data:", error);
+      toast.error("Failed to load stock data.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
