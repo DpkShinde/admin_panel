@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Toaster, toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { StockPrise } from "@/types";
 
 export default function EditStock() {
@@ -56,57 +58,146 @@ export default function EditStock() {
     }
   };
 
+  // Group dates by week for better UI organization
+  const getWeeklyGroups = () => {
+    if (!formData) return [];
+
+    const weeks = [];
+    const datesToShow = Object.keys(formData).filter((key) =>
+      key.startsWith("2025-")
+    );
+    datesToShow.sort(); 
+
+    for (let i = 0; i < datesToShow.length; i += 7) {
+      weeks.push(datesToShow.slice(i, i + 7));
+    }
+
+    return weeks;
+  };
+
   return (
-    <div className="p-6 shadow-lg rounded-lg bg-white max-w-lg mx-auto">
+    <div
+      data-slot="card"
+      className="bg-white text-black flex flex-col gap-6 rounded-xl border py-6 shadow-sm max-w-4xl mx-auto p-6"
+    >
       <Toaster position="top-right" />
-      <h1 className="text-2xl font-bold text-green-800 mb-4">Edit Stock</h1>
-      {error && <p className="text-red-600">{error}</p>}
+
+      <div className="px-6">
+        <h2 className="text-2xl font-bold text-green-800">Edit Stock</h2>
+        {error && <p className="text-red-600 mt-2">{error}</p>}
+      </div>
+
       {loading ? (
-        <p className="text-gray-600">Loading...</p>
-      ) : (
-        formData && (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="text"
-              name="stock_name"
-              value={formData.stock_name || ""}
-              onChange={handleChange}
-              placeholder="Stock Name"
-              className="w-full p-2 border rounded"
-            />
-            <input
-              type="text"
-              name="stock_symbol"
-              value={formData.stock_symbol || ""}
-              onChange={handleChange}
-              placeholder="Stock Symbol"
-              className="w-full p-2 border rounded"
-            />
-            {Object.keys(formData).map((key) =>
-              key.startsWith("2025-") ? (
-                <input
-                  key={key}
-                  type="number"
-                  name={key}
-                  value={
-                    (formData as unknown as Record<string, number | null>)[
-                      key
-                    ] || ""
-                  }
+        <div className="px-6 py-8 text-center">
+          <div className="animate-pulse flex flex-col items-center">
+            <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          </div>
+          <p className="text-gray-600 mt-4">Loading stock data...</p>
+        </div>
+      ) : formData ? (
+        <div className="px-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="stock_name">Stock Name</Label>
+                <Input
+                  id="stock_name"
+                  name="stock_name"
+                  value={formData.stock_name || ""}
                   onChange={handleChange}
-                  placeholder={`Price on ${key}`}
-                  className="w-full p-2 border rounded"
+                  placeholder="Enter stock name"
+                  className="mt-1"
                 />
-              ) : null
-            )}
-            <Button
-              type="submit"
-              className="w-full bg-green-600 text-white py-2 rounded"
-            >
-              Update Stock
-            </Button>
+              </div>
+
+              <div>
+                <Label htmlFor="stock_symbol">Stock Symbol</Label>
+                <Input
+                  id="stock_symbol"
+                  name="stock_symbol"
+                  value={formData.stock_symbol || ""}
+                  onChange={handleChange}
+                  placeholder="Enter stock symbol (e.g., AAPL)"
+                  className="mt-1"
+                />
+              </div>
+            </div>
+
+            <div className="border-t pt-4">
+              <h3 className="font-medium text-lg mb-4">
+                April 2025 Price History
+              </h3>
+
+              {getWeeklyGroups().map((weekDates, weekIndex) => (
+                <div key={`week-${weekIndex}`} className="mb-6">
+                  <h4 className="font-medium mb-2">Week {weekIndex + 1}</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {weekDates.map((date) => (
+                      <div key={date} className="flex flex-col">
+                        <Label htmlFor={date} className="text-sm">
+                          {new Date(`${date}T00:00:00`).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}
+                        </Label>
+                        <Input
+                          id={date}
+                          type="number"
+                          name={date}
+                          value={
+                            (
+                              formData as unknown as Record<
+                                string,
+                                number | null
+                              >
+                            )[date] || ""
+                          }
+                          onChange={handleChange}
+                          placeholder="Price"
+                          step="0.01"
+                          className="mt-1"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-between pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  router.push("/database/stock-tables/stocks-prise")
+                }
+                className="w-32"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                className="bg-green-700 hover:bg-green-800 text-white w-32"
+              >
+                Update Stock
+              </Button>
+            </div>
           </form>
-        )
+        </div>
+      ) : (
+        <div className="px-6 py-8 text-center">
+          <p className="text-red-600">Stock data not found</p>
+          <Button
+            onClick={() => router.push("/database/stock-tables/stocks-prise")}
+            className="mt-4"
+          >
+            Back to Stocks
+          </Button>
+        </div>
       )}
     </div>
   );
