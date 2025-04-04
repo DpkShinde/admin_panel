@@ -7,7 +7,9 @@ export async function GET(
   context: { params: { id: string } }
 ) {
   try {
-    const stockId = Number(context.params.id);
+    const { id } = await context.params;
+    const stockId = Number(id);
+    console.log(stockId)
 
     if (isNaN(stockId)) {
       return NextResponse.json(

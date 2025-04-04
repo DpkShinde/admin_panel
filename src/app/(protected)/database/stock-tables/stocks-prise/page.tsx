@@ -34,6 +34,7 @@ export default function Home() {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
       const result = await res.json();
+      console.log(result)
       setData(result?.data || []);
     } catch (e: any) {
       console.error("Failed to fetch data:", e);
@@ -77,7 +78,7 @@ export default function Home() {
   };
 
   const handleEdit = (id: number) => {
-    router.push(`/database/stock-tables/stocks-valuation/${id}`);
+    router.push(`/database/stock-tables/stocks-prise/${id}`);
   };
 
   const handleFileUpload = async () => {
@@ -160,9 +161,9 @@ export default function Home() {
         <div className="flex flex-wrap items-center gap-3">
           <Button
             variant="outline"
-            className="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800 transition-colors duration-300 border-none"
+             className="p-2 ml-5 cursor-pointer hover:bg-green-800 transition"
             onClick={() =>
-              router.push("/database/stock-tables/stocks-valuation/add")
+              router.push("/database/stock-tables/stocks-prise/add")
             }
           >
             Add Stocks
