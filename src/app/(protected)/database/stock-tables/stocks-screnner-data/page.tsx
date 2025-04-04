@@ -153,7 +153,7 @@ const Home = () => {
             <input
               id="file-upload"
               type="file"
-              accept=".xlsx, .xls"
+              accept=".xlsx, .xls, .csv"
               className="hidden"
               onChange={handleFileUpload}
             />
