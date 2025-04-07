@@ -63,6 +63,7 @@ export async function PUT(
       DividendYield,
       DividendAmount,
       ROCE,
+      Analyst_Rating
     } = body;
 
     const query = `
@@ -72,7 +73,7 @@ export async function PUT(
           CurrentPE = ?, IndexName = ?, RecordDate = ?, ROE = ?, PBV = ?, 
           EV_EBITDA = ?, FiveYearSalesGrowth = ?, FiveYearProfitGrowth = ?, 
           Volume = ?, EPS = ?, EPSGrowth = ?, DividendYield = ?, 
-          DividendAmount = ?, ROCE = ?
+          DividendAmount = ?, ROCE = ?,Analyst_Rating = ?
       WHERE id = ?
     `;
 
@@ -98,6 +99,7 @@ export async function PUT(
       DividendYield,
       DividendAmount,
       ROCE,
+      Analyst_Rating,
       stockId,
     ];
 

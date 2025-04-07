@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
           CompanyName, LastTradedPrice, ChangePercentage, MarketCap, High52W, Low52W, 
           Sector, CurrentPE, IndexName, RecordDate, ROE, PBV, EV_EBITDA, 
           FiveYearSalesGrowth, FiveYearProfitGrowth, Volume, EPS, EPSGrowth, 
-          DividendYield, DividendAmount, ROCE
+          DividendYield, DividendAmount, ROCE ,Analyst_Rating
         ) VALUES ?
       `;
 
@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
         stock.DividendYield ?? 0,
         stock.DividendAmount ?? 0,
         stock.ROCE ?? 0,
+        stock.Analyst_Rating ?? null,
       ]);
 
       const [result] = await pool.query<ResultSetHeader>(query, [values]);
@@ -75,8 +76,8 @@ export async function POST(req: NextRequest) {
         DividendYield,
         DividendAmount,
         ROCE,
+        Analyst_Rating,
       } = data;
-
 
       if (!CompanyName) {
         return NextResponse.json(
@@ -90,8 +91,8 @@ export async function POST(req: NextRequest) {
           CompanyName, LastTradedPrice, ChangePercentage, MarketCap, High52W, Low52W, 
           Sector, CurrentPE, IndexName, RecordDate, ROE, PBV, EV_EBITDA, 
           FiveYearSalesGrowth, FiveYearProfitGrowth, Volume, EPS, EPSGrowth, 
-          DividendYield, DividendAmount, ROCE
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          DividendYield, DividendAmount, ROCE,Analyst_Rating
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
       `;
 
       const values = [
@@ -116,6 +117,7 @@ export async function POST(req: NextRequest) {
         DividendYield ?? 0,
         DividendAmount ?? 0,
         ROCE ?? 0,
+        Analyst_Rating ?? null,
       ];
 
       const [result] = await pool.query<ResultSetHeader>(query, values);

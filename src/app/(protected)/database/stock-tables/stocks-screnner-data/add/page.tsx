@@ -28,6 +28,7 @@ export default function AddStockRecord() {
     DividendYield: null,
     DividendAmount: null,
     ROCE: null,
+    Analyst_Rating : null
   });
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -79,6 +80,7 @@ export default function AddStockRecord() {
         DividendYield: null,
         DividendAmount: null,
         ROCE: null,
+        Analyst_Rating: null,
       });
     } catch (error: any) {
       setErrorMessage(error.message || "An unexpected error occurred.");
@@ -117,7 +119,8 @@ export default function AddStockRecord() {
                 type={
                   key === "CompanyName" ||
                   key === "IndexName" ||
-                  key === "Sector"
+                  key === "Sector" || 
+                  key === "Analyst_Rating"
                     ? "text"
                     : key === "RecordDate"
                     ? "date"

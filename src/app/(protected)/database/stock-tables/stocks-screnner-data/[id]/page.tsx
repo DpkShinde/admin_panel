@@ -30,6 +30,7 @@ export default function UpdateStocks() {
     DividendYield: null,
     DividendAmount: null,
     ROCE: null,
+    Analyst_Rating:null
   });
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -59,7 +60,7 @@ export default function UpdateStocks() {
           Low52W: data.Low52W || null,
           Sector: data.Sector || "",
           CurrentPE: data.CurrentPE || null,
-          IndexName: data.IndexName || null,
+          IndexName: data.IndexName || "",
           RecordDate: data.RecordDate
             ? new Date(data.RecordDate).toISOString().split("T")[0]
             : "",
@@ -74,6 +75,7 @@ export default function UpdateStocks() {
           DividendYield: data.DividendYield || null,
           DividendAmount: data.DividendAmount || null,
           ROCE: data.ROCE || null,
+          Analyst_Rating: data.Analyst_Rating || ""
         });
       } catch (error: any) {
         setErrorMessage(error.message);

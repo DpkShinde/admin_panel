@@ -79,7 +79,6 @@ export default function AddStock() {
 
   return (
     <Card className="max-w-4xl mx-auto">
-      <Toaster position="top-right" />
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-green-800">Add Stock</CardTitle>
       </CardHeader>

@@ -231,6 +231,9 @@ const Home = () => {
                     ROCE
                   </th>
                   <th className="border border-gray-300 px-4 py-2 text-center">
+                  Analyst Rating
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
                     Actions
                   </th>
                 </tr>
@@ -264,7 +267,7 @@ const Home = () => {
                         {record.CurrentPE}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
-                        {record.IndexName}
+                        {record.IndexName === null ? "-" : record.IndexName}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
                         {new Date(record.RecordDate).toLocaleDateString()}
@@ -301,6 +304,9 @@ const Home = () => {
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
                         {record.ROCE}%
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {record.Analyst_Rating === null ? "-" : record.Analyst_Rating }
                       </td>
                       <td className="border border-gray-300 px-4 py-2 flex justify-center space-x-2">
                         <Button

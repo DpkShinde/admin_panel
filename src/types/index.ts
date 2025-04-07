@@ -21,6 +21,7 @@ export interface StockScreenerData {
   DividendYield: number | null;
   DividendAmount: number | null;
   ROCE: number | null;
+  Analyst_Rating : string | null;
 }
 
 export interface StockScreenerValuation {

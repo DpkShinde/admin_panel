@@ -36,7 +36,7 @@ const dateColumns = [
   "2025-04-30",
 ];
 
-// Utility: Normalize keys like 'Tue Apr 01 2025 05:30:00 GMT+0530...' → '2025-04-01'
+// normalize keys
 function normalizeDateKeys(stock: any): any {
   const normalized: any = {
     stock_name: stock.stock_name,
@@ -60,15 +60,13 @@ export async function POST(req: NextRequest) {
   try {
     const requestData = await req.json();
     const { data } = requestData;
-
-    if (!data) {
+    if (!requestData) {
       return NextResponse.json(
         { success: false, message: "Request data is missing." },
         { status: 400 }
       );
     }
-
-    // 🚀 BULK INSERT
+   
     if (Array.isArray(data) && data.length > 0) {
       const query = `
         INSERT INTO stock_prices (stock_name, stock_symbol, ${dateColumns
@@ -88,6 +86,7 @@ export async function POST(req: NextRequest) {
         ];
       });
 
+      
       const [result] = await pool.execute<ResultSetHeader>(query, values);
 
       return NextResponse.json(
@@ -99,20 +98,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 🧍 SINGLE INSERT
-    if (typeof data === "object" && data !== null) {
-      const normalized = normalizeDateKeys(data);
-
-      if (!normalized.stock_name || !normalized.stock_symbol) {
-        return NextResponse.json(
-          {
-            success: false,
-            message: "Stock name and stock symbol are required.",
-          },
-          { status: 400 }
-        );
-      }
-
+    // SINGLE INSERT
+    if (typeof requestData === "object" && requestData !== null) {
       const query = `
         INSERT INTO stock_prices (stock_name, stock_symbol, ${dateColumns
           .map((d) => `\`${d}\``)
@@ -121,9 +108,9 @@ export async function POST(req: NextRequest) {
       `;
 
       const values = [
-        normalized.stock_name,
-        normalized.stock_symbol,
-        ...dateColumns.map((date) => normalized[date] ?? null),
+        requestData.stock_name,
+        requestData.stock_symbol,
+        ...dateColumns.map((date) => requestData[date] ?? null),
       ];
 
       const [result] = await pool.execute<ResultSetHeader>(query, values);
