@@ -31,6 +31,10 @@ const menuItems = [
         name: "Stock List",
         path: "/database/stock-tables/stocks_list",
       },
+      {
+        name: "Stock Prise",
+        path: "/database/stock-tables/stocks-prise"
+      }
     ],
   },
   {

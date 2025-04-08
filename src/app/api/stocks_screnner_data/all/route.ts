@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/utils/db";
-import { StockScreenerData } from "@/types";
-import { RowDataPacket } from "mysql2";
 
 export async function GET(req: NextRequest) {
   try {
