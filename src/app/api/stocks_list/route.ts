@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
       `;
       const values = [
-        company ?? null,
+        company ?? null, 
         ltp_inr ?? 0,
         change_percent ?? 0,
         market_cap_cr ?? 0,
