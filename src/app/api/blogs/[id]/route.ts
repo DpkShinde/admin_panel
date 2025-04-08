@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import pool from "@/utils/db";
-import { request } from "http";
 
 // GET request to fetch blog details by ID
 export async function GET(

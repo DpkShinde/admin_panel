@@ -62,6 +62,10 @@ const menuItems = [
   {
     name: "Subscription plans",
     path: "/database/subscription",
+  },
+  {
+    name: "IPO Details",
+    path: "/database/IPO_Details",
   }
 ];
 
