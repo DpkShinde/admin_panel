@@ -21,7 +21,7 @@ export interface StockScreenerData {
   DividendYield: number | null;
   DividendAmount: number | null;
   ROCE: number | null;
-  Analyst_Rating : string | null;
+  Analyst_Rating: string | null;
 }
 
 export interface StockScreenerValuation {
@@ -141,4 +141,139 @@ export interface StockPrise {
   "2025-04-28"?: number;
   "2025-04-29"?: number;
   "2025-04-30"?: number;
+}
+
+//for stocks details tables
+export interface Company {
+  id: number;
+  name?: string;
+  market_cap_category?: string;
+}
+
+
+
+
+//interfaces for stock details add component
+// Cash Flow Interface
+interface CashFlow {
+  fiscal_year: string;
+  cash_from_operations: number | null;
+  cash_from_investing: number | null;
+  cash_from_financing: number | null;
+  net_cash_flow: number | null;
+}
+
+// Balance Sheet Interface
+interface BalanceSheet {
+  fiscal_year: string;
+  equity_capital: number | null;
+  reserves: number | null;
+  borrowings: number | null;
+  other_liabilities: number | null;
+  total_liabilities: number | null;
+  fixed_assets: number | null;
+  cwip: number | null;
+  investments: number | null;
+  other_assets: number | null;
+  total_assets: number | null;
+}
+
+// Annual Profit & Loss Interface
+interface AnnualProfitLoss {
+  expenses: number | null;
+  net_profit: number | null;
+  fiscal_year: string;
+  sales_cr: number | null;
+  operating_profit: number | null;
+  opm_percent: number | null;
+  other_income: number | null;
+  interest: number | null;
+  depreciation: number | null;
+  profit_before_tax: number | null;
+  tax_percent: number | null;
+  eps: number | null;
+  dividend_payout: number | null;
+}
+
+// Financial Metrics Interface
+interface FinancialMetrics {
+  metric_type: string;
+  three_year: number | null;
+  five_year: number | null;
+  ten_year: number | null;
+  ttm: number | null;
+}
+
+// Financial Ratios Interface
+interface FinancialRatios {
+  fiscal_year: string;
+  debtor_days: number | null;
+  inventory_days: number | null;
+  days_payable: number | null;
+  cash_conversion_cycle: number | null;
+  working_capital_days: number | null;
+  roce_percent: number | null;
+}
+
+// Valuation Inputs Interface
+interface ValuationInputs {
+  eps_growth_rate: number | null;
+  expected_return_rate: number | null;
+  future_pe: number | null;
+  dps: number | null;
+  mos_percent: number | null;
+  base_eps: number | null;
+  mrp: number | null;
+  dp: number | null;
+  valuation_date: string;
+}
+
+// Peer Analysis Interface
+interface PeerAnalysis {
+  cmp: number | null;
+  change_percent: number | null;
+  net_sales_cr: number | null;
+  latest_eps: number | null;
+  net_profit_margin: number | null;
+}
+
+// Peer Valuations Interface
+interface PeerValuations {
+  valuation: string;
+  pe_ratio: number | null;
+  ev_ebitda: number | null;
+  peg_ratio: number | null;
+}
+
+// Quarterly Financials Interface
+interface QuarterlyFinancials {
+  quarter_id: number | null;
+  year: number | null;
+  sales_cr: number | null;
+  expenses: number | null;
+  operating_profit: number | null;
+  opm_percent: number | null;
+  other_income: number | null;
+  interest: number | null;
+  depreciation: number | null;
+  profit_before_tax: number | null;
+  tax_percent: number | null;
+  net_profit: number | null;
+  eps: number | null;
+  quarterly_financialscol: string;
+}
+
+// Form Data Interface
+export default interface FormData {
+  name: string;
+  market_cap_category: string;
+  cash_flow: CashFlow;
+  balance_sheet: BalanceSheet;
+  annual_profit_loss: AnnualProfitLoss;
+  financial_metrics: FinancialMetrics;
+  financial_ratios: FinancialRatios;
+  valuation_inputs: ValuationInputs;
+  peer_analysis: PeerAnalysis;
+  peer_valuations: PeerValuations;
+  quarterly_financials: QuarterlyFinancials;
 }

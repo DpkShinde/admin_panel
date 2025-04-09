@@ -5,9 +5,9 @@ import Link from "next/link";
 
 const stockTables = [
   {
-    name: "Stock Data",
+    name: "Companies Table",
     icon: <Table className="w-6 h-6 text-gray-700" />,
-    path: "/database/stock-details/companies-table",
+    path: "/database/stock-tables/stocks-screnner-data",
   },
   {
     name: "Stock Valuation",

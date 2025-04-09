@@ -28,7 +28,15 @@ export async function DELETE(req: Request) {
       { status: 200 }
     );
   } catch (error: any) {
-    console.error("DELETE stock error:", error);
+    if (error?.code === "ER_ROW_IS_REFERENCED_2") {
+      return NextResponse.json(
+        {
+          message:
+            "Cannot delete company because it has related records in another table.",
+        },
+        { status: 409 }
+      );
+    }
     return NextResponse.json(
       {
         success: false,

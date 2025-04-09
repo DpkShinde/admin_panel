@@ -33,8 +33,8 @@ const menuItems = [
       },
       {
         name: "Stock Prise",
-        path: "/database/stock-tables/stocks-prise"
-      }
+        path: "/database/stock-tables/stocks-prise",
+      },
     ],
   },
   {
@@ -66,7 +66,17 @@ const menuItems = [
   {
     name: "IPO Details",
     path: "/database/IPO_Details",
-  }
+  },
+  {
+    name: "Stock_Details",
+    path: "/database/stock-details",
+    subItems: [
+      {
+        name: "Companies",
+        path: "/database/stock-details/companies-table",
+      },
+    ],
+  },
 ];
 
 const NavigationSubSideBar = () => {
