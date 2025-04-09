@@ -6,9 +6,9 @@ export async function GET(
   req: NextRequest,
   context: { params: { id: string } }
 ) {
-  const {params}=context;
-  const {id}=await params;
-  const stockId =await Number(id);
+  const { params } = context;
+  const { id } = await params;
+  const stockId = await Number(id);
 
   if (isNaN(stockId)) {
     return NextResponse.json(
@@ -30,10 +30,7 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(
-      { success: true, data: rows[0] },
-      { status: 200 }
-    );
+    return NextResponse.json({ success: true, data: rows[0] }, { status: 200 });
   } catch (error: any) {
     console.error("GET company error:", error);
     return NextResponse.json(

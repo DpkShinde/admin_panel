@@ -119,15 +119,15 @@ export default function AddStockRecord() {
     if (key.includes("date") || key === "valuation_date") {
       return "date";
     }
-    
+
     // Handle year fields
     if (key === "year" || key === "fiscal_year") {
       return "text"; // Could be numeric but often formatted with text
     }
-    
+
     // Handle numeric fields
     if (
-      key.includes("percent") || 
+      key.includes("percent") ||
       key.includes("ratio") ||
       key.includes("days") ||
       key.includes("eps") ||
@@ -161,7 +161,7 @@ export default function AddStockRecord() {
     ) {
       return "number";
     }
-    
+
     // Default to text for everything else
     return "text";
   };
@@ -171,17 +171,17 @@ export default function AddStockRecord() {
     section?: string
   ) => {
     const { name, value } = e.target;
-    
+
     // Better value parsing based on type
     let parsedValue: string | number | null = value;
-    
+
     if (value === "") {
       parsedValue = null;
     } else if (e.target.type === "number" && !isNaN(Number(value))) {
       parsedValue = Number(value);
     }
 
-    setFormData((prev : any) => {
+    setFormData((prev: any) => {
       if (section) {
         return {
           ...prev,
@@ -228,15 +228,20 @@ export default function AddStockRecord() {
 
   const renderSection = (section: string, label: string, color: string) => {
     // Type assertion to get section data
-    const sectionData = formData[section as keyof typeof formData] as Record<string, any>;
-    
+    const sectionData = formData[section as keyof typeof formData] as Record<
+      string,
+      any
+    >;
+
     return (
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 className={`font-semibold text-xl mb-4 ${color} border-b pb-2`}>{label}</h2>
+        <h2 className={`font-semibold text-xl mb-4 ${color} border-b pb-2`}>
+          {label}
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
           {Object.entries(sectionData).map(([key, val]) => {
             const fieldType = getFieldType(key, val);
-            
+
             return (
               <div key={key} className="mb-2">
                 <label className="capitalize block mb-1 font-medium text-gray-700 text-sm">
@@ -264,14 +269,18 @@ export default function AddStockRecord() {
         <h1 className="text-2xl md:text-3xl font-bold mb-6 text-center text-gray-900 border-b pb-4">
           Add Stock Record
         </h1>
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Main Info */}
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 className="font-semibold text-xl mb-4 text-indigo-600 border-b pb-2">Company Information</h2>
+            <h2 className="font-semibold text-xl mb-4 text-indigo-600 border-b pb-2">
+              Company Information
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="font-medium text-gray-700 block mb-1">Company Name</label>
+                <label className="font-medium text-gray-700 block mb-1">
+                  Company Name
+                </label>
                 <input
                   type="text"
                   name="name"
@@ -282,7 +291,9 @@ export default function AddStockRecord() {
                 />
               </div>
               <div>
-                <label className="font-medium text-gray-700 block mb-1">Market Cap Category</label>
+                <label className="font-medium text-gray-700 block mb-1">
+                  Market Cap Category
+                </label>
                 <input
                   type="text"
                   name="market_cap_category"
@@ -297,17 +308,41 @@ export default function AddStockRecord() {
 
           {renderSection("cash_flow", "Cash Flow", "text-green-600")}
           {renderSection("balance_sheet", "Balance Sheet", "text-blue-600")}
-          {renderSection("annual_profit_loss", "Annual Profit & Loss", "text-red-600")}
-          {renderSection("financial_metrics", "Financial Metrics", "text-purple-600")}
-          {renderSection("financial_ratios", "Financial Ratios", "text-indigo-600")}
-          {renderSection("valuation_inputs", "Valuation Inputs", "text-yellow-700")}
+          {renderSection(
+            "annual_profit_loss",
+            "Annual Profit & Loss",
+            "text-red-600"
+          )}
+          {renderSection(
+            "financial_metrics",
+            "Financial Metrics",
+            "text-purple-600"
+          )}
+          {renderSection(
+            "financial_ratios",
+            "Financial Ratios",
+            "text-indigo-600"
+          )}
+          {renderSection(
+            "valuation_inputs",
+            "Valuation Inputs",
+            "text-yellow-700"
+          )}
           {renderSection("peer_analysis", "Peer Analysis", "text-orange-600")}
-          {renderSection("peer_valuations", "Peer Valuations", "text-green-600")}
-          {renderSection("quarterly_financials", "Quarterly Financials", "text-pink-600")}
+          {renderSection(
+            "peer_valuations",
+            "Peer Valuations",
+            "text-green-600"
+          )}
+          {renderSection(
+            "quarterly_financials",
+            "Quarterly Financials",
+            "text-pink-600"
+          )}
 
           <div className="text-center pt-4">
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="bg-indigo-600 hover:bg-indigo-700 text-white w-full sm:w-auto py-3 px-8 rounded-md shadow-md transition-all font-medium"
             >
               Add Record
