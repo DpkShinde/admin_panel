@@ -68,14 +68,8 @@ const menuItems = [
     path: "/database/IPO_Details",
   },
   {
-    name: "Stock_Details",
-    path: "/database/stock-details",
-    subItems: [
-      {
-        name: "Companies",
-        path: "/database/stock-details/companies-table",
-      },
-    ],
+    name: "Stock Details",
+    path: "/database/stock-details/companies-table",
   },
 ];
 
