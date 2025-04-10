@@ -33,8 +33,8 @@ const menuItems = [
       },
       {
         name: "Stock Prise",
-        path: "/database/stock-tables/stocks-prise"
-      }
+        path: "/database/stock-tables/stocks-prise",
+      },
     ],
   },
   {
@@ -70,7 +70,11 @@ const menuItems = [
   {
     name: "Mutual Funds",
     path: "/database/mutualfunds/",
-  }
+  },
+  {
+    name: "Stock Details",
+    path: "/database/stock-details/companies-table",
+  },
 ];
 
 const NavigationSubSideBar = () => {

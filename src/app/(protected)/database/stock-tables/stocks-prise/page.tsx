@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -16,6 +15,7 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
 
 export default function Home() {
   const [data, setData] = useState<any[]>([]);
@@ -23,6 +23,8 @@ export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [newDate, setNewDate] = useState<string>("");
+  const [showAddColumnPop, setShowAddColumnPop] = useState<boolean>(false);
   const router = useRouter();
 
   async function fetchData() {
@@ -145,6 +147,33 @@ export default function Home() {
     }
   };
 
+  const handleAddColumn = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`/api/stocks_prise_history/addCol`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ colName: newDate }),
+      });
+
+      if (!response.ok) {
+        toast.error("unable to add column");
+      }
+
+      toast.success(`Column '${newDate}' added successfully.`);
+      setNewDate("");
+      setShowAddColumnPop(false);
+      fetchData();
+    } catch (error: any) {
+      console.error("Failed to add date column:", error);
+      setError("Failed to add date column.");
+      toast.error("Failed to add date column.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Extract all unique dates from the data for dynamic column headers
   const allDates = data.reduce((acc: string[], record) => {
     Object.keys(record).forEach((key) => {
@@ -197,6 +226,48 @@ export default function Home() {
           {selectedFile && (
             <span className="text-sm text-gray-600">{selectedFile.name}</span>
           )}
+          <div>
+            {/* for add column  */}
+            <Button
+              variant={"addDate"}
+              onClick={() => {
+                setShowAddColumnPop(true);
+              }}
+            >
+              {" "}
+              + Add Date Column
+            </Button>
+            {showAddColumnPop && (
+              <div className="fixed inset-0  bg-opacity-40 backdrop-blur-sm flex justify-center items-center z-50">
+                <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-lg space-y-4">
+                  <h2 className="text-xl font-bold text-gray-800">
+                    Add New Column
+                  </h2>
+                  <Input
+                    type="date"
+                    placeholder="Column Name"
+                    value={newDate}
+                    onChange={(e) => setNewDate(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+                  />
+                  <div className="flex justify-end gap-2">
+                    <button
+                      onClick={() => setShowAddColumnPop(false)}
+                      className="px-4 py-2 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleAddColumn}
+                      className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-md shadow transition"
+                    >
+                      Add Column
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

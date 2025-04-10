@@ -6,11 +6,12 @@ export async function DELETE(req: Request) {
     const { id } = await req.json();
     const stockId = Number(id);
 
-    if (!stockId)
+    if (!stockId) {
       return NextResponse.json(
         { message: "Stock ID is required" },
         { status: 400 }
       );
+    }
 
     const query = `DELETE FROM dummy_stocks_list WHERE id = ?`;
     await pool.execute(query, [stockId]);
