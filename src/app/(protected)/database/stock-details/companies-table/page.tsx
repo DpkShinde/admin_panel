@@ -78,7 +78,7 @@ export default function CompaniesTable() {
   };
 
   const handleEdit = (id: number) => {
-    router.push(`/database/stock-tables/companies/${id}`);
+    router.push(`/database/stock-details/companies-table/${id}`);
   };
 
   // handle file upload

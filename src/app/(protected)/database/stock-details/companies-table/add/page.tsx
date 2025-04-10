@@ -121,8 +121,8 @@ export default function AddStockRecord() {
     }
 
     // Handle year fields
-    if (key === "year" || key === "fiscal_year") {
-      return "text"; // Could be numeric but often formatted with text
+    if (key === "year" || key === "fiscal_year" || key==="metric_type") {
+      return "text"; 
     }
 
     // Handle numeric fields
