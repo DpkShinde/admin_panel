@@ -134,27 +134,76 @@ export default function AddCompany() {
 
           // If response has a company key and it's an object, use it
           if (result?.company && typeof result.company === 'object') {
-            setCompany(result.company);
+            // Ensure no null values are passed to inputs
+            setCompany({
+              company_id: result.company.company_id || 0,
+              name: result.company.name || "",
+              industry: result.company.industry || "",
+              description: result.company.description || "",
+              total_yarn_varieties: result.company.total_yarn_varieties || 0,
+              active_yarn_varieties: result.company.active_yarn_varieties || 0,
+              customer_count: result.company.customer_count || 0,
+              established_year: result.company.established_year || 0,
+            });
           }
 
           if (result?.ipo_details && Array.isArray(result.ipo_details) && result.ipo_details.length > 0) {
-            setIpoDetails(result.ipo_details[0]);
+            const ipo = result.ipo_details[0];
+            setIpoDetails({
+              opening_date: ipo.opening_date ? ipo.opening_date.split('T')[0] : "",
+              closing_date: ipo.closing_date ? ipo.closing_date.split('T')[0] : "",
+              allotment_date: ipo.allotment_date ? ipo.allotment_date.split('T')[0] : "",
+              refund_date: ipo.refund_date ? ipo.refund_date.split('T')[0] : "",
+              listing_date: ipo.listing_date ? ipo.listing_date.split('T')[0] : "",
+              lot_size: ipo.lot_size || 0,
+              min_investment: ipo.min_investment || 0,
+              price_band_max: ipo.price_band_max || 0,
+              price_band_min: ipo.price_band_min || 0,
+              face_value: ipo.face_value || 0,
+              shares_offered: ipo.shares_offered || 0,
+              offer_for_sale: ipo.offer_for_sale || 0,
+              fresh_issue: ipo.fresh_issue || 0,
+              offer_to_public: ipo.offer_to_public || 0,
+              purpose: ipo.purpose || "",
+            });
           }
 
           if (result?.financials && Array.isArray(result.financials) && result.financials.length > 0) {
-            setFinancials(result.financials);
+            // Ensure no null values in financials
+            const sanitizedFinancials = result.financials.map((fin: any) => ({
+              fiscal_year: fin.fiscal_year || "",
+              revenue: fin.revenue || 0,
+              ebit: fin.ebit || 0,
+              pat: fin.pat || 0,
+              net_worth: fin.net_worth || 0,
+              total_debt: fin.total_debt || 0,
+            }));
+            setFinancials(sanitizedFinancials);
           } else {
             setFinancials([{ ...emptyFinancial }]);
           }
 
           if (result?.ratios && Array.isArray(result.ratios) && result.ratios.length > 0) {
-            setRatios(result.ratios);
+            // Ensure no null values in ratios
+            const sanitizedRatios = result.ratios.map((ratio: any) => ({
+              fiscal_year: ratio.fiscal_year || "",
+              debt_to_equity: ratio.debt_to_equity || 0,
+              ebit_margin: ratio.ebit_margin || 0,
+              roce: ratio.roce || 0,
+              roe: ratio.roe || 0,
+            }));
+            setRatios(sanitizedRatios);
           } else {
             setRatios([{ ...emptyRatios }]);
           }
 
           if (result?.subscription && Array.isArray(result.subscription) && result.subscription.length > 0) {
-            setSubscription(result.subscription);
+            // Ensure no null values in subscription
+            const sanitizedSubscription = result.subscription.map((sub: any) => ({
+              category: sub.category || "",
+              subscription_times: sub.subscription_times || 0,
+            }));
+            setSubscription(sanitizedSubscription);
           } else {
             setSubscription([{ ...emptySubscription }]);
           }
@@ -183,15 +232,18 @@ export default function AddCompany() {
     const { name, value } = e.target;
 
     // Handle price band input specially
-    if (name === "price_band") {
-      const parts = value.split("-");
-      const min = parts[0] ? Number(parts[0].trim()) : 0;
-      const max = parts[1] ? Number(parts[1].trim()) : 0;
-
+    if (name === "price_band_min") {
       setIpoDetails(prev => ({
         ...prev,
-        price_band_min: min,
-        price_band_max: max
+        price_band_min: Number(value) || 0
+      }));
+      return;
+    }
+
+    if (name === "price_band_max") {
+      setIpoDetails(prev => ({
+        ...prev,
+        price_band_max: Number(value) || 0
       }));
       return;
     }
@@ -201,7 +253,7 @@ export default function AddCompany() {
 
     setIpoDetails(prev => ({
       ...prev,
-      [stateName]: stateName.includes("date") ? value : Number(value),
+      [stateName]: stateName.includes("date") ? value : Number(value) || 0,
     }));
   };
 
@@ -229,7 +281,6 @@ export default function AddCompany() {
     setRatios(updatedRatios);
   };
 
-  // Add the missing function for handling subscription changes
   const handleSubscriptionChange = (index: number, field: keyof Subscription, value: string) => {
     const updatedSubscription = [...subscription];
 
@@ -250,7 +301,6 @@ export default function AddCompany() {
     setRatios([...ratios, { ...emptyRatios }]);
   };
 
-  // Add the missing function for adding subscriptions
   const addSubscriptions = () => {
     setSubscription([...subscription, { ...emptySubscription }]);
   };
@@ -267,7 +317,6 @@ export default function AddCompany() {
     setRatios(updatedRatios);
   };
 
-  // Add the missing function for removing subscriptions
   const removeSubscription = (index: number) => {
     const updatedSubscription = [...subscription];
     updatedSubscription.splice(index, 1);
@@ -282,7 +331,7 @@ export default function AddCompany() {
       ipo_details: ipoDetails,
       financials,
       ratios,
-      subscription // Add subscription data to the form submission
+      subscription
     };
 
     if (company.company_id) {
@@ -328,8 +377,8 @@ export default function AddCompany() {
         <h2 className="text-xl text-center font-semibold mb-4">
           {company.company_id ? "Edit Company" : "Add Company"}
         </h2>
-        <h2 className="text-xl font-semibold mb-4">Company Overview</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <h2 className="text-xl font-semibold mb-4">Company Overview</h2>
           <div className="mt-4 p-4 border rounded-md">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -402,10 +451,10 @@ export default function AddCompany() {
               <div>
                 <label className="block font-medium mb-1">Price band(Min) (₹)</label>
                 <Input
-                  name="price_band"
-                  type="text"
-                  value={`${ipoDetails.price_band_min}`}
-                  placeholder="e.g. 800-850"
+                  name="price_band_min"
+                  type="number"
+                  value={ipoDetails.price_band_min}
+                  placeholder="e.g. 800"
                   onChange={handleIpoChange}
                   required
                 />
@@ -413,10 +462,10 @@ export default function AddCompany() {
               <div>
                 <label className="block font-medium mb-1">Price band (Max) (₹)</label>
                 <Input
-                  name="price_band"
-                  type="text"
-                  value={`${ipoDetails.price_band_max}`}
-                  placeholder="e.g. 800-850"
+                  name="price_band_max"
+                  type="number"
+                  value={ipoDetails.price_band_max}
+                  placeholder="e.g. 850"
                   onChange={handleIpoChange}
                   required
                 />
