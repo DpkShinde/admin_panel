@@ -68,6 +68,10 @@ const menuItems = [
     path: "/database/IPO_Details",
   },
   {
+    name: "Mutual Funds",
+    path: "/database/mutualfunds/",
+  },
+  {
     name: "Stock Details",
     path: "/database/stock-details/companies-table",
   },
