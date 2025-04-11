@@ -9,7 +9,7 @@ export async function GET(
   try {
     const { id } = await context.params;
     const stockId = Number(id);
-    console.log(stockId)
+    console.log(stockId);
 
     if (isNaN(stockId)) {
       return NextResponse.json(
@@ -58,58 +58,33 @@ export async function PUT(
     const updateData = await req.json();
     const { stock_name, stock_symbol, ...prices } = updateData;
 
-    const allowedColumns = [
-      "stock_name",
-      "stock_symbol",
-      "2025-04-01",
-      "2025-04-02",
-      "2025-04-03",
-      "2025-04-04",
-      "2025-04-05",
-      "2025-04-06",
-      "2025-04-07",
-      "2025-04-08",
-      "2025-04-09",
-      "2025-04-10",
-      "2025-04-11",
-      "2025-04-12",
-      "2025-04-13",
-      "2025-04-14",
-      "2025-04-15",
-      "2025-04-16",
-      "2025-04-17",
-      "2025-04-18",
-      "2025-04-19",
-      "2025-04-20",
-      "2025-04-21",
-      "2025-04-22",
-      "2025-04-23",
-      "2025-04-24",
-      "2025-04-25",
-      "2025-04-26",
-      "2025-04-27",
-      "2025-04-28",
-      "2025-04-29",
-      "2025-04-30",
-    ];
+    // ✅ Fetch all column names dynamically except "id"
+    const [columnsResult]: any[] = await pool.query(`
+      SELECT COLUMN_NAME
+      FROM INFORMATION_SCHEMA.COLUMNS
+      WHERE TABLE_SCHEMA = '${process.env.DB_DATABASE_NAME}'
+        AND TABLE_NAME = 'stock_prices'
+        AND COLUMN_NAME NOT IN ('id')
+    `);
 
-    // collection fields that need to be updated
+    const allowedColumns = columnsResult.map((col: any) => col.COLUMN_NAME);
+
     const fieldsToUpdate: string[] = [];
     const values: any[] = [];
 
-    if (stock_name) {
+    if (stock_name && allowedColumns.includes("stock_name")) {
       fieldsToUpdate.push("stock_name = ?");
       values.push(stock_name);
     }
-    if (stock_symbol) {
+
+    if (stock_symbol && allowedColumns.includes("stock_symbol")) {
       fieldsToUpdate.push("stock_symbol = ?");
       values.push(stock_symbol);
     }
 
-    // Include valid date columns from request data
-    for (const [date, price] of Object.entries(prices)) {
-      if (allowedColumns.includes(date)) {
-        fieldsToUpdate.push(`\`${date}\` = ?`);
+    for (const [column, price] of Object.entries(prices)) {
+      if (allowedColumns.includes(column)) {
+        fieldsToUpdate.push(`\`${column}\` = ?`);
         values.push(price);
       }
     }
@@ -124,7 +99,7 @@ export async function PUT(
       );
     }
 
-    values.push(stockId); 
+    values.push(stockId);
 
     const updateQuery = `UPDATE stock_prices SET ${fieldsToUpdate.join(
       ", "

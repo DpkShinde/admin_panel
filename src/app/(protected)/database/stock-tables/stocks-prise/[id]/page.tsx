@@ -80,8 +80,6 @@ export default function EditStock() {
       data-slot="card"
       className="bg-white text-black flex flex-col gap-6 rounded-xl border py-6 shadow-sm max-w-4xl mx-auto p-6"
     >
-      <Toaster position="top-right" />
-
       <div className="px-6">
         <h2 className="text-2xl font-bold text-green-800">Edit Stock</h2>
         {error && <p className="text-red-600 mt-2">{error}</p>}
