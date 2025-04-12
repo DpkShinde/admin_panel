@@ -58,14 +58,17 @@ export async function PUT(
     const updateData = await req.json();
     const { stock_name, stock_symbol, ...prices } = updateData;
 
-    // ✅ Fetch all column names dynamically except "id"
-    const [columnsResult]: any[] = await pool.query(`
-      SELECT COLUMN_NAME
-      FROM INFORMATION_SCHEMA.COLUMNS
-      WHERE TABLE_SCHEMA = '${process.env.DB_DATABASE_NAME}'
-        AND TABLE_NAME = 'stock_prices'
-        AND COLUMN_NAME NOT IN ('id')
-    `);
+    //Fetch all column names dynamically except "id"
+    const [columnsResult]: any[] = await pool.query(
+      `
+        SELECT COLUMN_NAME
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = ?
+          AND TABLE_NAME = 'stock_prices'
+          AND COLUMN_NAME NOT IN ('id')
+      `,
+      [process.env.DB_DATABASE_NAME]
+    );
 
     const allowedColumns = columnsResult.map((col: any) => col.COLUMN_NAME);
 

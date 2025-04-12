@@ -8,19 +8,23 @@ export async function GET() {
       "SELECT * FROM stock_prices"
     );
 
-     if (!Array.isArray(rows) || rows.length === 0) {
-        return NextResponse.json(
-          { success: false, message: "No stocks found!" },
-          { status: 404 }
-        );
-      }
+    if (!Array.isArray(rows) || rows.length === 0) {
+      return NextResponse.json(
+        { success: false, message: "No stocks found!" },
+        { status: 404 }
+      );
+    }
 
-      //response
+    // Extract column names from the first row
+    const columnNames = Object.keys(rows[0]);
+
+    //response
     return NextResponse.json(
       {
         success: true,
         message: "Successfully retrieved all stocks",
         data: rows,
+        columns: columnNames,
       },
       { status: 200 }
     );

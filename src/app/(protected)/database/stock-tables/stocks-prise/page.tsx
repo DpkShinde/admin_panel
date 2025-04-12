@@ -16,6 +16,7 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
+import Papa from "papaparse";
 
 export default function Home() {
   const [data, setData] = useState<any[]>([]);
@@ -91,41 +92,79 @@ export default function Home() {
       toast.error("Please select a file to upload.");
       return;
     }
-
+  
     setLoading(true);
     setError(null);
-
+  
     try {
-      const rows = await readXlsxFile(file);
-      const headers = rows[0] as string[];
-
-      const jsonData = rows.slice(1).map((row) => {
-        const entry: { [key: string]: any } = {
-          stock_name: row[0],
-          stock_symbol: row[1],
-        };
-
-        // start from index 2 to map dates
-        for (let i = 2; i < headers.length; i++) {
-          const dateKey = headers[i];
-          const value = row[i];
-          if (dateKey && value !== undefined) {
-            entry[dateKey] =
-              typeof value === "number" ? value : Number(value) || 0;
-          }
+      let jsonData: any[] = [];
+  
+      if (file.name.endsWith(".csv")) {
+        // Parse CSV using PapaParse
+        const text = await file.text();
+        const parsed = Papa.parse(text, {
+          header: true,
+          skipEmptyLines: true,
+        });
+  
+        if (parsed.errors.length > 0) {
+          console.error("CSV Parsing Errors:", parsed.errors);
+          toast.error("CSV contains invalid rows. Please check the file.");
+          throw new Error(`CSV parsing failed: ${parsed.errors[0].message}`);
         }
-
-        return entry;
-      });
-
+  
+        const headers = parsed.meta.fields || [];
+  
+        if (!headers.includes("stock_name") || !headers.includes("stock_symbol")) {
+          throw new Error("Missing 'stock_name' or 'stock_symbol' headers in CSV.");
+        }
+  
+        jsonData = parsed.data.map((row: any) => {
+          const entry: { [key: string]: any } = {
+            stock_name: row.stock_name,
+            stock_symbol: row.stock_symbol,
+          };
+  
+          Object.entries(row).forEach(([key, value]) => {
+            if (key !== "stock_name" && key !== "stock_symbol") {
+              entry[key] = value === "" ? null : Number(value) || 0;
+            }
+          });
+  
+          return entry;
+        });
+  
+      } else {
+        // Parse Excel (.xlsx or .xls) using read-excel-file
+        const rows = await readXlsxFile(file);
+        const headers = rows[0] as string[];
+  
+        jsonData = rows.slice(1).map((row) => {
+          const entry: { [key: string]: any } = {
+            stock_name: row[0],
+            stock_symbol: row[1],
+          };
+  
+          for (let i = 2; i < headers.length; i++) {
+            const dateKey = headers[i];
+            const value = row[i];
+            if (dateKey && value !== undefined) {
+              entry[dateKey] =
+                typeof value === "number" ? value : Number(value) || 0;
+            }
+          }
+  
+          return entry;
+        });
+      }
+  
+      // POST to your backend API
       const res = await fetch("/api/stocks_prise_history", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data: jsonData }),
       });
-
+  
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(
@@ -134,16 +173,17 @@ export default function Home() {
           }`
         );
       }
-
+  
       toast.success("Stock data uploaded successfully.");
-      fetchData(); // Refresh data after upload
+      fetchData(); // refresh the list or table after upload
+  
     } catch (e: any) {
       console.error("Failed to upload file:", e);
       setError("Failed to upload file. Please check the file format.");
       toast.error("Failed to upload file. Please check the file format.");
     } finally {
       setLoading(false);
-      setSelectedFile(null); // Reset selected file
+      setSelectedFile(null);
     }
   };
 
