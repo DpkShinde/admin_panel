@@ -153,6 +153,9 @@ export default function Home() {
                 <th className="border border-gray-300 px-4 py-2 text-left">
                   Symbol
                 </th>
+                <th className="border border-gray-300 px-4 py-2 text-left">
+                  Market_Cap
+                </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
                   Revenue
                 </th>
@@ -191,6 +194,9 @@ export default function Home() {
                   >
                     <td className="border border-gray-300 px-4 py-2 text-left">
                       {record.Symbol}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.Market_cap}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {record.Revenue}

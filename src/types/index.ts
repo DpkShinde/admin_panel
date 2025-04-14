@@ -43,6 +43,7 @@ export interface StockScreenerValuation {
 export interface StockScreenerIncomeStatement {
   id: number;
   Symbol: string;
+  Market_cap:string;
   Revenue: number;
   RevenueGrowth: number;
   GrossProfit: number;

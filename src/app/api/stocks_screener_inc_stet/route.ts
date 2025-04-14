@@ -10,12 +10,13 @@ export async function POST(req: Request) {
     if (Array.isArray(data) && data.length > 0) {
       const query = `
         INSERT INTO stocks_screener_incomeStatement 
-        (Symbol, Revenue, RevenueGrowth, GrossProfit, OperatingIncome, NetIncome, EBITDA, EPS_Diluted, EPSDilutedGrowth) 
+        (Symbol,Market_cap, Revenue, RevenueGrowth, GrossProfit, OperatingIncome, NetIncome, EBITDA, EPS_Diluted, EPSDilutedGrowth) 
         VALUES ?
       `;
 
       const values = data.map((stock: any) => [
         stock.Symbol ?? null,
+        stock.Market_cap ?? null,
         stock.Revenue ?? 0,
         stock.RevenueGrowth ?? 0,
         stock.GrossProfit ?? 0,
@@ -41,6 +42,7 @@ export async function POST(req: Request) {
     if (typeof data === "object" && data !== null) {
       const {
         Symbol,
+        Market_cap,
         Revenue,
         RevenueGrowth,
         GrossProfit,
@@ -59,13 +61,14 @@ export async function POST(req: Request) {
       }
 
       const query = `
-        INSERT INTO stocks_screener_incomeStatement 
-        (Symbol, Revenue, RevenueGrowth, GrossProfit, OperatingIncome, NetIncome, EBITDA, EPS_Diluted, EPSDilutedGrowth) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO stocks_screener_incomestatement 
+        (Symbol,Market_cap, Revenue, RevenueGrowth, GrossProfit, OperatingIncome, NetIncome, EBITDA, EPS_Diluted, EPSDilutedGrowth) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)
       `;
 
       const values = [
         Symbol,
+        Market_cap,
         Revenue ?? 0,
         RevenueGrowth ?? 0,
         GrossProfit ?? 0,

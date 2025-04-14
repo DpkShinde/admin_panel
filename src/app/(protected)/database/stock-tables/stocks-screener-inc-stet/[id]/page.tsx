@@ -11,6 +11,7 @@ export default function UpdateStocks() {
   const [formData, setFormData] = useState<StockScreenerIncomeStatement>({
     id: 0,
     Symbol: "",
+    Market_cap:"",
     Revenue: 0,
     RevenueGrowth: 0,
     GrossProfit: 0,
@@ -42,6 +43,7 @@ export default function UpdateStocks() {
           ...prev, // Keep previous state
           id: 0,
           Symbol: data[0].Symbol,
+          Market_cap:data[0].Market_cap,
           Revenue: data[0].Revenue,
           RevenueGrowth: data[0].RevenueGrowth,
           GrossProfit: data[0].GrossProfit,
@@ -66,7 +68,7 @@ export default function UpdateStocks() {
     const { name, value } = event.target;
     setFormData({
       ...formData,
-      [name]: name === "Symbol" ? value : parseFloat(value) || 0,
+      [name]: name === "Symbol" || "Market_cap" ? value : parseFloat(value) || 0,
     });
   }
 
@@ -117,7 +119,7 @@ export default function UpdateStocks() {
               <div key={key} className="flex flex-col">
                 <label className="text-gray-700 font-semibold">{key}:</label>
                 <input
-                  type={key === "Symbol" ? "text" : "number"}
+                  type={key === "Symbol" || key === "Market_cap" ? "text" : "number"}
                   name={key}
                   value={formData[key as keyof typeof formData] ?? ""}
                   onChange={handleChange}

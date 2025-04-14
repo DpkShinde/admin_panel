@@ -52,6 +52,7 @@ export async function PUT(
 
     const {
       Symbol,
+      Market_cap,
       Revenue,
       RevenueGrowth,
       GrossProfit,
@@ -64,11 +65,12 @@ export async function PUT(
 
     await pool.query(
       `UPDATE stocks_screener_incomestatement 
-      SET Symbol = ?, Revenue = ?, RevenueGrowth = ?, GrossProfit = ?, OperatingIncome = ?, 
+      SET Symbol = ?,Market_cap = ?, Revenue = ?, RevenueGrowth = ?, GrossProfit = ?, OperatingIncome = ?, 
           NetIncome = ?, EBITDA = ?, EPS_Diluted = ?, EPSDilutedGrowth = ? 
       WHERE id = ?`,
       [
         Symbol,
+        Market_cap,
         Revenue,
         RevenueGrowth,
         GrossProfit,

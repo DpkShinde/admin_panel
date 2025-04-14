@@ -25,14 +25,16 @@ function normalizeStock(stock: any): Record<string, any> {
 export async function POST(req: NextRequest) {
   try {
     const requestData = await req.json();
-    let records: any[] = [];
-
+    const {data}=requestData;
+    let records: any[] = [];  
     // Normalize input into array
     if (Array.isArray(requestData)) {
-      records = requestData;
+      console.log("this block is executed");
+      records = data;
     } else if (typeof requestData === "object" && requestData !== null) {
       records = [requestData];
     } else {
+      console.log("hii mahi");
       return NextResponse.json(
         { success: false, message: "Invalid request format" },
         { status: 400 }

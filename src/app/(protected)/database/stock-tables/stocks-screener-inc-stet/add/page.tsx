@@ -6,6 +6,7 @@ import { Toaster, toast } from "sonner";
 export default function AddStockRecord() {
   const [formData, setFormData] = useState({
     Symbol: "",
+    Market_cap:"",
     Revenue: 0,
     RevenueGrowth: 0,
     GrossProfit: 0,
@@ -46,6 +47,7 @@ export default function AddStockRecord() {
       const data = await res.json();
       setFormData({
         Symbol: "",
+        Market_cap:"",
         Revenue: 0,
         RevenueGrowth: 0,
         GrossProfit: 0,
@@ -85,7 +87,7 @@ export default function AddStockRecord() {
             <div key={key} className="flex flex-col">
               <label className="text-gray-700 font-semibold">{key}:</label>
               <input
-                type={key === "Symbol" ? "text" : "number"}
+                type={key === "Symbol"  || key === "Market_cap" ? "text" : "number"}
                 name={key}
                 value={formData[key as keyof typeof formData]}
                 onChange={handleChange}
