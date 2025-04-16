@@ -22,6 +22,18 @@ export interface StockScreenerData {
   DividendAmount: number | null;
   ROCE: number | null;
   Analyst_Rating: string | null;
+  Market_cap_crore: number | null;
+  sector_earnings_yoy: number | null;
+  sector_earnings_yoy_per: number | null;
+  Industries: string | null;
+  NIFTY_50: string | null;
+  NIFTY_NEXT_50: string | null;
+  NIFTY_100: string | null;
+  NIFTY_200: string | null;
+  NIFTY_SMALLCAP_100: string | null;
+  NIFTY_MIDSMALLCAP_400: string | null;
+  NIFTY_LARGEMIDCAP_250: string | null;
+  NIFTY_500: string | null;
 }
 
 export interface StockScreenerValuation {
@@ -43,7 +55,7 @@ export interface StockScreenerValuation {
 export interface StockScreenerIncomeStatement {
   id: number;
   Symbol: string;
-  Market_cap:string;
+  Market_cap: string;
   Revenue: number;
   RevenueGrowth: number;
   GrossProfit: number;
@@ -150,9 +162,6 @@ export interface Company {
   name?: string;
   market_cap_category?: string;
 }
-
-
-
 
 //interfaces for stock details add component
 // Cash Flow Interface

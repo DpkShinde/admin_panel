@@ -28,7 +28,19 @@ export default function AddStockRecord() {
     DividendYield: null,
     DividendAmount: null,
     ROCE: null,
-    Analyst_Rating : null
+    Analyst_Rating: null,
+    Market_cap_crore: null,
+    sector_earnings_yoy: null,
+    sector_earnings_yoy_per: null,
+    Industries: null,
+    NIFTY_50: null,
+    NIFTY_NEXT_50: null,
+    NIFTY_100: null,
+    NIFTY_200: null,
+    NIFTY_SMALLCAP_100: null,
+    NIFTY_MIDSMALLCAP_400: null,
+    NIFTY_LARGEMIDCAP_250: null,
+    NIFTY_500: null,
   });
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -81,6 +93,18 @@ export default function AddStockRecord() {
         DividendAmount: null,
         ROCE: null,
         Analyst_Rating: null,
+        Market_cap_crore: null,
+        sector_earnings_yoy: null,
+        sector_earnings_yoy_per: null,
+        Industries: null,
+        NIFTY_50: null,
+        NIFTY_NEXT_50: null,
+        NIFTY_100: null,
+        NIFTY_200: null,
+        NIFTY_SMALLCAP_100: null,
+        NIFTY_MIDSMALLCAP_400: null,
+        NIFTY_LARGEMIDCAP_250: null,
+        NIFTY_500: null,
       });
     } catch (error: any) {
       setErrorMessage(error.message || "An unexpected error occurred.");
@@ -119,8 +143,16 @@ export default function AddStockRecord() {
                 type={
                   key === "CompanyName" ||
                   key === "IndexName" ||
-                  key === "Sector" || 
-                  key === "Analyst_Rating"
+                  key === "Sector" ||
+                  key === "Analyst_Rating" ||
+                  key === "Industries" ||
+                  key === "NIFTY_50" ||
+                  key === "NIFTY_100" ||
+                  key === "NIFTY_200" ||
+                  key === "NIFTY_SMALLCAP_100" ||
+                  key === "NIFTY_MIDSMALLCAP_400" ||
+                  key === "NIFTY_LARGEMIDCAP_250" ||
+                  key === "NIFTY_500"
                     ? "text"
                     : key === "RecordDate"
                     ? "date"

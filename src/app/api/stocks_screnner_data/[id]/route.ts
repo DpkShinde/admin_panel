@@ -63,19 +63,35 @@ export async function PUT(
       DividendYield,
       DividendAmount,
       ROCE,
-      Analyst_Rating
+      Analyst_Rating,
+      Market_cap_crore,
+      sector_earnings_yoy,
+      sector_earnings_yoy_per,
+      Industries,
+      NIFTY_50,
+      NIFTY_NEXT_50,
+      NIFTY_100,
+      NIFTY_200,
+      NIFTY_SMALLCAP_100,
+      NIFTY_MIDSMALLCAP_400,
+      NIFTY_LARGEMIDCAP_250,
+      NIFTY_500,
     } = body;
 
     const query = `
-      UPDATE stocks_screnner_data 
-      SET CompanyName = ?, LastTradedPrice = ?, ChangePercentage = ?, 
-          MarketCap = ?, High52W = ?, Low52W = ?, Sector = ?, 
-          CurrentPE = ?, IndexName = ?, RecordDate = ?, ROE = ?, PBV = ?, 
-          EV_EBITDA = ?, FiveYearSalesGrowth = ?, FiveYearProfitGrowth = ?, 
-          Volume = ?, EPS = ?, EPSGrowth = ?, DividendYield = ?, 
-          DividendAmount = ?, ROCE = ?,Analyst_Rating = ?
-      WHERE id = ?
-    `;
+    UPDATE stocks_screnner_data 
+    SET CompanyName = ?, LastTradedPrice = ?, ChangePercentage = ?, 
+        MarketCap = ?, High52W = ?, Low52W = ?, Sector = ?, 
+        CurrentPE = ?, IndexName = ?, RecordDate = ?, ROE = ?, PBV = ?, 
+        EV_EBITDA = ?, FiveYearSalesGrowth = ?, FiveYearProfitGrowth = ?, 
+        Volume = ?, EPS = ?, EPSGrowth = ?, DividendYield = ?, 
+        DividendAmount = ?, ROCE = ?, Analyst_Rating = ?, Market_cap_crore = ?, 
+        sector_earnings_yoy = ?, sector_earnings_yoy_per = ?, Industries = ?, 
+        NIFTY_50 = ?, NIFTY_NEXT_50 = ?, NIFTY_100 = ?, NIFTY_200 = ?, 
+        NIFTY_SMALLCAP_100 = ?, NIFTY_MIDSMALLCAP_400 = ?, 
+        NIFTY_LARGEMIDCAP_250 = ?, NIFTY_500 = ?
+    WHERE id = ?
+  `;
 
     const values = [
       CompanyName,
@@ -100,6 +116,18 @@ export async function PUT(
       DividendAmount,
       ROCE,
       Analyst_Rating,
+      Market_cap_crore,
+      sector_earnings_yoy,
+      sector_earnings_yoy_per,
+      Industries,
+      NIFTY_50,
+      NIFTY_NEXT_50,
+      NIFTY_100,
+      NIFTY_200,
+      NIFTY_SMALLCAP_100,
+      NIFTY_MIDSMALLCAP_400,
+      NIFTY_LARGEMIDCAP_250,
+      NIFTY_500,
       stockId,
     ];
 

@@ -30,7 +30,19 @@ export default function UpdateStocks() {
     DividendYield: null,
     DividendAmount: null,
     ROCE: null,
-    Analyst_Rating:null
+    Analyst_Rating:null,
+    Market_cap_crore:null,
+    sector_earnings_yoy:null,
+    sector_earnings_yoy_per:null,
+    Industries:"",
+    NIFTY_50:"",
+    NIFTY_NEXT_50:"",
+    NIFTY_100:"",
+    NIFTY_200:"",
+    NIFTY_SMALLCAP_100:"",
+    NIFTY_MIDSMALLCAP_400:"",
+    NIFTY_LARGEMIDCAP_250:"",
+    NIFTY_500:"",
   });
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -75,7 +87,19 @@ export default function UpdateStocks() {
           DividendYield: data.DividendYield || null,
           DividendAmount: data.DividendAmount || null,
           ROCE: data.ROCE || null,
-          Analyst_Rating: data.Analyst_Rating || ""
+          Analyst_Rating: data.Analyst_Rating || "",
+          Market_cap_crore : data.Market_cap_crore || null,
+          sector_earnings_yoy : data.sector_earnings_yoy || null,
+          sector_earnings_yoy_per : data.sector_earnings_yoy_per || null,
+          Industries : data.Industries || "",
+          NIFTY_50 : data.NIFTY_50 || "",
+          NIFTY_NEXT_50 : data.NIFTY_NEXT_50 || "",
+          NIFTY_100 : data.NIFTY_100 || "",
+          NIFTY_200 : data.NIFTY_200 || "",
+          NIFTY_SMALLCAP_100 : data.NIFTY_SMALLCAP_100 || "",
+          NIFTY_MIDSMALLCAP_400 : data.NIFTY_MIDSMALLCAP_400 || "",
+          NIFTY_LARGEMIDCAP_250 : data.NIFTY_LARGEMIDCAP_250 || "",
+          NIFTY_500 : data.NIFTY_500 || "",
         });
       } catch (error: any) {
         setErrorMessage(error.message);

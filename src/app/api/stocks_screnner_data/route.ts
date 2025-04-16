@@ -9,13 +9,16 @@ export async function POST(req: NextRequest) {
 
     if (Array.isArray(data) && data.length > 0) {
       const query = `
-        INSERT INTO stocks_screnner_data (
-          CompanyName, LastTradedPrice, ChangePercentage, MarketCap, High52W, Low52W, 
-          Sector, CurrentPE, IndexName, RecordDate, ROE, PBV, EV_EBITDA, 
-          FiveYearSalesGrowth, FiveYearProfitGrowth, Volume, EPS, EPSGrowth, 
-          DividendYield, DividendAmount, ROCE ,Analyst_Rating
-        ) VALUES ?
-      `;
+  INSERT INTO stocks_screnner_data (
+    CompanyName, LastTradedPrice, ChangePercentage, MarketCap, High52W, Low52W, 
+    Sector, CurrentPE, IndexName, RecordDate, ROE, PBV, EV_EBITDA, 
+    FiveYearSalesGrowth, FiveYearProfitGrowth, Volume, EPS, EPSGrowth, 
+    DividendYield, DividendAmount, ROCE, Analyst_Rating, Market_cap_crore,
+    sector_earnings_yoy, sector_earnings_yoy_per, Industries, NIFTY_50, 
+    NIFTY_NEXT_50, NIFTY_100, NIFTY_200, NIFTY_SMALLCAP_100, 
+    NIFTY_MIDSMALLCAP_400, NIFTY_LARGEMIDCAP_250, NIFTY_500
+  ) VALUES ?;
+`;
 
       const values = data.map((stock: any) => [
         stock.CompanyName ?? null,
@@ -40,6 +43,18 @@ export async function POST(req: NextRequest) {
         stock.DividendAmount ?? 0,
         stock.ROCE ?? 0,
         stock.Analyst_Rating ?? null,
+        stock.Market_cap_crore ?? null,
+        stock.sector_earnings_yoy ?? null,
+        stock.sector_earnings_yoy_per ?? null,
+        stock.Industries ?? null,
+        stock.NIFTY_50 ?? null,
+        stock.NIFTY_NEXT_50 ?? null,
+        stock.NIFTY_100 ?? null,
+        stock.NIFTY_200 ?? null,
+        stock.NIFTY_SMALLCAP_100 ?? null,
+        stock.NIFTY_MIDSMALLCAP_400 ?? null,
+        stock.NIFTY_LARGEMIDCAP_250 ?? null,
+        stock.NIFTY_500 ?? null,
       ]);
 
       const [result] = await pool.query<ResultSetHeader>(query, [values]);
@@ -77,6 +92,18 @@ export async function POST(req: NextRequest) {
         DividendAmount,
         ROCE,
         Analyst_Rating,
+        Market_cap_crore,
+        sector_earnings_yoy,
+        sector_earnings_yoy_per,
+        Industries,
+        NIFTY_50,
+        NIFTY_NEXT_50,
+        NIFTY_100,
+        NIFTY_200,
+        NIFTY_SMALLCAP_100,
+        NIFTY_MIDSMALLCAP_400,
+        NIFTY_LARGEMIDCAP_250,
+        NIFTY_500,
       } = data;
 
       if (!CompanyName) {
@@ -86,14 +113,9 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const query = `
-        INSERT INTO stocks_screnner_data (
-          CompanyName, LastTradedPrice, ChangePercentage, MarketCap, High52W, Low52W, 
-          Sector, CurrentPE, IndexName, RecordDate, ROE, PBV, EV_EBITDA, 
-          FiveYearSalesGrowth, FiveYearProfitGrowth, Volume, EPS, EPSGrowth, 
-          DividendYield, DividendAmount, ROCE,Analyst_Rating
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
-      `;
+      const query = `INSERT INTO stocks_screnner_data (
+        CompanyName, LastTradedPrice, ChangePercentage, MarketCap, High52W, Low52W, Sector, CurrentPE, IndexName, RecordDate, ROE, PBV, EV_EBITDA, FiveYearSalesGrowth, FiveYearProfitGrowth, Volume, EPS, EPSGrowth, DividendYield, DividendAmount, ROCE, Analyst_Rating, Market_cap_crore, sector_earnings_yoy, sector_earnings_yoy_per, Industries, NIFTY_50, NIFTY_NEXT_50, NIFTY_100, NIFTY_200, NIFTY_SMALLCAP_100, NIFTY_MIDSMALLCAP_400, NIFTY_LARGEMIDCAP_250, NIFTY_500
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
 
       const values = [
         CompanyName,
@@ -118,6 +140,18 @@ export async function POST(req: NextRequest) {
         DividendAmount ?? 0,
         ROCE ?? 0,
         Analyst_Rating ?? null,
+        Market_cap_crore ?? null,
+        sector_earnings_yoy ?? null,
+        sector_earnings_yoy_per ?? null,
+        Industries ?? null,
+        NIFTY_50 ?? null,
+        NIFTY_NEXT_50 ?? null,
+        NIFTY_100 ?? null,
+        NIFTY_200 ?? null,
+        NIFTY_SMALLCAP_100 ?? null,
+        NIFTY_MIDSMALLCAP_400 ?? null,
+        NIFTY_LARGEMIDCAP_250 ?? null,
+        NIFTY_500 ?? null,
       ];
 
       const [result] = await pool.query<ResultSetHeader>(query, values);
