@@ -21,18 +21,24 @@ export default function Home() {
   const [data, setData] = useState<SectorWeightage[]>([]);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 10;
   const router = useRouter();
 
   //handle delete stock
-  async function fetchData() {
-    const res = await fetch("/api/stocks_sector_weitage/all");
+  async function fetchData(pageNumber = 1) {
+    const res = await fetch(
+      `/api/stocks_sector_weitage/all?page=${pageNumber}&limit=${limit}`
+    );
     const result = await res.json();
     console.log(result);
     setData(result?.data);
+    setTotalPages(result?.totalPages);
   }
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(page);
+  }, [page]);
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -232,6 +238,21 @@ export default function Home() {
               )}
             </tbody>
           </table>
+        </div>
+        {/* paginetion */}
+        <div className="flex justify-between items-center mt-4">
+          <Button disabled={page === 1} onClick={() => setPage(page - 1)}>
+            Previous
+          </Button>
+          <span>
+            Page {page} of {totalPages}
+          </span>
+          <Button
+            disabled={page === totalPages}
+            onClick={() => setPage(page + 1)}
+          >
+            Next
+          </Button>
         </div>
       </div>
     </div>

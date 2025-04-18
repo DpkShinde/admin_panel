@@ -23,17 +23,23 @@ export default function Home() {
   const [data, setData] = useState<StockList[]>([]);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 10;
 
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  async function fetchData() {
+  async function fetchData(pageNumber = 1) {
     setLoading(true);
     try {
-      const res = await fetch("/api/stocks_list/all");
+      const res = await fetch(
+        `/api/stocks_list/all?page=${pageNumber}&limit=${limit}`
+      );
       const result = await res.json();
       console.log(result);
       setData(result?.data);
+      setTotalPages(result?.totalPages);
     } catch (error: any) {
       console.error("Failed to fetch data:", error);
       toast.error("Failed to load stock data.");
@@ -43,8 +49,8 @@ export default function Home() {
   }
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(page);
+  }, [page]);
 
   //handle delete record
   const handleDelete = async () => {
@@ -328,6 +334,21 @@ export default function Home() {
               )}
             </tbody>
           </table>
+        </div>
+        {/* paginetion */}
+        <div className="flex justify-between items-center mt-4">
+          <Button disabled={page === 1} onClick={() => setPage(page - 1)}>
+            Previous
+          </Button>
+          <span>
+            Page {page} of {totalPages}
+          </span>
+          <Button
+            disabled={page === totalPages}
+            onClick={() => setPage(page + 1)}
+          >
+            Next
+          </Button>
         </div>
       </div>
     </div>

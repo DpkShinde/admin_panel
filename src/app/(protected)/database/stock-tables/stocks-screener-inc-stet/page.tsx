@@ -27,18 +27,18 @@ export default function Home() {
   const router = useRouter();
 
   //to get all data
-  async function fetchData() {
+  async function fetchData(pageNumber = 1) {
     const res = await fetch(
-      `/api/stocks_screener_inc_stet/all?page=${page}&limit=${limit}`
+      `/api/stocks_screener_inc_stet/all?page=${pageNumber}&limit=${limit}`
     );
     const result = await res.json();
-    console.log(result);
     setData(result?.data);
+    setTotalPages(result?.totalPages);
   }
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(page);
+  }, [page]);
 
   //delete the record
   const handleDelete = async () => {
@@ -281,7 +281,7 @@ export default function Home() {
             </tbody>
           </table>
         </div>
-        {/* pegination */}
+        {/* paginetion */}
         <div className="flex justify-between items-center mt-4">
           <Button disabled={page === 1} onClick={() => setPage(page - 1)}>
             Previous

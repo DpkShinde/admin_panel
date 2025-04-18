@@ -33,7 +33,6 @@ const Home = () => {
     const result = await res.json();
     setData(result?.data);
     setTotalPages(result?.totalPages);
-    console.log(result);
   }
 
   useEffect(() => {
@@ -104,19 +103,19 @@ const Home = () => {
         DividendYield: row[18],
         DividendAmount: row[19],
         ROCE: row[20],
-        Analyst_Rating:row[21],
-        Market_cap_crore:row[22],
-        sector_earnings_yoy:row[23],
-        sector_earnings_yoy_per:row[24],
-        Industries:row[25],
-        NIFTY_50:row[26],
-        NIFTY_NEXT_50:row[27],
-        NIFTY_100:row[28],
-        NIFTY_200:row[29],
-        NIFTY_SMALLCAP_100:row[30],
-        NIFTY_MIDSMALLCAP_400:row[31],
-        NIFTY_LARGEMIDCAP_250:row[32],
-        NIFTY_500:row[33],
+        Analyst_Rating: row[21],
+        Market_cap_crore: row[22],
+        sector_earnings_yoy: row[23],
+        sector_earnings_yoy_per: row[24],
+        Industries: row[25],
+        NIFTY_50: row[26],
+        NIFTY_NEXT_50: row[27],
+        NIFTY_100: row[28],
+        NIFTY_200: row[29],
+        NIFTY_SMALLCAP_100: row[30],
+        NIFTY_MIDSMALLCAP_400: row[31],
+        NIFTY_LARGEMIDCAP_250: row[32],
+        NIFTY_500: row[33],
       }));
 
       //send data to backend
@@ -375,14 +374,10 @@ const Home = () => {
                           : record.sector_earnings_yoy_per}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
-                        {record.Industries === null
-                          ? "-"
-                          : record.Industries}
+                        {record.Industries === null ? "-" : record.Industries}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
-                        {record.NIFTY_50 === null
-                          ? "-"
-                          : record.NIFTY_50}
+                        {record.NIFTY_50 === null ? "-" : record.NIFTY_50}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
                         {record.NIFTY_NEXT_50 === null
@@ -390,14 +385,10 @@ const Home = () => {
                           : record.NIFTY_NEXT_50}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
-                        {record.NIFTY_100 === null
-                          ? "-"
-                          : record.NIFTY_100}
+                        {record.NIFTY_100 === null ? "-" : record.NIFTY_100}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
-                        {record.NIFTY_200 === null
-                          ? "-"
-                          : record.NIFTY_200}
+                        {record.NIFTY_200 === null ? "-" : record.NIFTY_200}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
                         {record.NIFTY_SMALLCAP_100 === null
@@ -415,9 +406,7 @@ const Home = () => {
                           : record.NIFTY_LARGEMIDCAP_250}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
-                        {record.NIFTY_500 === null
-                          ? "-"
-                          : record.NIFTY_500}
+                        {record.NIFTY_500 === null ? "-" : record.NIFTY_500}
                       </td>
                       <td className="border border-gray-300 px-4 py-2 flex justify-center space-x-2">
                         <Button
