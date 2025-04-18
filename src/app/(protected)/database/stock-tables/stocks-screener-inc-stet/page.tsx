@@ -21,11 +21,16 @@ export default function Home() {
   const [data, setData] = useState<StockScreenerIncomeStatement[]>([]);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 10;
   const router = useRouter();
 
   //to get all data
   async function fetchData() {
-    const res = await fetch("/api/stocks_screener_inc_stet/all");
+    const res = await fetch(
+      `/api/stocks_screener_inc_stet/all?page=${page}&limit=${limit}`
+    );
     const result = await res.json();
     console.log(result);
     setData(result?.data);
@@ -96,7 +101,7 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data: formattedData }),
       });
-      
+
       if (response.ok) {
         toast.success("Excel data imported successfully!");
         fetchData();
@@ -275,6 +280,21 @@ export default function Home() {
               )}
             </tbody>
           </table>
+        </div>
+        {/* pegination */}
+        <div className="flex justify-between items-center mt-4">
+          <Button disabled={page === 1} onClick={() => setPage(page - 1)}>
+            Previous
+          </Button>
+          <span>
+            Page {page} of {totalPages}
+          </span>
+          <Button
+            disabled={page === totalPages}
+            onClick={() => setPage(page + 1)}
+          >
+            Next
+          </Button>
         </div>
       </div>
     </div>

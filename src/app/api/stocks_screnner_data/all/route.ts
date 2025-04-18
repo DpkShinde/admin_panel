@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     //   `SELECT * FROM stocks_screnner_data`
     // );
 
-    return NextResponse.json(
+    return NextResponse.json( 
       { success: true, data: data, total, totalPages, currentPage: page },
       { status: 200 }
     );
