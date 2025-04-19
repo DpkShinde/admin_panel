@@ -24,18 +24,22 @@ const Home = () => {
   const [data, setData] = useState<FundDetails[]>([]);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 10;
   const router = useRouter();
 
-  async function fetchData() {
-    const res = await fetch("/api/funds/all");
+  async function fetchData(pageNumber = 1) {
+    const res = await fetch(`/api/funds/all?page=${pageNumber}&limit=${limit}`);
     const result = await res.json();
     setData(result?.data);
-    console.log(data);
+    setTotalPages(result?.totalPages);
+    // console.log(data);
   }
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(page);
+  }, [page]);
 
   // Delete record only after confirmation
   const handleDelete = async () => {
@@ -324,6 +328,21 @@ const Home = () => {
                 )}
               </tbody>
             </table>
+          </div>
+          {/* paginetion */}
+          <div className="flex justify-between items-center mt-4">
+            <Button disabled={page === 1} onClick={() => setPage(page - 1)}>
+              Previous
+            </Button>
+            <span>
+              Page {page} of {totalPages}
+            </span>
+            <Button
+              disabled={page === totalPages}
+              onClick={() => setPage(page + 1)}
+            >
+              Next
+            </Button>
           </div>
         </div>
       </div>
