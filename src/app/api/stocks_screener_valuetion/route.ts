@@ -10,13 +10,14 @@ export async function POST(req: NextRequest) {
     if (Array.isArray(data) && data.length > 0) {
       const query = `
         INSERT INTO stocks_screnner_valuetion
-        (Symbol, MarketCap, MarketCapPercentage, PERatio, PSRatio, PBRatio, PFCFRatio,
-        Price, EnterpriseValue, EVRevenue, EVEBIT, EVEBITDA)
+        (Symbol,sector, MarketCap, MarketCapPercentage, PERatio, PSRatio, PBRatio, PFCFRatio,
+        Price, EnterpriseValue, EVRevenue, EVEBIT, EVEBITDA,Market_cap_crore,perf, \`index\`,market_cap_category)
         VALUES ?
       `;
 
       const values = data.map((entry: any) => [
         entry.Symbol ?? null,
+        entry.sector ?? null,
         entry.MarketCap ?? 0,
         entry.MarketCapPercentage ?? 0,
         entry.PERatio ?? 0,
@@ -28,6 +29,10 @@ export async function POST(req: NextRequest) {
         entry.EVRevenue ?? 0,
         entry.EVEBIT ?? 0,
         entry.EVEBITDA ?? 0,
+        entry.Market_cap_crore ?? 0,
+        entry.perf ?? null,
+        entry.index ?? null,
+        entry.market_cap_category ?? null,
       ]);
 
       const [result] = await pool.query<ResultSetHeader>(query, [values]);
@@ -41,9 +46,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    console.log(data)
+
     if (typeof data === "object" && data !== null) {
       const {
         Symbol,
+        sector,
         MarketCap,
         MarketCapPercentage,
         PERatio,
@@ -55,6 +63,10 @@ export async function POST(req: NextRequest) {
         EVRevenue,
         EVEBIT,
         EVEBITDA,
+        Market_cap_crore,
+        perf,
+        index,
+        market_cap_category,
       } = data;
 
       if (!Symbol) {
@@ -66,13 +78,14 @@ export async function POST(req: NextRequest) {
 
       const query = `
         INSERT INTO stocks_screnner_valuetion
-        (Symbol, MarketCap, MarketCapPercentage, PERatio, PSRatio, PBRatio, PFCFRatio,
-        Price, EnterpriseValue, EVRevenue, EVEBIT, EVEBITDA)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (Symbol,sector, MarketCap, MarketCapPercentage, PERatio, PSRatio, PBRatio, PFCFRatio,
+        Price, EnterpriseValue, EVRevenue, EVEBIT, EVEBITDA,Market_cap_crore,perf, \`index\`,market_cap_category)
+        VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?)
       `;
 
       const values = [
         Symbol,
+        sector,
         MarketCap ?? 0,
         MarketCapPercentage ?? 0,
         PERatio ?? 0,
@@ -84,6 +97,10 @@ export async function POST(req: NextRequest) {
         EVRevenue ?? 0,
         EVEBIT ?? 0,
         EVEBITDA ?? 0,
+        Market_cap_crore ?? 0,
+        perf ?? null,
+        index ?? null,
+        market_cap_category ?? null,
       ];
 
       const [result] = await pool.query<ResultSetHeader>(query, values);

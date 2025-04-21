@@ -1,43 +1,39 @@
-import authConfig from "../auth.config";
-
-import NextAuth from "next-auth";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 import {
   DEFAULT_LOGIN_REDIRECT,
   apiAuthPrefix,
   authRoutes,
   publicRoutes,
 } from "../routes";
-const { auth } = NextAuth(authConfig);
 
-export default auth((req): any => {
-  console.log("object");
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-  const { nextUrl } = req;
-  const isLoggedIn = true;
+  // Get token from request
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const isLoggedIn = !!token;
 
-  const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
+  const isApiAuthRoute = pathname.startsWith(apiAuthPrefix);
+  const isPublicRoute = publicRoutes.includes(pathname);
+  const isAuthRoute = authRoutes.includes(pathname);
 
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+  // Allow API auth routes (like /api/auth/signin, etc.)
+  if (isApiAuthRoute) return NextResponse.next();
 
-  const isAuthRoutes = authRoutes.includes(nextUrl.pathname);
-
-  if (isApiAuthRoute) {
-    return null;
+  // If already logged in and trying to access login/register, redirect to dashboard
+  if (isAuthRoute && isLoggedIn) {
+    return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, req.url));
   }
 
-  if (isAuthRoutes) {
-    if (isLoggedIn) {
-      // return Response.redirect(new URL("/dashboard", nextUrl));
-      return null;
-    }
-  }
-
+  // If not logged in and trying to access a protected route, redirect to login
   if (!isLoggedIn && !isPublicRoute) {
-    return Response.redirect(new URL("/", nextUrl));
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  return null;
-});
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],

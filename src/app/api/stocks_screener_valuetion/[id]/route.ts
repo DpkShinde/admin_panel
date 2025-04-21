@@ -43,6 +43,7 @@ export async function PUT(
     const body = await req.json();
     const {
       Symbol,
+      sector,
       MarketCap,
       MarketCapPercentage,
       PERatio,
@@ -54,18 +55,24 @@ export async function PUT(
       EVRevenue,
       EVEBIT,
       EVEBITDA,
+      Market_cap_crore,
+      perf,
+      index,
+      market_cap_category,
     } = body;
+  
 
     const query = `
       UPDATE stocks_screnner_valuetion 
-      SET Symbol=?, MarketCap=?, MarketCapPercentage=?, PERatio=?, PSRatio=?, 
-          PBRatio=?, PFCFRatio=?, Price=?, EnterpriseValue=?, EVRevenue=?, 
-          EVEBIT=?, EVEBITDA=?
-      WHERE id=?
-    `;
+      SET Symbol=?,sector=?, MarketCap=?, MarketCapPercentage=?, PERatio = ?, PSRatio = ?, 
+          PBRatio=?, PFCFRatio=?, Price=?, EnterpriseValue=?, EVRevenue = ?, 
+          EVEBIT=?, EVEBITDA=?,  Market_cap_crore = ?, perf = ?, \`index\` = ?, market_cap_category = ?
+         WHERE id=?
+         `;
 
     const values = [
       Symbol,
+      sector,
       MarketCap,
       MarketCapPercentage,
       PERatio,
@@ -77,6 +84,10 @@ export async function PUT(
       EVRevenue,
       EVEBIT,
       EVEBITDA,
+      Market_cap_crore,
+      perf,
+      index,
+      market_cap_category,
       stockId,
     ];
 

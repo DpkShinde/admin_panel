@@ -11,7 +11,8 @@ export default function UpdateStocks() {
   const [formData, setFormData] = useState<StockScreenerIncomeStatement>({
     id: 0,
     Symbol: "",
-    Market_cap:"",
+    Market_cap: "",
+    sector: "",
     Revenue: 0,
     RevenueGrowth: 0,
     GrossProfit: 0,
@@ -20,6 +21,19 @@ export default function UpdateStocks() {
     EBITDA: 0,
     EPS_Diluted: 0,
     EPSDilutedGrowth: 0,
+    Market_cap_crore: 0,
+    pToE: 0,
+    pToB: 0,
+    peg: 0,
+    pToS: 0,
+    pToCF: 0,
+    price: 0,
+    ev: 0,
+    evEbitda: 0,
+    evSales: 0,
+    evEbit: 0,
+    index: "",
+    marketCapCategory: "",
   });
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -28,7 +42,7 @@ export default function UpdateStocks() {
   // Fetch stock details if ID is available
   useEffect(() => {
     if (!id) return;
-   
+
     async function fetchStockData() {
       try {
         const res = await fetch(`/api/stocks_screener_inc_stet/${id}`, {
@@ -43,7 +57,8 @@ export default function UpdateStocks() {
           ...prev, // Keep previous state
           id: 0,
           Symbol: data[0].Symbol,
-          Market_cap:data[0].Market_cap,
+          Market_cap: data[0].Market_cap,
+          sector: data[0].sector,
           Revenue: data[0].Revenue,
           RevenueGrowth: data[0].RevenueGrowth,
           GrossProfit: data[0].GrossProfit,
@@ -52,6 +67,19 @@ export default function UpdateStocks() {
           EBITDA: data[0].EBITDA,
           EPS_Diluted: data[0].EPS_Diluted,
           EPSDilutedGrowth: data[0].EPSDilutedGrowth,
+          Market_cap_crore: data[0].Market_cap_crore,
+          pToE: data[0].pToE,
+          pToB: data[0].pToB,
+          peg: data[0].peg,
+          pToS: data[0].pToS,
+          pToCF: data[0].pToCF,
+          price: data[0].price,
+          ev: data[0].ev,
+          evEbitda: data[0].evEbitda,
+          evSales: data[0].evSales,
+          evEbit: data[0].evEbit,
+          index: data[0].index,
+          marketCapCategory: data[0].marketCapCategory,
         }));
       } catch (error: any) {
         setErrorMessage(error.message);
@@ -68,7 +96,14 @@ export default function UpdateStocks() {
     const { name, value } = event.target;
     setFormData({
       ...formData,
-      [name]: name === "Symbol" || "Market_cap" ? value : parseFloat(value) || 0,
+      [name]:
+        name === "Symbol" ||
+        "Market_cap" ||
+        "sector" ||
+        "index" ||
+        "marketCapCategory"
+          ? value
+          : parseFloat(value) || 0,
     });
   }
 
@@ -119,7 +154,15 @@ export default function UpdateStocks() {
               <div key={key} className="flex flex-col">
                 <label className="text-gray-700 font-semibold">{key}:</label>
                 <input
-                  type={key === "Symbol" || key === "Market_cap" ? "text" : "number"}
+                  type={
+                    key === "Symbol" ||
+                    key === "Market_cap" ||
+                    key === "sector" ||
+                    key === "index" ||
+                    key === "marketCapCategory"
+                      ? "text"
+                      : "number"
+                  }
                   name={key}
                   value={formData[key as keyof typeof formData] ?? ""}
                   onChange={handleChange}

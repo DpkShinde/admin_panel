@@ -1,16 +1,17 @@
-// An Array Of Routes That are accessible to the public
-// This routes do not require authentication
-export const publicRoutes = ["/"];
+// routes.ts
 
-// An Array Of Routes That are used for authentication
-// These routes will redirect logged in user to /settings
+// Routes accessible without auth
+export const publicRoutes = ["/login"];
 
-export const authRoutes = ["/dashboard", "/tables"];
+// Routes used specifically for auth (like login, register pages)
+// If the user is already logged in, redirect them away from these
+export const authRoutes = ["/login"];
 
-// Prefix for api authentication routes
-// routes that start with this prefix are used for api authentication purposes
+// Routes that need to be protected (starting with these)
+export const protectedRoutesPrefix = ["/dashboard", "/database", "/employees"];
 
+// API auth route prefix
 export const apiAuthPrefix = "/api/auth";
 
-//The default redirect path after loggin in
+// Where to send the user after login
 export const DEFAULT_LOGIN_REDIRECT = "/dashboard";

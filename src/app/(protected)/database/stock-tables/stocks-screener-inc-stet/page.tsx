@@ -161,6 +161,9 @@ export default function Home() {
                 <th className="border border-gray-300 px-4 py-2 text-left">
                   Market_Cap
                 </th>
+                <th className="border border-gray-300 px-4 py-2 text-left">
+                  Sector
+                </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
                   Revenue
                 </th>
@@ -186,6 +189,45 @@ export default function Home() {
                   EPS Diluted Growth
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
+                  Market_cap_crore
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  pToE
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  pToB
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  peg
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  pToS
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  pToCF
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  price
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  ev
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  evEbitda
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  evSales
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  evEbit
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  index
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  marketCapCategory
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
                   Actions
                 </th>
               </tr>
@@ -202,6 +244,9 @@ export default function Home() {
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {record.Market_cap}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.sector}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {record.Revenue}
@@ -227,6 +272,46 @@ export default function Home() {
                     <td className="border border-gray-300 px-4 py-2">
                       {record.EPSDilutedGrowth}
                     </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.Market_cap_crore}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.pToE}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.pToB}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.peg}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.pToS}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.pToCF}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.price}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.ev}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.evEbitda}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.evSales}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.evEbit}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.index}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.marketCapCategory}
+                    </td>
+                    {/* Actions Column */}
                     <td className="border border-gray-300 px-4 py-2">
                       <div className="flex justify-center space-x-2">
                         <Button

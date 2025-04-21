@@ -6,7 +6,8 @@ import { Toaster, toast } from "sonner";
 export default function AddStockRecord() {
   const [formData, setFormData] = useState({
     Symbol: "",
-    Market_cap:"",
+    Market_cap: "",
+    sector: "",
     Revenue: 0,
     RevenueGrowth: 0,
     GrossProfit: 0,
@@ -15,6 +16,19 @@ export default function AddStockRecord() {
     EBITDA: 0,
     EPS_Diluted: 0,
     EPSDilutedGrowth: 0,
+    Market_cap_crore: 0,
+    pToE: 0,
+    pToB: 0,
+    peg: 0,
+    pToS: 0,
+    pToCF: 0,
+    price: 0,
+    ev: 0,
+    evEbitda: 0,
+    evSales: 0,
+    evEbit: 0,
+    index: "",
+    marketCapCategory: "",
   });
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -32,7 +46,7 @@ export default function AddStockRecord() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({data : formData}),
+        body: JSON.stringify({ data: formData }),
       });
 
       if (!res.ok) {
@@ -47,7 +61,8 @@ export default function AddStockRecord() {
       const data = await res.json();
       setFormData({
         Symbol: "",
-        Market_cap:"",
+        Market_cap: "",
+        sector: "",
         Revenue: 0,
         RevenueGrowth: 0,
         GrossProfit: 0,
@@ -56,6 +71,19 @@ export default function AddStockRecord() {
         EBITDA: 0,
         EPS_Diluted: 0,
         EPSDilutedGrowth: 0,
+        Market_cap_crore: 0,
+        pToE: 0,
+        pToB: 0,
+        peg: 0,
+        pToS: 0,
+        pToCF: 0,
+        price: 0,
+        ev: 0,
+        evEbitda: 0,
+        evSales: 0,
+        evEbit: 0,
+        index: "",
+        marketCapCategory: "",
       });
     } catch (error: any) {
       setErrorMessage(error.message || "An unexpected error occurred.");
@@ -87,7 +115,15 @@ export default function AddStockRecord() {
             <div key={key} className="flex flex-col">
               <label className="text-gray-700 font-semibold">{key}:</label>
               <input
-                type={key === "Symbol"  || key === "Market_cap" ? "text" : "number"}
+                type={
+                  key === "Symbol" ||
+                  key === "Market_cap" ||
+                  key === "sector" ||
+                  key === "index" ||
+                  key === "marketCapCategory"
+                    ? "text"
+                    : "number"
+                }
                 name={key}
                 value={formData[key as keyof typeof formData]}
                 onChange={handleChange}

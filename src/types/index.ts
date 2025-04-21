@@ -39,6 +39,7 @@ export interface StockScreenerData {
 export interface StockScreenerValuation {
   id: number;
   Symbol: string;
+  sector: string;
   MarketCap: number;
   MarketCapPercentage: number;
   PERatio: number;
@@ -50,12 +51,17 @@ export interface StockScreenerValuation {
   EVRevenue: number;
   EVEBIT: number;
   EVEBITDA: number;
+  Market_cap_crore: number;
+  perf: string;
+  index: string;
+  market_cap_category: string;
 }
 
 export interface StockScreenerIncomeStatement {
   id: number;
   Symbol: string;
   Market_cap: string;
+  sector: string;
   Revenue: number;
   RevenueGrowth: number;
   GrossProfit: number;
@@ -64,6 +70,19 @@ export interface StockScreenerIncomeStatement {
   EBITDA: number;
   EPS_Diluted: number;
   EPSDilutedGrowth: number;
+  Market_cap_crore: number;
+  pToE: number;
+  pToB: number;
+  peg: number;
+  pToS: number;
+  pToCF: number;
+  price: number;
+  ev: number;
+  evEbitda: number;
+  evSales: number;
+  evEbit: number;
+  index: string;
+  marketCapCategory: string;
 }
 
 export interface SectorWeightage {

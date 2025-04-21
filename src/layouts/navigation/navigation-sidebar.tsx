@@ -3,8 +3,11 @@
 import NavigationAction from "./navigtaion-action";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Database, LayoutDashboard } from "lucide-react";
+import { Database, LayoutDashboard, LogOut, LogOutIcon } from "lucide-react";
 import NavigationItem from "./navigation-item";
+import { signOut } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { ActionTooltip } from "@/components/action-tooltip";
 
 const routes = [
   { name: "Dashboard", path: "/dashboard", Icon: LayoutDashboard },
@@ -30,6 +33,18 @@ const NavigationSidebar = () => {
           </div>
         ))}
       </ScrollArea>
+      {/* Logout Button */}
+      <div className="mt-auto pb-3 w-full px-3">
+        <ActionTooltip side="right" align="center" label="Logout">
+          <Button
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className="bg-red-700 text-white w-full hover:bg-red-600 transition dark:bg-red-800 dark:hover:bg-red-700"
+            variant="destructive"
+          >
+            <LogOutIcon className="h-4 w-4 mr-2" />
+          </Button>
+        </ActionTooltip>
+      </div>
     </div>
   );
 };

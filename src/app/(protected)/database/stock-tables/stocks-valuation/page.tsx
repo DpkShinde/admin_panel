@@ -28,7 +28,9 @@ export default function Home() {
   const router = useRouter();
 
   async function fetchData(pageNumber = 1) {
-    const res = await fetch(`/api/stocks_screener_valuetion/all?page=${pageNumber}&limit=${limit}`);
+    const res = await fetch(
+      `/api/stocks_screener_valuetion/all?page=${pageNumber}&limit=${limit}`
+    );
     const result = await res.json();
     console.log(result);
     setData(result?.data);
@@ -83,6 +85,7 @@ export default function Home() {
       //convert excel row to api format
       const formattedData = rows.slice(1).map((row) => ({
         Symbol: row[0],
+        sector: row[1],
         MarketCap: row[1],
         MarketCapPercentage: row[2],
         PERatio: row[3],
@@ -95,6 +98,10 @@ export default function Home() {
         EVRevenue: row[10],
         EVEBIT: row[11],
         EVEBITDA: row[12],
+        Market_cap_crore: row[13],
+        perf: row[14],
+        index: row[15], 
+        market_cap_category: row[16],
       }));
 
       //send data to backend
@@ -161,6 +168,9 @@ export default function Home() {
                   Symbol
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-left">
+                  Sector
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-left">
                   Market Cap
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
@@ -194,6 +204,18 @@ export default function Home() {
                   EVEBITDA
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
+                  Market_cap_crore
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  perf
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  index
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  market_cap_category
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
                   Actions
                 </th>
               </tr>
@@ -207,6 +229,9 @@ export default function Home() {
                   >
                     <td className="border border-gray-300 px-4 py-2 text-left">
                       {record.Symbol}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2 text-left">
+                      {record.sector ? record.sector : "-"}
                     </td>
                     <td className="border border-gray-300 px-4 py-2 text-left">
                       {record.MarketCap}
@@ -240,6 +265,18 @@ export default function Home() {
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {record.EVEBITDA}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.Market_cap_crore}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.perf}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.index}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.market_cap_category}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       <div className="flex justify-center space-x-2">
@@ -297,19 +334,19 @@ export default function Home() {
         </div>
         {/* paginetion */}
         <div className="flex justify-between items-center mt-4">
-            <Button disabled={page === 1} onClick={() => setPage(page - 1)}>
-              Previous
-            </Button>
-            <span>
-              Page {page} of {totalPages}
-            </span>
-            <Button
-              disabled={page === totalPages}
-              onClick={() => setPage(page + 1)}
-            >
-              Next
-            </Button>
-          </div>
+          <Button disabled={page === 1} onClick={() => setPage(page - 1)}>
+            Previous
+          </Button>
+          <span>
+            Page {page} of {totalPages}
+          </span>
+          <Button
+            disabled={page === totalPages}
+            onClick={() => setPage(page + 1)}
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );

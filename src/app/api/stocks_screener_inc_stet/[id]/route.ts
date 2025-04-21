@@ -53,6 +53,7 @@ export async function PUT(
     const {
       Symbol,
       Market_cap,
+      sector,
       Revenue,
       RevenueGrowth,
       GrossProfit,
@@ -61,16 +62,30 @@ export async function PUT(
       EBITDA,
       EPS_Diluted,
       EPSDilutedGrowth,
+      Market_cap_crore,
+      pToE,
+      pToB,
+      peg,
+      pToS,
+      pToCF,
+      price,
+      ev,
+      evEbitda,
+      evSales,
+      evEbit,
+      index,
+      marketCapCategory,
     } = await req.json();
 
     await pool.query(
-      `UPDATE stocks_screener_incomestatement 
-      SET Symbol = ?,Market_cap = ?, Revenue = ?, RevenueGrowth = ?, GrossProfit = ?, OperatingIncome = ?, 
-          NetIncome = ?, EBITDA = ?, EPS_Diluted = ?, EPSDilutedGrowth = ? 
-      WHERE id = ?`,
+      `UPDATE stocks_screener_incomestatement SET Symbol = ?, Market_cap = ?, sector = ?, Revenue = ?, RevenueGrowth = ?, 
+   GrossProfit = ?, OperatingIncome = ?, NetIncome = ?, EBITDA = ?, EPS_Diluted = ?, EPSDilutedGrowth = ?, 
+   Market_cap_crore = ?, pToE = ?, pToB = ?, peg = ?, pToS = ?, pToCF = ?, price = ?, ev = ?, evEbitda = ?, 
+   evSales = ?, evEbit = ?, \`index\` = ?, marketCapCategory = ? WHERE id = ?`,
       [
         Symbol,
         Market_cap,
+        sector,
         Revenue,
         RevenueGrowth,
         GrossProfit,
@@ -79,6 +94,19 @@ export async function PUT(
         EBITDA,
         EPS_Diluted,
         EPSDilutedGrowth,
+        Market_cap_crore,
+        pToE,
+        pToB,
+        peg,
+        pToS,
+        pToCF,
+        price,
+        ev,
+        evEbitda,
+        evSales,
+        evEbit,
+        index,
+        marketCapCategory,
         stockId,
       ]
     );
@@ -87,7 +115,7 @@ export async function PUT(
       { message: "Stock updated successfully!" },
       { status: 200 }
     );
-  } catch (error : any) {
+  } catch (error: any) {
     return NextResponse.json(
       { message: "Server error", error },
       { status: 500 }

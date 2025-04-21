@@ -6,6 +6,7 @@ import { Toaster, toast } from "sonner";
 export default function AddStockRecord() {
   const [formData, setFormData] = useState({
     Symbol: "",
+    sector: "",
     MarketCap: 0,
     MarketCapPercentage: 0,
     PERatio: 0,
@@ -17,6 +18,10 @@ export default function AddStockRecord() {
     EVRevenue: 0,
     EVEBIT: 0,
     EVEBITDA: 0,
+    Market_cap_crore: 0,
+    perf: "",
+    index: "",
+    market_cap_category: "",
   });
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -49,6 +54,7 @@ export default function AddStockRecord() {
       const data = await res.json();
       setFormData({
         Symbol: "",
+        sector: "",
         MarketCap: 0,
         MarketCapPercentage: 0,
         PERatio: 0,
@@ -60,6 +66,10 @@ export default function AddStockRecord() {
         EVRevenue: 0,
         EVEBIT: 0,
         EVEBITDA: 0,
+        Market_cap_crore: 0,
+        perf: "",
+        index: "",
+        market_cap_category: "",
       });
     } catch (error: any) {
       setErrorMessage(error.message || "An unexpected error occurred.");
@@ -91,7 +101,15 @@ export default function AddStockRecord() {
             <div key={key} className="flex flex-col">
               <label className="text-gray-700 font-semibold">{key}:</label>
               <input
-                type={key === "Symbol" ? "text" : "number"}
+                type={
+                  key === "Symbol" ||
+                  "sector" ||
+                  "index" ||
+                  "perf" ||
+                  "market_cap_category"
+                    ? "text"
+                    : "number"
+                }
                 name={key}
                 value={formData[key as keyof typeof formData]}
                 onChange={handleChange}

@@ -11,6 +11,7 @@ export default function UpdateStocks() {
   const [formData, setFormData] = useState<StockScreenerValuation>({
     id: 0,
     Symbol: "",
+    sector: "",
     MarketCap: 0,
     MarketCapPercentage: 0,
     PERatio: 0,
@@ -22,6 +23,10 @@ export default function UpdateStocks() {
     EVRevenue: 0,
     EVEBIT: 0,
     EVEBITDA: 0,
+    Market_cap_crore: 0,
+    perf: "",
+    index: "",
+    market_cap_category: "",
   });
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -44,6 +49,7 @@ export default function UpdateStocks() {
           ...prev, // Keep previous state
           id: data[0]?.id || 0, // Ensure no errors if `data[0]` is undefined
           Symbol: data?.Symbol || "",
+          sector: data?.sector || "",
           MarketCap: parseFloat(data?.MarketCap) || 0,
           MarketCapPercentage: parseFloat(data?.MarketCapPercentage) || 0,
           PERatio: parseFloat(data?.PERatio) || 0,
@@ -55,6 +61,10 @@ export default function UpdateStocks() {
           EVRevenue: parseFloat(data?.EVRevenue) || 0,
           EVEBIT: parseFloat(data?.EVEBIT) || 0,
           EVEBITDA: parseFloat(data?.EVEBITDA) || 0,
+          Market_cap_crore: parseFloat(data?.Market_cap_crore) || 0,
+          perf: data?.perf || "",
+          index: data?.index || "",
+          market_cap_category: data?.market_cap_category || "",
         }));
       } catch (error: any) {
         setErrorMessage(error.message);
@@ -71,7 +81,14 @@ export default function UpdateStocks() {
     const { name, value } = event.target;
     setFormData({
       ...formData,
-      [name]: name === "Symbol" ? value : parseFloat(value) || 0,
+      [name]:
+        name === "Symbol" ||
+        "sector" ||
+        "perf" ||
+        "index" ||
+        "market_cap_category"
+          ? value
+          : parseFloat(value) || 0,
     });
   }
 
@@ -122,7 +139,15 @@ export default function UpdateStocks() {
               <div key={key} className="flex flex-col">
                 <label className="text-gray-700 font-semibold">{key}:</label>
                 <input
-                  type={key === "Symbol" ? "text" : "number"}
+                  type={
+                    key === "Symbol" ||
+                    "sector" ||
+                    "index" ||
+                    "perf" ||
+                    "market_cap_category"
+                      ? "text"
+                      : "number"
+                  }
                   name={key}
                   value={formData[key as keyof typeof formData] ?? ""}
                   onChange={handleChange}
