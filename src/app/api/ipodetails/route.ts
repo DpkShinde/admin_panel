@@ -10,20 +10,30 @@ export async function GET() {
   } catch (error: unknown) {
     console.error("Error fetching IPOs:", error);
     return NextResponse.json(
-      { error: "Error fetching IPOs", details: error instanceof Error ? error.message : "Unknown error" },
+      {
+        error: "Error fetching IPOs",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 }
     );
   }
 }
 
 export async function POST(req: Request) {
-  const body = await req.json(); 
-  const { company, ipo_details, financials, ratios, subscription } = body;
+  const body = await req.json();
+  const {
+    company,
+    ipo_details,
+    financials,
+    ratios,
+    subscription,
+    company_summary,
+  } = body;
   let connection;
 
   try {
     connection = await pool.getConnection();
-    await connection.beginTransaction(); 
+    await connection.beginTransaction();
     const [companyResult] = await connection.query<ResultSetHeader>(
       `INSERT INTO IPO_Details_db.company 
        (name, industry, description, total_yarn_varieties, active_yarn_varieties, 
@@ -36,7 +46,7 @@ export async function POST(req: Request) {
         company.total_yarn_varieties,
         company.active_yarn_varieties,
         company.customer_count,
-        company.established_year
+        company.established_year,
       ]
     );
 
@@ -66,7 +76,7 @@ export async function POST(req: Request) {
         ipo_details.offer_for_sale,
         ipo_details.fresh_issue,
         ipo_details.offer_to_public,
-        ipo_details.purpose
+        ipo_details.purpose,
       ]
     );
 
@@ -84,7 +94,7 @@ export async function POST(req: Request) {
           financial.ebit,
           financial.pat,
           financial.net_worth,
-          financial.total_debt
+          financial.total_debt,
         ]
       );
     }
@@ -102,7 +112,7 @@ export async function POST(req: Request) {
           ratio.debt_to_equity,
           ratio.ebit_margin,
           ratio.roce,
-          ratio.roe
+          ratio.roe,
         ]
       );
     }
@@ -114,33 +124,56 @@ export async function POST(req: Request) {
          (company_id, category, subscription_times) 
          VALUES (?, ?, ?)`,
 
+        [company_id, sub.category, sub.subscription_times]
+      );
+    }
+
+    // 6. Insert into company summary
+    for (const summary of company_summary) {
+      await connection.query<ResultSetHeader>(
+        `INSERT INTO IPO_Details_db.company_summary 
+         (company_id,core_strengths,limitations,Quality,Growth,valuation,\`corporation&enterprise\`,administration,financial_performance,valuations,recommendations)
+         VALUES (?,?,?,?,?,?,?,?,?,?,?)
+        `,
         [
           company_id,
-          sub.category,
-          sub.subscription_times
+          summary.core_strengths,
+          summary.limitations,
+          summary.Quality,
+          summary.Growth,
+          summary.valuation,
+          summary["corporation&enterprise"],
+          summary.administration,
+          summary.financial_performance,
+          summary.valuations,
+          summary.recommendations,
         ]
       );
     }
 
     await connection.commit();
-    connection.release(); 
+    connection.release();
 
-    return NextResponse.json({
-      success: true,
-      message: "Company and IPO details added successfully",
-      company_id
-    }, { status: 201 });
-
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Company and IPO details added successfully",
+        company_id,
+      },
+      { status: 201 }
+    );
   } catch (error: unknown) {
     if (connection) await connection.rollback();
     console.error("Error adding company data:", error);
 
-    return NextResponse.json({
-      success: false,
-      message: "Failed to add company and IPO details",
-      error: error instanceof Error ? error.message : "Unknown error"
-    }, { status: 500 });
-
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to add company and IPO details",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 }
+    );
   } finally {
     if (connection) connection.release();
   }

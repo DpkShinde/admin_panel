@@ -10,7 +10,7 @@ import {
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-
+  console.log(req.nextUrl)
   // Get token from request
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const isLoggedIn = !!token;
@@ -25,6 +25,7 @@ export async function middleware(req: NextRequest) {
 
   // If already logged in and trying to access login/register, redirect to dashboard
   if (isAuthRoute && isLoggedIn) {
+    console.log(req.url)
     return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, req.url));
   }
 
