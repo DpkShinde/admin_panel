@@ -10,7 +10,7 @@ const authConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // console.log('Received credentials:', credentials);
+        console.log('Received credentials:', credentials);
         if (
           credentials?.username === process.env.USER_NAME &&
           credentials?.password === process.env.PASSWORD
@@ -29,7 +29,7 @@ const authConfig = {
     }),
   ],
   pages: {
-    error: '/login',  
+    error: '/super-admin/login',  
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 import { ActionTooltip } from "@/components/action-tooltip";
 
 const routes = [
-  { name: "Dashboard", path: "/dashboard", Icon: LayoutDashboard },
-  { id: "2", name: "Database", path: "/database", Icon: Database },
+  { name: "Dashboard", path: "/super-admin/dashboard", Icon: LayoutDashboard },
+  { id: "2", name: "Database", path: "/super-admin/database", Icon: Database },
 ];
 
 const NavigationSidebar = () => {

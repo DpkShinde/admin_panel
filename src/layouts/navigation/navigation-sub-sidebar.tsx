@@ -9,71 +9,71 @@ import React, { useState } from "react";
 const menuItems = [
   {
     name: "Stock Tables",
-    path: "/database/stock-tables",
+    path: "/super-admin/database/stock-tables",
     subItems: [
       {
         name: "Stock Data",
-        path: "/database/stock-tables/stocks-screnner-data",
+        path: "/super-admin/database/stock-tables/stocks-screnner-data",
       },
       {
         name: "Stock Valuation",
-        path: "/database/stock-tables/stocks-valuation",
+        path: "/super-admin/database/stock-tables/stocks-valuation",
       },
       {
         name: "Stock Income Statement",
-        path: "/database/stock-tables/stocks-screener-inc-stet",
+        path: "/super-admin/database/stock-tables/stocks-screener-inc-stet",
       },
       {
         name: "Sector Weightage",
-        path: "/database/stock-tables/stocks-sector-weitage",
+        path: "/super-admin/database/stock-tables/stocks-sector-weitage",
       },
       {
         name: "Stock List",
-        path: "/database/stock-tables/stocks_list",
+        path: "/super-admin/database/stock-tables/stocks_list",
       },
       {
         name: "Stock Prise",
-        path: "/database/stock-tables/stocks-prise",
+        path: "/super-admin/database/stock-tables/stocks-prise",
       },
     ],
   },
   {
     name: "Funds Tables",
-    path: "/database/Funds",
+    path: "/super-admin/database/Funds",
     subItems: [
       {
         name: "Fund Details",
-        path: "/database/Funds/fund_details",
+        path: "/super-admin/database/Funds/fund_details",
       },
     ],
   },
   {
     name: "User Tables",
-    path: "/database/users",
+    path: "/super-admin/database/users",
   },
   {
     name: "News Tables",
-    path: "/database/news",
+    path: "/super-admin/database/news",
   },
   {
     name: "Blogs Tables",
-    path: "/database/blogs",
+    path: "/super-admin/database/blogs",
   },
   {
     name: "Subscription plans",
-    path: "/database/subscription",
+    path: "/super-admin/database/subscription",
   },
   {
     name: "IPO Details",
-    path: "/database/IPO_Details",
+    path: "/super-admin/database/IPO_Details",
   },
   {
     name: "Mutual Funds",
-    path: "/database/mutualfunds/",
+    path: "/super-admin/database/mutualfunds/",
   },
   {
     name: "Stock Details",
-    path: "/database/stock-details/companies-table",
+    path: "/super-admin/database/stock-details/companies-table",
   },
 ];
 

@@ -14,6 +14,7 @@ export async function middleware(req: NextRequest) {
   // Get token from request
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const isLoggedIn = !!token;
+  // const isLoggedIn = true;
 
   const isApiAuthRoute = pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(pathname);
@@ -29,7 +30,7 @@ export async function middleware(req: NextRequest) {
 
   // If not logged in and trying to access a protected route, redirect to login
   if (!isLoggedIn && !isPublicRoute) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    return NextResponse.redirect(new URL("/super-admin/login", req.url));
   }
 
   return NextResponse.next();
