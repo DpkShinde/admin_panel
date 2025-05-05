@@ -37,7 +37,7 @@ const NavigationSidebar = () => {
       <div className="mt-auto pb-3 w-full px-3">
         <ActionTooltip side="right" align="center" label="Logout">
           <Button
-            onClick={() => signOut({ callbackUrl: "/login" })}
+            onClick={() => signOut({ callbackUrl: "/super-admin/login" })}
             className="bg-red-700 text-white w-full hover:bg-red-600 transition dark:bg-red-800 dark:hover:bg-red-700"
             variant="destructive"
           >

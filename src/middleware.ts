@@ -6,35 +6,37 @@ import {
   apiAuthPrefix,
   authRoutes,
   publicRoutes,
+  protectedRoutesPrefix,
 } from "../routes";
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  console.log(req.nextUrl)
-  // Get token from request
+
+  // Allow API auth routes (e.g., /api/auth/*)
+  if (pathname.startsWith(apiAuthPrefix)) return null;
+
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const isLoggedIn = !!token;
-  // const isLoggedIn = true;
 
-  const isApiAuthRoute = pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(pathname);
   const isAuthRoute = authRoutes.includes(pathname);
 
-  // Allow API auth routes (like /api/auth/signin, etc.)
-  if (isApiAuthRoute) return NextResponse.next();
+  // Check if route is a protected route
+  const isProtectedRoute = protectedRoutesPrefix.some((prefix) =>
+    pathname.startsWith(prefix)
+  );
 
-  // If already logged in and trying to access login/register, redirect to dashboard
-  if (isAuthRoute && isLoggedIn) {
-    console.log(req.url)
+  // If logged in and accessing an auth/public route, redirect to dashboard
+  if (isLoggedIn && (isPublicRoute || isAuthRoute)) {
     return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, req.url));
   }
 
-  // If not logged in and trying to access a protected route, redirect to login
-  if (!isLoggedIn && !isPublicRoute) {
+  // If not logged in and accessing a protected route, redirect to login
+  if (!isLoggedIn && isProtectedRoute) {
     return NextResponse.redirect(new URL("/super-admin/login", req.url));
   }
 
-  return NextResponse.next();
+  return null;
 }
 
 export const config = {
