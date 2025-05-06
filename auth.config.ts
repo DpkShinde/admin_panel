@@ -12,7 +12,7 @@ const authConfig = {
       },
       async authorize(credentials) {
         if (!credentials) return null;
-        // console.log("Credentials", credentials);
+        console.log("Credentials", credentials);
         const [rows]: any = await pool3
           .promise()
           .query(

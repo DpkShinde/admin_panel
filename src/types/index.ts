@@ -306,3 +306,13 @@ export default interface FormData {
   peer_valuations: PeerValuations;
   quarterly_financials: QuarterlyFinancials;
 }
+
+export default interface adminUsers {
+  id: number;
+  username: string;
+  email: string;
+  password: string;
+  created_at: string;
+  updated_at: string;
+  is_active: boolean;
+}

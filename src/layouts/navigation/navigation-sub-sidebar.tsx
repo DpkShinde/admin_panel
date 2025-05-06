@@ -75,6 +75,10 @@ const menuItems = [
     name: "Stock Details",
     path: "/super-admin/database/stock-details/companies-table",
   },
+  {
+    name: "Admin Manangement",
+    path: "/super-admin/database/admin-management",
+  },
 ];
 
 const NavigationSubSideBar = () => {

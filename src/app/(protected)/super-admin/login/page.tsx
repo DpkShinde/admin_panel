@@ -23,7 +23,6 @@ const LoginPage = () => {
       password,
     });
 
-    console.log(result)
     setLoading(false);
 
     if (result?.error || result?.url?.includes("/api/auth/signin")) {
