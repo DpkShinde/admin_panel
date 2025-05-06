@@ -1,5 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
-console.log("Auth config loaded");
+import bcrypt from "bcryptjs";
+import pool3 from "@/utils/dbAdmin";
 
 const authConfig = {
   providers: [
@@ -10,28 +11,58 @@ const authConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        console.log('Received credentials:', credentials);
-        if (
-          credentials?.username === process.env.USER_NAME &&
-          credentials?.password === process.env.PASSWORD
-        ) {
-          return {
-            message: "Login successful",
-            id: "1",
-            name: "Admin",
-            email: "admin@example.com",
-          };
-        }
-        // Return null if authentication fails
-        console.log('Authentication failed');
-        return null;
+        if (!credentials) return null;
+        // console.log("Credentials", credentials);
+        const [rows]: any = await pool3
+          .promise()
+          .query(
+            "SELECT * FROM admin_panel_users WHERE username = ? AND isActive = 1 LIMIT 1",
+            [credentials.username]
+          );
+        // console.log("Rows", rows);
+        const user = Array.isArray(rows) ? rows[0] : null;
+        if (!user) return null;
+        // console.log("user",user)
+
+        const passwordMatch = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+        // console.log(user.password)
+        // console.log(credentials.password)
+        // console.log(passwordMatch)
+
+        if (!passwordMatch) return null;
+
+        return {
+          id: user.id.toString(),
+          name: user.username,
+          email: user.email,
+          role: user.role,
+        };
       },
     }),
   ],
   pages: {
-    error: '/super-admin/login',  
+    error: "/super-admin/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+    async jwt({ token, user }: { token: any; user?: any }) {
+      if (user) {
+        token.role = user.role;
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }: { session: any; token: any }) {
+      if (token) {
+        session.user.role = token.role as string;
+        session.user.id = token.id as string;
+      }
+      return session;
+    },
+  },
 };
 
 export default authConfig;
