@@ -1,9 +1,33 @@
 "use client";
 
 import * as React from "react";
+import { SessionProvider } from "next-auth/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
-export function ThemeProvider({
+export function ClientProviders({
+  children,
+  attribute,
+  defaultTheme,
+  enableSystem,
+  storageKey,
+}: {
+  children: React.ReactNode;
+  attribute?: string;
+  defaultTheme?: string;
+  enableSystem?: boolean;
+  storageKey?: string;
+}) {
+  return (
+    <SessionProvider>
+      {" "}
+      {/* Ensuring NextAuth session is managed globally */}
+      <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
+    </SessionProvider>
+  );
+}
+
+// Theme provider logic that prevents SSR mismatches
+function ThemeProviderWrapper({
   children,
   ...props
 }: React.ComponentProps<typeof NextThemesProvider>) {
@@ -14,8 +38,23 @@ export function ThemeProvider({
   }, []);
 
   if (!mounted) {
-    return <>{children}</>; // Prevent SSR mismatch
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <p>Loading...</p>{" "}
+        {/* Improves user experience instead of blank render */}
+      </div>
+    );
   }
 
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
+  return (
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme="dark"
+      enableSystem={false}
+      storageKey="my-application-key"
+      {...props}
+    >
+      {children}
+    </NextThemesProvider>
+  );
 }

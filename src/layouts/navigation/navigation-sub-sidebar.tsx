@@ -3,8 +3,20 @@
 import { Table, ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import path from "path";
 import React, { useState } from "react";
+import { useSession } from "next-auth/react";
+
+// Extend the Session type to include the role property
+declare module "next-auth" {
+  interface Session {
+    user: {
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      role?: string | null;
+    };
+  }
+}
 
 const menuItems = [
   {
@@ -84,6 +96,8 @@ const menuItems = [
 const NavigationSubSideBar = () => {
   const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const { data: session } = useSession();
+  const userRole = session?.user?.role;
 
   const toggleDropdown = (name: string) => {
     setOpenDropdown(openDropdown === name ? null : name);
@@ -93,6 +107,11 @@ const NavigationSubSideBar = () => {
     <div className="w-60 h-full ml-18 bg-gradient-to-b from-[#0e6d31] to-[#105f2d] border-r border-[#14532d]">
       <div className="flex flex-col gap-2 p-4">
         {menuItems.map((item, index) => {
+          //check role if role is admin then only show specific content
+          if (item.name === "Admin Manangement" && userRole !== "superadmin") {
+            return null; //for hide admin table management tab
+          }
+
           const isActive = pathname.startsWith(item.path);
           const isDropdownOpen = openDropdown === item.name || isActive;
 
