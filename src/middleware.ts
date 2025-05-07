@@ -26,6 +26,11 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith(prefix)
   );
 
+  // Restrict access to `/super-admin/database/admin-management`
+  const isAdminManagementRoute = pathname.startsWith(
+    "/super-admin/database/admin-management"
+  );
+
   // If logged in and accessing an auth/public route, redirect to dashboard
   if (isLoggedIn && (isPublicRoute || isAuthRoute)) {
     return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, req.url));
@@ -34,6 +39,11 @@ export async function middleware(req: NextRequest) {
   // If not logged in and accessing a protected route, redirect to login
   if (!isLoggedIn && isProtectedRoute) {
     return NextResponse.redirect(new URL("/super-admin/login", req.url));
+  }
+
+  // New Role-Based Access Check
+  if (isAdminManagementRoute && token?.role !== "superadmin") {
+    return NextResponse.redirect(new URL("/super-admin/dashboard", req.url)); 
   }
 
   return null;

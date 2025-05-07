@@ -12,27 +12,34 @@ const authConfig = {
       },
       async authorize(credentials) {
         if (!credentials) return null;
+
         console.log("Credentials", credentials);
+
+        // Query the database to find the user
         const [rows]: any = await pool3
           .promise()
-          .query(
-            "SELECT * FROM admin_panel_users WHERE username = ? AND isActive = 1 LIMIT 1",
-            [credentials.username]
-          );
-        // console.log("Rows", rows);
+          .query("SELECT * FROM admin_panel_users WHERE email = ? LIMIT 1", [
+            credentials.username,
+          ]);
+
         const user = Array.isArray(rows) ? rows[0] : null;
         if (!user) return null;
-        // console.log("user",user)
 
+        // Check if the user is inactive
+        if (!user.isActive) {
+          throw new Error(
+            "User is not active. Please contact the administrator."
+          );
+        }
+
+        // Validate password
         const passwordMatch = await bcrypt.compare(
           credentials.password,
           user.password
         );
-        // console.log(user.password)
-        // console.log(credentials.password)
-        // console.log(passwordMatch)
-
-        if (!passwordMatch) return null;
+        if (!passwordMatch) {
+          throw new Error("Invalid credentials. Please try again.");
+        }
 
         return {
           id: user.id.toString(),

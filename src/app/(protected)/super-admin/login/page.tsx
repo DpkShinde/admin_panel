@@ -25,9 +25,15 @@ const LoginPage = () => {
 
     setLoading(false);
 
-    if (result?.error || result?.url?.includes("/api/auth/signin")) {
+    if (result?.error) {
       console.log("Login failed:", result.error);
-      setError("Invalid username or password");
+
+      // Check for the custom inactive user error
+      if (result.error.includes("User is not active")) {
+        setError("Your account is inactive. Please contact the administrator.");
+      } else {
+        setError("Invalid username or password");
+      }
     } else if (result?.ok && result?.url) {
       toast.success("Welcome Back Admin!");
       router.push("/super-admin/dashboard");
@@ -72,7 +78,7 @@ const LoginPage = () => {
 
           <input
             type="text"
-            placeholder="Username"
+            placeholder="Enter your Email"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="w-full p-2 mb-4 border border-gray-300 rounded text-black focus:outline-none focus:ring-2 focus:ring-green-800 focus:border-transparent"
