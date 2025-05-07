@@ -88,6 +88,10 @@ const menuItems = [
     path: "/super-admin/database/stock-details/companies-table",
   },
   {
+    name: "Quarterly Earnings",
+    path: "/super-admin/database/quarterly-earnings",
+  },
+  {
     name: "Admin Manangement",
     path: "/super-admin/database/admin-management",
   },

@@ -316,3 +316,193 @@ export default interface adminUsers {
   updated_at: string;
   is_active: boolean;
 }
+
+//for quaterly earnings table
+export interface CompanyInfo {
+  company_id: number;
+  name: string;
+  description?: string;
+  registered_address?: string;
+  city?: string;
+  state?: string;
+  pin_code?: string;
+  telephone?: string;
+  fax?: string;
+  email?: string;
+  website?: string;
+  bse_code?: string;
+  nse_code?: string;
+  series?: string;
+  isin?: string;
+  registrar_name?: string;
+  registrar_address?: string;
+  registrar_city?: string;
+  registrar_state?: string;
+  registrar_pin_code?: string;
+  registrar_telephone?: string;
+  registrar_fax?: string;
+  registrar_website?: string;
+}
+
+export interface QBalanceSheet {
+  id: number;
+  company_id: number;
+  fiscal_year: number;
+  share_capital?: number;
+  reserves_surplus?: number;
+  minority_interest?: number;
+  deposits?: number;
+  borrowings?: number;
+  other_liabilities?: number;
+  total_liabilities?: number;
+  fixed_assets?: number;
+  loans_advances?: number;
+  investments?: number;
+  other_assets?: number;
+  total_assets?: number;
+}
+
+export interface BusinessArea {
+  id: number;
+  company_id: number;
+  area_name: string;
+  description?: string;
+}
+
+export interface QCashFlow {
+  id: number;
+  company_id: number;
+  fiscal_year: number;
+  cash_operating?: number;
+  cash_investing?: number;
+  cash_financing?: number;
+  cash_others?: number;
+  net_cash_flow?: number;
+}
+
+export interface QFinancialRatios {
+  id: number;
+  company_id: number;
+  fiscal_year: number;
+  basic_eps?: number;
+  diluted_eps?: number;
+  book_value_per_share?: number;
+  dividend_per_share?: number;
+  face_value?: number;
+  net_interest_margin?: number;
+  operating_profit_margin?: number;
+  net_profit_margin?: number;
+  return_on_equity?: number;
+  roce?: number;
+  return_on_assets?: number;
+  casa_percentage?: number;
+  capital_adequacy_ratio?: number;
+}
+
+export interface IncomeStatement {
+  id: number;
+  company_id: number;
+  fiscal_year: number;
+  interest_earned?: number;
+  other_income?: number;
+  total_income?: number;
+  total_expenditure?: number;
+  operating_profit?: number;
+  provisions_contingencies?: number;
+  profit_before_tax?: number;
+  tax?: number;
+  net_profit?: number;
+}
+
+export interface Management {
+  id: number;
+  company_id: number;
+  name: string;
+  position: string;
+  join_date?: string; // or Date
+  leave_date?: string; // or Date
+}
+
+export interface News {
+  id: number;
+  company_id: number;
+  title: string;
+  content?: string;
+  publish_date?: string; // or Date
+  source?: string;
+  url?: string;
+}
+
+export interface NPA {
+  id: number;
+  company_id: number;
+  fiscal_year: number;
+  gross_npa_amount?: number;
+  gross_npa_percentage?: number;
+  net_npa_amount?: number;
+  net_npa_percentage?: number;
+}
+
+export interface QPeerAnalysis {
+  id: number;
+  company_id: number;
+  company_name: string;
+  price?: number;
+  change_percentage?: number;
+  market_cap?: number;
+  ttm_pe?: number;
+  pb_ratio?: number;
+  roe?: number;
+  one_year_performance?: number;
+  car?: number;
+  interest_earned?: number;
+  nim?: number;
+  analysis_date?: string; // or Date
+}
+
+export interface QuarterlyEarnings {
+  id: number;
+  company_id: number;
+  year: number;
+  quarter: number;
+  revenue?: number;
+  net_profit?: number;
+  eps?: number;
+  bvps_percentage?: number;
+  roe?: number;
+  nim?: number;
+}
+
+export interface Shareholding {
+  id: number;
+  company_id: number;
+  quarter_year: string;
+  promoters?: number;
+  foreign_institutions?: number;
+  dii?: number;
+  public?: number;
+  others?: number;
+}
+
+export interface Business_areas {
+  id: number;
+  companyId: number;
+  areaName: string;
+  description?: string;
+}
+
+export interface CompanyFinancialResult {
+  company_id: number;
+  company_name: string;
+  result_type: string;
+  ltp_rs?: number | null;
+  market_cap?: string | null;
+  revenue_cr?: number | null;
+  change_percent?: number | null;
+  tentative_date?: string | Date | null;
+  gross_profit_percent?: number | null;
+  net_profit_percent?: number | null;
+  tag?: string | null;
+  created_at?: string | Date | null;
+  updated_at?: string | Date | null;
+}
