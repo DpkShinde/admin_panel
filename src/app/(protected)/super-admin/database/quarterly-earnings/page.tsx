@@ -80,11 +80,11 @@ export default function Home() {
             className="p-2 ml-5 cursor-pointer hover:bg-green-800 transition"
             onClick={() =>
               router.push(
-                "/super-admin/database/stock-tables/stocks-sector-weitage/add"
+                "/super-admin/database/quarterly-earnings/add"
               )
             }
           >
-            Add Sectors
+            Add Stocks
           </Button>
         </div>
         <div className="overflow-x-auto p-5">

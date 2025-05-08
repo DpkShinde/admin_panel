@@ -16,18 +16,18 @@ const routes = [
 
 const NavigationSidebar = () => {
   return (
-    <div className="space-y-4 flex flex-col items-center h-full text-primary w-full dark:bg-green-900 bg-green-100 py-3">
+    <div className="space-y-4 flex flex-col items-center h-full text-primary w-full dark:bg-green-900 bg-green-900 py-3">
       <NavigationAction />
       <Separator className="h-[2px] bg-green-300 dark:bg-green-700 rounded-md w-10 mx-auto" />
       <ScrollArea className="flex-1 w-full">
         {routes.map((route, index) => (
-          <div key={index} className="mb-4">
+          <div key={index} className="mb-4 text-white">
             <NavigationItem
               name={route.name}
               path={route.path}
               Icon={route.Icon}
             />
-            <div className="flex justify-center text-[12px] text-green-700 dark:text-green-300">
+            <div className="flex justify-center text-[12px] text-green-100 dark:text-green-300">
               {route.name}
             </div>
           </div>

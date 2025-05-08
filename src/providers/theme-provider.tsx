@@ -49,7 +49,7 @@ function ThemeProviderWrapper({
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="dark"
+      defaultTheme="light"
       enableSystem={false}
       storageKey="my-application-key"
       {...props}

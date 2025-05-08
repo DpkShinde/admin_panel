@@ -37,12 +37,12 @@ const NavigationItem = ({ Icon, name, path }: NavigationItemProps) => {
         <div
           className={cn(
             "relative flex mx-3 h-[48px] w-[48px] rounded-[24px] transition-all overflow-hidden items-center justify-center",
-            "group-hover:rounded-[16px]",
-            currentPath === path && "bg-primary/10 text-primary rounded-[16px]"
+            "group-hover:rounded-[16px] group-hover:bg-primary/10",
+            currentPath === path && "bg-black text-primary rounded-[16px]"
           )}
         >
 
-          <Icon className="w-6 h-6 text-primary group-hover:scale-110 transition-transform duration-300" />
+          <Icon className="w-6 h-6 group-hover:scale-110 text-white transition-transform duration-300" />
         </div>
       </button>
     </ActionTooltip>
