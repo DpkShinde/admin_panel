@@ -49,6 +49,7 @@ export async function PUT(
       PERatio,
       PSRatio,
       PBRatio,
+      PCFRatio,
       PFCFRatio,
       Price,
       EnterpriseValue,
@@ -59,14 +60,21 @@ export async function PUT(
       perf,
       index,
       market_cap_category,
+      NIFTY_50,
+      NIFTY_NEXT_50,
+      NIFTY_100,
+      NIFTY_200,
+      NIFTY_SMALLCAP_100,
+      NIFTY_MIDSMALLCAP_400,
+      NIFTY_LARGEMIDCAP_250,
+      NIFTY_500,
     } = body;
-  
 
     const query = `
       UPDATE stocks_screnner_valuetion 
       SET Symbol=?,sector=?, MarketCap=?, MarketCapPercentage=?, PERatio = ?, PSRatio = ?, 
-          PBRatio=?, PFCFRatio=?, Price=?, EnterpriseValue=?, EVRevenue = ?, 
-          EVEBIT=?, EVEBITDA=?,  Market_cap_crore = ?, perf = ?, \`index\` = ?, market_cap_category = ?
+          PBRatio=?,PCFRatio=?, PFCFRatio=?, Price=?, EnterpriseValue=?, EVRevenue = ?, 
+          EVEBIT=?, EVEBITDA=?,  Market_cap_crore = ?, perf = ?, \`index\` = ?, market_cap_category = ?, NIFTY_50 = ?, NIFTY_NEXT_50 = ?,  NIFTY_100 = ?, NIFTY_200 = ?, NIFTY_SMALLCAP_100 = ?, NIFTY_MIDSMALLCAP_400 = ?, NIFTY_LARGEMIDCAP_250 = ?, NIFTY_500 = ?
          WHERE id=?
          `;
 
@@ -78,6 +86,7 @@ export async function PUT(
       PERatio,
       PSRatio,
       PBRatio,
+      PCFRatio,
       PFCFRatio,
       Price,
       EnterpriseValue,
@@ -88,6 +97,14 @@ export async function PUT(
       perf,
       index,
       market_cap_category,
+      NIFTY_50,
+      NIFTY_NEXT_50,
+      NIFTY_100,
+      NIFTY_200,
+      NIFTY_SMALLCAP_100,
+      NIFTY_MIDSMALLCAP_400,
+      NIFTY_LARGEMIDCAP_250,
+      NIFTY_500,
       stockId,
     ];
 

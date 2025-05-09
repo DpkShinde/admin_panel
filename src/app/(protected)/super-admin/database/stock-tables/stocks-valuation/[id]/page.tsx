@@ -17,6 +17,7 @@ export default function UpdateStocks() {
     PERatio: 0,
     PSRatio: 0,
     PBRatio: 0,
+    PCFRatio: 0,
     PFCFRatio: null,
     Price: 0,
     EnterpriseValue: 0,
@@ -27,6 +28,14 @@ export default function UpdateStocks() {
     perf: "",
     index: "",
     market_cap_category: "",
+    NIFTY_50: "",
+    NIFTY_NEXT_50: "",
+    NIFTY_100: "",
+    NIFTY_200: "",
+    NIFTY_SMALLCAP_100: "",
+    NIFTY_MIDSMALLCAP_400: "",
+    NIFTY_LARGEMIDCAP_250: "",
+    NIFTY_500: "",
   });
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -55,6 +64,7 @@ export default function UpdateStocks() {
           PERatio: parseFloat(data?.PERatio) || 0,
           PSRatio: parseFloat(data?.PSRatio) || 0,
           PBRatio: parseFloat(data?.PBRatio) || 0,
+          PCFRatio: parseFloat(data?.PCFRatio) || 0,
           PFCFRatio: data[0]?.PFCFRatio ? parseFloat(data?.PFCFRatio) : null,
           Price: parseFloat(data?.Price) || 0,
           EnterpriseValue: parseFloat(data?.EnterpriseValue) || 0,
@@ -65,6 +75,14 @@ export default function UpdateStocks() {
           perf: data?.perf || "",
           index: data?.index || "",
           market_cap_category: data?.market_cap_category || "",
+          NIFTY_50: data.NIFTY_50 || "",
+          NIFTY_NEXT_50: data.NIFTY_NEXT_50 || "",
+          NIFTY_100: data.NIFTY_100 || "",
+          NIFTY_200: data.NIFTY_200 || "",
+          NIFTY_SMALLCAP_100: data.NIFTY_SMALLCAP_100 || "",
+          NIFTY_MIDSMALLCAP_400: data.NIFTY_MIDSMALLCAP_400 || "",
+          NIFTY_LARGEMIDCAP_250: data.NIFTY_LARGEMIDCAP_250 || "",
+          NIFTY_500: data.NIFTY_500 || "",
         }));
       } catch (error: any) {
         setErrorMessage(error.message);
@@ -86,7 +104,15 @@ export default function UpdateStocks() {
         "sector" ||
         "perf" ||
         "index" ||
-        "market_cap_category"
+        "market_cap_category" ||
+        "NIFTY_50" ||
+        "NIFTY_NEXT_50" ||
+        "NIFTY_100" ||
+        "NIFTY_200" ||
+        "NIFTY_SMALLCAP_100" ||
+        "NIFTY_MIDSMALLCAP_400" ||
+        "NIFTY_LARGEMIDCAP_250" ||
+        "NIFTY_500"
           ? value
           : parseFloat(value) || 0,
     });
@@ -144,7 +170,15 @@ export default function UpdateStocks() {
                     "sector" ||
                     "index" ||
                     "perf" ||
-                    "market_cap_category"
+                    "market_cap_category" ||
+                    "NIFTY_50" ||
+                    "NIFTY_NEXT_50" ||
+                    "NIFTY_100" ||
+                    "NIFTY_200" ||
+                    "NIFTY_SMALLCAP_100" ||
+                    "NIFTY_MIDSMALLCAP_400" ||
+                    "NIFTY_LARGEMIDCAP_250" ||
+                    "NIFTY_500"
                       ? "text"
                       : "number"
                   }

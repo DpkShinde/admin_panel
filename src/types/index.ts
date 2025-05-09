@@ -45,6 +45,7 @@ export interface StockScreenerValuation {
   PERatio: number;
   PSRatio: number;
   PBRatio: number;
+  PCFRatio: number;
   PFCFRatio: number | null; // To handle null values
   Price: number;
   EnterpriseValue: number;
@@ -55,6 +56,14 @@ export interface StockScreenerValuation {
   perf: string;
   index: string;
   market_cap_category: string;
+  NIFTY_50: string;
+  NIFTY_NEXT_50: string;
+  NIFTY_100: string;
+  NIFTY_200: string;
+  NIFTY_SMALLCAP_100: string;
+  NIFTY_MIDSMALLCAP_400: string;
+  NIFTY_LARGEMIDCAP_250: string;
+  NIFTY_500: string;
 }
 
 export interface StockScreenerIncomeStatement {

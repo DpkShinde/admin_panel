@@ -12,6 +12,7 @@ export default function AddStockRecord() {
     PERatio: 0,
     PSRatio: 0,
     PBRatio: 0,
+    PCFRatio: 0,
     PFCFRatio: 0,
     Price: 0,
     EnterpriseValue: 0,
@@ -22,6 +23,14 @@ export default function AddStockRecord() {
     perf: "",
     index: "",
     market_cap_category: "",
+    NIFTY_50: "",
+    NIFTY_NEXT_50: "",
+    NIFTY_100: "",
+    NIFTY_200: "",
+    NIFTY_SMALLCAP_100: "",
+    NIFTY_MIDSMALLCAP_400: "",
+    NIFTY_LARGEMIDCAP_250: "",
+    NIFTY_500: "",
   });
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -60,6 +69,7 @@ export default function AddStockRecord() {
         PERatio: 0,
         PSRatio: 0,
         PBRatio: 0,
+        PCFRatio: 0,
         PFCFRatio: 0,
         Price: 0,
         EnterpriseValue: 0,
@@ -70,6 +80,14 @@ export default function AddStockRecord() {
         perf: "",
         index: "",
         market_cap_category: "",
+        NIFTY_50: "",
+        NIFTY_NEXT_50: "",
+        NIFTY_100: "",
+        NIFTY_200: "",
+        NIFTY_SMALLCAP_100: "",
+        NIFTY_MIDSMALLCAP_400: "",
+        NIFTY_LARGEMIDCAP_250: "",
+        NIFTY_500: "",
       });
     } catch (error: any) {
       setErrorMessage(error.message || "An unexpected error occurred.");
@@ -106,7 +124,15 @@ export default function AddStockRecord() {
                   "sector" ||
                   "index" ||
                   "perf" ||
-                  "market_cap_category"
+                  "market_cap_category" ||
+                  "NIFTY_50" ||
+                  "NIFTY_NEXT_50" ||
+                  "NIFTY_100" ||
+                  "NIFTY_200" ||
+                  "NIFTY_SMALLCAP_100" ||
+                  "NIFTY_MIDSMALLCAP_400" ||
+                  "NIFTY_LARGEMIDCAP_250" ||
+                  "NIFTY_500"
                     ? "text"
                     : "number"
                 }

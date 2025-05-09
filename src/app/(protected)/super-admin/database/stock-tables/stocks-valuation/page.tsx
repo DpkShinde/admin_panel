@@ -86,22 +86,30 @@ export default function Home() {
       const formattedData = rows.slice(1).map((row) => ({
         Symbol: row[0],
         sector: row[1],
-        MarketCap: row[1],
-        MarketCapPercentage: row[2],
-        PERatio: row[3],
-        PSRatio: row[4],
-        PBRatio: row[5],
-        PCFRatio: row[6],
-        PFCFRatio: row[7],
-        Price: row[8],
-        EnterpriseValue: row[9],
-        EVRevenue: row[10],
-        EVEBIT: row[11],
-        EVEBITDA: row[12],
-        Market_cap_crore: row[13],
-        perf: row[14],
-        index: row[15], 
-        market_cap_category: row[16],
+        MarketCap: row[2],
+        MarketCapPercentage: row[3],
+        PERatio: row[4],
+        PSRatio: row[5],
+        PBRatio: row[6],
+        PCFRatio: row[7],
+        PFCFRatio: row[8],
+        Price: row[9],
+        EnterpriseValue: row[10],
+        EVRevenue: row[11],
+        EVEBIT: row[12],
+        EVEBITDA: row[13],
+        Market_cap_crore: row[14],
+        perf: row[15],
+        index: row[16],
+        market_cap_category: row[17],
+        NIFTY_50: row[18],
+        NIFTY_NEXT_50: row[19],
+        NIFTY_100: row[20],
+        NIFTY_200: row[21],
+        NIFTY_SMALLCAP_100: row[22],
+        NIFTY_MIDSMALLCAP_400: row[23],
+        NIFTY_LARGEMIDCAP_250: row[24],
+        NIFTY_500: row[25],
       }));
 
       //send data to backend
@@ -134,7 +142,9 @@ export default function Home() {
             variant="add"
             className="p-2 ml-5 cursor-pointer hover:bg-green-800 transition"
             onClick={() =>
-              router.push("/super-admin/database/stock-tables/stocks-valuation/add")
+              router.push(
+                "/super-admin/database/stock-tables/stocks-valuation/add"
+              )
             }
           >
             Add Stocks
@@ -186,6 +196,9 @@ export default function Home() {
                   PBRatio
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
+                  PCFRatio
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
                   PFCFRatio
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
@@ -214,6 +227,30 @@ export default function Home() {
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
                   market_cap_category
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_50
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_NEXT_50
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_100
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_200
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_SMALLCAP_100
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_MIDSMALLCAP_400
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_LARGEMIDCAP_250
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_500
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
                   Actions
@@ -249,6 +286,9 @@ export default function Home() {
                       {record.PBRatio}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
+                      {record.PCFRatio}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
                       {record.PFCFRatio || "N/A"}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
@@ -277,6 +317,30 @@ export default function Home() {
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {record.market_cap_category}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_50}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_NEXT_50}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_100}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_200}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_SMALLCAP_100}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_MIDSMALLCAP_400}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_LARGEMIDCAP_250}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_500}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       <div className="flex justify-center space-x-2">
