@@ -316,15 +316,9 @@ export default function CompanyDataEntryPage() {
               })}
           </div>
         </section>
-        <section>
-          <Button
-            onClick={() =>
-              router.push("/super-admin/database/quarterly-results/add")
-            }
-          >
-            Add Quaterly Results Data
-          </Button>
-        </section>
+        <div className="flex justify-between">
+          <Button>Add Company</Button>
+        </div>
       </form>
     </div>
   );

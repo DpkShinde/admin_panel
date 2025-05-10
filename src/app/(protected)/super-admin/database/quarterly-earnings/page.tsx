@@ -65,7 +65,7 @@ export default function Home() {
   };
 
   const handleEdit = (id: number) => {
-    router.push(`/super-admin/database/quaterly-earnings/${id}`);
+    router.push(`/super-admin/database/quarterly-earnings/${id}`);
   };
 
   return (
