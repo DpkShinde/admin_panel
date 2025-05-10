@@ -86,6 +86,10 @@ export default function Home() {
           >
             Add Stocks
           </Button>
+
+          <Button onClick={() => router.push("/super-admin/database/quarterly-results/add")}>
+            Add Quaterly Results
+          </Button>
         </div>
         <div className="overflow-x-auto p-5">
           <table className="min-w-full text-sm border border-gray-300 shadow-md rounded-md">

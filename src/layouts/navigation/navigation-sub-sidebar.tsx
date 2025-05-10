@@ -92,6 +92,10 @@ const menuItems = [
     path: "/super-admin/database/quarterly-earnings",
   },
   {
+    name: "Quarterly Results",
+    path: "/super-admin/database/quarterly-results",
+  },
+  {
     name: "Admin Manangement",
     path: "/super-admin/database/admin-management",
   },
