@@ -68,6 +68,21 @@ export default function Home() {
     router.push(`/super-admin/database/quarterly-earnings/${id}`);
   };
 
+  //format the date
+  const formatDate = (dateString: string | null | undefined) => {
+    try {
+      if (!dateString) return "N/A";
+      return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch (error: any) {
+      console.error("Error formatting date:", dateString, error);
+      return "Invalid Date";
+    }
+  };
+
   return (
     <div className="p-5 overflow-hidden shadow-md rounded-md">
       <div className="">
@@ -79,15 +94,17 @@ export default function Home() {
             variant="add"
             className="p-2 ml-5 cursor-pointer hover:bg-green-800 transition"
             onClick={() =>
-              router.push(
-                "/super-admin/database/quarterly-earnings/add"
-              )
+              router.push("/super-admin/database/quarterly-earnings/add")
             }
           >
             Add Stocks
           </Button>
 
-          <Button onClick={() => router.push("/super-admin/database/quarterly-results/add")}>
+          <Button
+            onClick={() =>
+              router.push("/super-admin/database/quarterly-results/add")
+            }
+          >
             Add Quaterly Results
           </Button>
         </div>
@@ -162,9 +179,11 @@ export default function Home() {
                       {record.change_percent}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {record.tentative_date instanceof Date
-                        ? record.tentative_date.toLocaleDateString()
-                        : record.tentative_date}
+                      {formatDate(
+                        record.tentative_date instanceof Date
+                          ? record.tentative_date.toISOString()
+                          : record.tentative_date
+                      )}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {record.gross_profit_percent}
@@ -176,14 +195,18 @@ export default function Home() {
                       {record.tag}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {record.created_at instanceof Date
-                        ? record.created_at.toLocaleDateString()
-                        : record.created_at}
+                      {formatDate(
+                        record.created_at instanceof Date
+                          ? record.created_at.toISOString()
+                          : record.created_at
+                      )}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {record.updated_at instanceof Date
-                        ? record.updated_at.toLocaleDateString()
-                        : record.updated_at}
+                      {formatDate(
+                        record.updated_at instanceof Date
+                          ? record.updated_at.toISOString()
+                          : record.updated_at
+                      )}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       <div className="flex justify-center space-x-2">

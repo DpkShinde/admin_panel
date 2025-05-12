@@ -77,6 +77,20 @@ export default function EarningResultsList() {
     );
   }
 
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return "N/A";
+    try {
+      return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch (error: any) {
+      console.log("Error formatting date:", dateString, error);
+      return "Invalid Date";
+    }
+  };
+
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6 text-gray-800">Earning Results</h1>
@@ -126,7 +140,7 @@ export default function EarningResultsList() {
                   {result.title}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {result.created_date}
+                  {formatDate(result.created_date)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <Link
