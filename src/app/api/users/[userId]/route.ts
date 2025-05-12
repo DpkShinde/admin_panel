@@ -35,6 +35,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { userId: s
     );
 
     if (result.affectedRows === 0) {
+      console.log("User not found");
       return new Response(JSON.stringify({ error: "User not found" }), { status: 404 });
     }
 

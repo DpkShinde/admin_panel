@@ -44,7 +44,7 @@ const menuItems = [
         path: "/super-admin/database/stock-tables/stocks_list",
       },
       {
-        name: "Stock Prise",
+        name: "Stock Price",
         path: "/super-admin/database/stock-tables/stocks-prise",
       },
     ],
