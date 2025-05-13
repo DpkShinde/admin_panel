@@ -97,7 +97,10 @@ export default function UpdateFund() {
       if (!res.ok) throw new Error("Failed to update the record.");
 
       toast.success("Mutual fund record updated successfully!");
-      setTimeout(() => router.push("/super-admin/database/Funds/fund_details"), 1000);
+      setTimeout(
+        () => router.push("/super-admin/database/Funds/fund_details"),
+        1000
+      );
     } catch (error: any) {
       setErrorMessage(error.message || "An unexpected error occurred.");
     }
@@ -105,6 +108,21 @@ export default function UpdateFund() {
 
   if (loading)
     return <p className="text-center text-gray-600">Loading fund data...</p>;
+
+  //format the date
+  const formatDateForInput = (dateString: string | null | undefined) => {
+    try {
+      if (!dateString) return "";
+      console.log("hii mshi", dateString);
+      const date = new Date(dateString);
+      const offset = date.getTimezoneOffset();
+      const correctedDate = new Date(date.getTime() - offset * 60 * 1000);
+      return correctedDate.toISOString().split("T")[0];
+    } catch (error: any) {
+      console.error("Error formatting input date:", dateString, error);
+      return "";
+    }
+  };
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
@@ -127,7 +145,13 @@ export default function UpdateFund() {
                   type={key.includes("Date") ? "date" : "text"}
                   id={key}
                   name={key}
-                  value={formData[typedKey] ?? ""}
+                  value={
+                    key.includes("Date")
+                      ? formatDateForInput(
+                          formData[typedKey] as string | null | undefined
+                        )
+                      : formData[typedKey] ?? ""
+                  }
                   onChange={handleChange}
                   className="border border-gray-300 rounded-lg px-4 py-2 focus:ring focus:ring-indigo-300 w-full"
                   required

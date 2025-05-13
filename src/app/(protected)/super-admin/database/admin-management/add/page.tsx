@@ -51,16 +51,17 @@ export default function AddStockRecord() {
         body: JSON.stringify({ data: transformedData }),
       });
 
+      const responseData = await res.json();
+
       if (!res.ok) {
-        throw new Error("Failed to add the record. Please try again.");
+        throw new Error(responseData.message || "Failed to add the record.");
       }
 
-      toast.success("Stock record added successfully!");
+      toast.success(responseData.message || "Stock record added successfully!");
       setTimeout(() => {
         router.push("/super-admin/database/admin-management");
       }, 1000);
 
-      const data = await res.json();
       setFormData({
         username: "",
         email: "",

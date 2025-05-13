@@ -7,7 +7,6 @@ export async function POST(req: NextRequest) {
     const { data } = await req.json();
     const { username, email, password, role } = data;
     let { status } = data;
-    console.log("Received data:", data);
 
     if (!username || !email || !password || !role) {
       return NextResponse.json(
@@ -19,12 +18,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Normalize isActive to 1 or 0
-    if (status === true || status === "true") {
-      status = 1;
-    } else if (status === false || status === "false") {
-      status = 0;
+    // Strong password regex
+    const checkStrongPassword =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=<>?])[A-Za-z\d!@#$%^&*()_\-+=<>?]{16,}$/;
+
+    if (!checkStrongPassword.test(password)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Password must be at least 16 characters long and include an uppercase letter, a lowercase letter, a number, and a special character.",
+        },
+        { status: 400 }
+      );
     }
+
+    // Normalize status to 1 or 0
+    status = status === true || status === "true" ? 1 : 0;
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
