@@ -76,12 +76,9 @@ export default function EditEarningResult() {
 
         setFormData(data);
 
-        // Set initial content of the editor after data is loaded
         if (editorRef.current) {
-          isUpdatingContentRef.current = true; // Prevent input handler from triggering immediately
+          isUpdatingContentRef.current = true; 
           editorRef.current.innerHTML = data.MainContent || "<p><br></p>"; // Use fetched content or default
-          // Restore focus and cursor after setting initial content, if desired
-          // editorRef.current.focus(); // Optional: focus on load
           isUpdatingContentRef.current = false;
         }
       } catch (err: any) {
@@ -93,21 +90,18 @@ export default function EditEarningResult() {
     };
 
     fetchEarningResult();
-  }, [id]); // Depend on ID to refetch if it changes
+  }, [id]); 
 
-  // --- Editor Input and Blur Handlers ---
-  // Effect to listen for input events on the contentEditable div
   useEffect(() => {
     const editorElement = editorRef.current;
 
     const updateContent = () => {
       if (editorElement && !isUpdatingContentRef.current) {
-        // Save the current selection before state update
+        
         saveSelection();
 
-        // Update formData with current HTML content
         setFormData((prev) => {
-          if (!prev) return null; // Should not happen if formData is null initially, but safeguard
+          if (!prev) return null; 
           return {
             ...prev,
             MainContent: editorElement.innerHTML,
@@ -119,7 +113,7 @@ export default function EditEarningResult() {
     // Add event listeners to the editor
     if (editorElement) {
       editorElement.addEventListener("input", updateContent);
-      editorElement.addEventListener("blur", saveSelection); // Save selection on blur too
+      editorElement.addEventListener("blur", saveSelection); 
 
       // Clean up the event listeners
       return () => {
@@ -127,10 +121,9 @@ export default function EditEarningResult() {
         editorElement.removeEventListener("blur", saveSelection);
       };
     }
-  }, [formData]); // Depend on formData to potentially recreate listeners if ref changes? (usually not needed with ref) - removed dependency
+  }, [formData]); 
 
-  // --- Selection Handling ---
-  // Save current selection state
+ 
   const saveSelection = () => {
     const selection = window.getSelection();
     if (
@@ -163,11 +156,11 @@ export default function EditEarningResult() {
 
       try {
         range.setStart(
-          selectionStateRef.current.startNode!, // Use non-null assertion as we check .startNode existence
+          selectionStateRef.current.startNode!, 
           selectionStateRef.current.startOffset
         );
         range.setEnd(
-          selectionStateRef.current.endNode!, // Use non-null assertion
+          selectionStateRef.current.endNode!, 
           selectionStateRef.current.endOffset
         );
 
@@ -175,16 +168,13 @@ export default function EditEarningResult() {
         selection?.addRange(range);
       } catch (e) {
         console.error("Failed to restore selection:", e);
-        // Clear saved selection if restoration fails
+       
         selectionStateRef.current = null;
       }
     }
   };
 
-  /**
-   * Handles changes to the standard input fields (except the contentEditable div).
-   * Updates the formData state.
-   */
+  
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
