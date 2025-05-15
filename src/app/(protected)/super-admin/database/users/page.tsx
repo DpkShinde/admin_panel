@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-
+import { useSession } from "next-auth/react";
 
 // Define a more specific type for the user
 interface User {
@@ -64,24 +64,27 @@ const UsersPage: React.FC = () => {
     if (mounted) {
       getUsers(page);
     }
-  }, [mounted,page]);
+  }, [mounted, page]);
 
   const getUsers = async (pageNumber = 1) => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`/api/users/get?page=${pageNumber}&limit=${limit}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await fetch(
+        `/api/users/get?page=${pageNumber}&limit=${limit}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch users");
       }
 
       const data = await response.json();
-      console.log("Fetched users:", data);
+      // console.log("Fetched users:", data);
       setUsers(data?.data);
       setTotalPages(data?.totalPages);
     } catch (err) {
@@ -115,7 +118,7 @@ const UsersPage: React.FC = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editedUser),
       });
-      console.log("put response", response);
+      // console.log("put response", response);
 
       if (!response.ok) {
         toast.error("Failed to update user");
@@ -154,12 +157,13 @@ const UsersPage: React.FC = () => {
         headers: { "Content-Type": "application/json" },
       });
 
+      const data = await response.json();
+      // console.log(data.error);
       if (!response.ok) {
-        toast.error("Failed to delete user");
-        throw new Error("Failed to delete user");
+        toast.error(data.error || "Failed to delete user");
+        return;
       }
 
-      const data = await response.json();
       // Remove the user from the list
       const updatedUsers = users.filter(
         (user) => user.user_id !== userToDelete.user_id
