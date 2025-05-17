@@ -120,9 +120,10 @@ const UsersPage: React.FC = () => {
       });
       // console.log("put response", response);
 
+      const data=await response.json();
       if (!response.ok) {
-        toast.error("Failed to update user");
-        throw new Error("Failed to update user");
+        toast.error(data.error || "Failed to delete user");
+        return;
       }
 
       // Update the users list

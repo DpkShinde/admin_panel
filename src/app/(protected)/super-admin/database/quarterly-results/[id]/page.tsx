@@ -24,16 +24,18 @@ export default function EditEarningResult() {
 
   // Ref for the contentEditable div
   const editorRef = useRef<HTMLDivElement>(null);
+  // console.log(editorRef.current?.innerHTML)
+  console.log(editorRef)
 
   // Ref to track if we're programmatically updating the editor (to prevent input loop)
   const isUpdatingContentRef = useRef(false);
 
   // Ref to save cursor position
-  const selectionStateRef = useRef<{
-    startNode: Node | null;
-    startOffset: number;
-    endNode: Node | null;
-    endOffset: number;
+    const selectionStateRef = useRef<{
+      startNode: Node | null;
+      startOffset: number;
+      endNode: Node | null;
+      endOffset: number;
   } | null>(null);
 
   // useRouter hook for navigation
@@ -41,7 +43,7 @@ export default function EditEarningResult() {
 
   // Get parameters from the URL
   const params = useParams();
-  const id = params.id; // Assuming the route is /earning-results/edit/[id]
+  const id = params.id; 
 
   // Font sizes array for selection
   const fontSizes = [

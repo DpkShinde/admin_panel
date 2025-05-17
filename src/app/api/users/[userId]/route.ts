@@ -14,6 +14,20 @@ export async function PUT(
     const { username, first_name, last_name, email, phone_number } =
       await req.json();
 
+    const session = await getServerSession(authOptions);
+
+    //checking user is authorize
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (session?.user?.role !== "superadmin") {
+      return NextResponse.json(
+        { error: "Forbidden - Only superadmin can update users" },
+        { status: 403 }
+      );
+    }
+
     const [result] = await pool.query<ResultSetHeader>(
       `UPDATE user_details SET 
         username = ?, first_name = ?, last_name = ?, email = ?, phone_number = ? WHERE user_id = ?`,
