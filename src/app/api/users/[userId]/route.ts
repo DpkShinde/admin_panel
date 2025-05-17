@@ -4,7 +4,7 @@ import { ResultSetHeader } from "mysql2";
 import { getServerSession } from "next-auth";
 import authOptions from "@/../auth.config";
 
-// Edit User
+
 export async function PUT(
   req: Request,
   { params }: { params: { userId: string } }
