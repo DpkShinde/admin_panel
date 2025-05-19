@@ -15,6 +15,8 @@ const Editor = dynamic(() => import("draft-js").then((mod) => mod.Editor), {
 });
 
 import "draft-js/dist/Draft.css";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 // Extended type for custom inline styles
 type CustomInlineStyleType =
@@ -105,6 +107,9 @@ const CreateNews: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
+  //router
+  const router=useRouter();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNews({ ...news, [e.target.name]: e.target.value });
   };
@@ -182,15 +187,22 @@ const CreateNews: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
+        toast.error(data.message || "Failed to create news");
         throw new Error(data.message || "Failed to create news");
       }
 
       setMessage(data.message || "News created successfully!");
+      toast.success(data.message || "News created successfully!");
+
       setNews({
         title: "",
         image_url: "",
         content: EditorState.createEmpty(),
       });
+
+      setTimeout(() => {
+        router.push(`/super-admin/database/news`);
+      }, 3000);
     } catch (err) {
       setMessage((err as Error).message);
     } finally {
