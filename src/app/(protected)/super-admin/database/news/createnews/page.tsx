@@ -530,8 +530,8 @@ const CreateNews: React.FC = () => {
               </div>
             </div>
 
-            {/* Editor area */}
-            <div className="min-h-[300px] border p-3 bg-white text-black">
+            {/* Editor area - Added fixed height and overflow style */}
+            <div className="h-64 overflow-y-auto border p-3 bg-white text-black">
               {Editor && (
                 <Editor
                   placeholder="Enter news content here..."
