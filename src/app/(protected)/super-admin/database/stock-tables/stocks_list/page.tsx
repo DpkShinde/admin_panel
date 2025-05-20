@@ -104,12 +104,13 @@ export default function Home() {
         pbv: row[6],
         ev_ebitda: row[7],
         sales_growth_5y: row[8],
-        clarification: row[9],
-        sector: row[10],
-        High_52W_INR: row[11],
-        Low_52W_INR: row[12],
-        stock_index: row[13],
-        event_date: row[14],
+        profit_growth_5y:row[9],
+        clarification: row[10],
+        sector: row[11],
+        High_52W_INR: row[12],
+        Low_52W_INR: row[13],
+        stock_index: row[14],
+        event_date: row[15],
       }));
 
       //send data to backend

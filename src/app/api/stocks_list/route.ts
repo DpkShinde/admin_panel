@@ -2,14 +2,26 @@ import { NextRequest, NextResponse } from "next/server";
 import pool from "@/utils/db";
 import { ResultSetHeader } from "mysql2";
 
+// Helper to convert Excel serial date to SQL date (YYYY-MM-DD)
+function convertExcelDateToSQLDate(serial: number): string | null {
+  if (!serial || isNaN(serial)) return null;
+  const excelEpoch = new Date(1900, 0, 1);
+  const jsDate = new Date(excelEpoch.getTime() + (serial - 2) * 86400000);
+  return jsDate.toISOString().split("T")[0];
+}
+
 export async function POST(req: NextRequest) {
   const requestData = await req.json();
   const { data } = requestData;
+
+  console.log(data);
   try {
     if (Array.isArray(data) && data.length > 0) {
-      const query = `INSERT INTO dummy_stocks_list (company,ltp_inr,change_percent,market_cap_cr,roe,pe,pbv,ev_ebitda,sales_growth_5y,profit_growth_5y,clarification,sector,High_52W_INR,Low_52W_INR,stock_index,event_date)
-              VALUES ?
-              `;
+      const query = `INSERT INTO dummy_stocks_list (
+        company, ltp_inr, change_percent, market_cap_cr, roe, pe, pbv, ev_ebitda,
+        sales_growth_5y, profit_growth_5y, clarification, sector, High_52W_INR,
+        Low_52W_INR, stock_index, event_date
+      ) VALUES ?`;
 
       const values = data.map((stock: any) => [
         stock.company ?? null,
@@ -22,17 +34,16 @@ export async function POST(req: NextRequest) {
         stock.ev_ebitda ?? 0,
         stock.sales_growth_5y ?? 0,
         stock.profit_growth_5y ?? 0,
-        stock.clarification ?? 0,
+        stock.clarification ?? null,
         stock.sector ?? null,
         stock.High_52W_INR ?? 0,
         stock.Low_52W_INR ?? 0,
         stock.stock_index ?? null,
-        stock.event_date ?? null,
+        convertExcelDateToSQLDate(stock.event_date),
       ]);
 
       const [result] = await pool.query<ResultSetHeader>(query, [values]);
 
-      //response
       return NextResponse.json(
         {
           success: true,
@@ -62,20 +73,23 @@ export async function POST(req: NextRequest) {
         event_date,
       } = data;
 
-      console.log(data)
+      console.log(data);
 
       if (!company) {
         return NextResponse.json(
-          { success: false, message: "Symbol is required." },
+          { success: false, message: "Company is required." },
           { status: 400 }
         );
       }
 
-      const query = `INSERT INTO dummy_stocks_list(company,ltp_inr,change_percent,market_cap_cr,roe,pe,pbv,ev_ebitda,sales_growth_5y,profit_growth_5y,clarification,sector,High_52W_INR,Low_52W_INR,stock_index,event_date)
-      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-      `;
+      const query = `INSERT INTO dummy_stocks_list (
+        company, ltp_inr, change_percent, market_cap_cr, roe, pe, pbv, ev_ebitda,
+        sales_growth_5y, profit_growth_5y, clarification, sector, High_52W_INR,
+        Low_52W_INR, stock_index, event_date
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
       const values = [
-        company ?? null, 
+        company ?? null,
         ltp_inr ?? 0,
         change_percent ?? 0,
         market_cap_cr ?? 0,
@@ -85,17 +99,16 @@ export async function POST(req: NextRequest) {
         ev_ebitda ?? 0,
         sales_growth_5y ?? 0,
         profit_growth_5y ?? 0,
-        clarification ?? 0,
+        clarification ?? null,
         sector ?? null,
         High_52W_INR ?? 0,
         Low_52W_INR ?? 0,
         stock_index ?? null,
-        event_date ?? null,
+        convertExcelDateToSQLDate(event_date),
       ];
 
-      const result = await pool.query<ResultSetHeader>(query, values);
+      const [result] = await pool.query<ResultSetHeader>(query, values);
 
-      //response
       return NextResponse.json(
         {
           success: true,
