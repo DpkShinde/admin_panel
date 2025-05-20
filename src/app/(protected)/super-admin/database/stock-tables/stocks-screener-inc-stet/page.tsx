@@ -69,7 +69,9 @@ export default function Home() {
 
   //handle edit
   const handleEdit = (id: number) => {
-    router.push(`/super-admin/database/stock-tables/stocks-screener-inc-stet/${id}`);
+    router.push(
+      `/super-admin/database/stock-tables/stocks-screener-inc-stet/${id}`
+    );
   };
 
   //handle excel file upload
@@ -85,14 +87,37 @@ export default function Home() {
       //convert excel row to api format
       const formattedData = rows.slice(1).map((row) => ({
         Symbol: row[0],
-        Revenue: row[1],
-        RevenueGrowth: row[2],
-        GrossProfit: row[3],
-        OperatingIncome: row[4],
-        NetIncome: row[5],
-        EBITDA: row[6],
-        EPS_Diluted: row[7],
-        EPSDilutedGrowth: row[8],
+        Market_cap: row[1],
+        sector: row[2],
+        Revenue: row[3],
+        RevenueGrowth: row[4],
+        GrossProfit: row[5],
+        OperatingIncome: row[6],
+        NetIncome: row[7],
+        EBITDA: row[8],
+        EPS_Diluted: row[9],
+        EPSDilutedGrowth: row[10],
+        Market_cap_crore: row[11],
+        pToE: row[12],
+        pToB: row[13],
+        peg: row[14],
+        pToS: row[15],
+        pToCF: row[16],
+        price: row[17],
+        ev: row[18],
+        evEbitda: row[19],
+        evSales: row[20],
+        evEbit: row[21],
+        index: row[22],
+        marketCapCategory: row[23],
+        NIFTY_50: row[24],
+        NIFTY_NEXT_50: row[25],
+        NIFTY_100: row[26],
+        NIFTY_200: row[27],
+        NIFTY_SMALLCAP_100: row[28],
+        NIFTY_MIDSMALLCAP_400: row[29],
+        NIFTY_LARGEMIDCAP_250: row[30],
+        NIFTY_500: row[31],
       }));
 
       //send data to backend
@@ -125,7 +150,9 @@ export default function Home() {
             variant="add"
             className="p-2 ml-5 cursor-pointer hover:bg-green-800 transition"
             onClick={() =>
-              router.push("/super-admin/database/stock-tables/stocks-screener-inc-stet/add")
+              router.push(
+                "/super-admin/database/stock-tables/stocks-screener-inc-stet/add"
+              )
             }
           >
             Add Stocks
@@ -228,6 +255,30 @@ export default function Home() {
                   marketCapCategory
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_50
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_NEXT_50
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_100
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_200
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_SMALLCAP_100
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_MIDSMALLCAP_400
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_LARGEMIDCAP_250
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
+                  NIFTY_500
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-center">
                   Actions
                 </th>
               </tr>
@@ -310,6 +361,30 @@ export default function Home() {
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
                       {record.marketCapCategory}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_50}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_NEXT_50}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_100}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_200}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_SMALLCAP_100}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_MIDSMALLCAP_400}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_LARGEMIDCAP_250}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {record.NIFTY_500}
                     </td>
                     {/* Actions Column */}
                     <td className="border border-gray-300 px-4 py-2">

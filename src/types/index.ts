@@ -92,6 +92,14 @@ export interface StockScreenerIncomeStatement {
   evEbit: number;
   index: string;
   marketCapCategory: string;
+  NIFTY_50: string;
+  NIFTY_NEXT_50: string;
+  NIFTY_100: string;
+  NIFTY_200: string;
+  NIFTY_SMALLCAP_100: string;
+  NIFTY_MIDSMALLCAP_400: string;
+  NIFTY_LARGEMIDCAP_250: string;
+  NIFTY_500: string;
 }
 
 export interface SectorWeightage {

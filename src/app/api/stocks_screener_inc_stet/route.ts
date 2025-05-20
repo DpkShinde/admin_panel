@@ -6,10 +6,11 @@ export async function POST(req: Request) {
   try {
     const requestData = await req.json();
     const { data } = requestData;
+    console.log(data)
 
     if (Array.isArray(data) && data.length > 0) {
       const query = `
-        INSERT INTO stocks_screener_incomeStatement 
+        INSERT INTO stocks_screener_incomestatement 
         (Symbol,Market_cap, sector, Revenue, RevenueGrowth, GrossProfit, OperatingIncome, NetIncome, EBITDA, EPS_Diluted, EPSDilutedGrowth, Market_cap_crore, pToE, pToB, peg, pToS, pToCF, price, ev, evEbitda, evSales, evEbit, \`index\`, marketCapCategory) 
         VALUES ?
       `;

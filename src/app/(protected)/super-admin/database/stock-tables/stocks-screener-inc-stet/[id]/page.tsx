@@ -34,6 +34,14 @@ export default function UpdateStocks() {
     evEbit: 0,
     index: "",
     marketCapCategory: "",
+    NIFTY_50: "",
+    NIFTY_NEXT_50: "",
+    NIFTY_100: "",
+    NIFTY_200: "",
+    NIFTY_SMALLCAP_100: "",
+    NIFTY_MIDSMALLCAP_400: "",
+    NIFTY_LARGEMIDCAP_250: "",
+    NIFTY_500: "",
   });
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -80,6 +88,14 @@ export default function UpdateStocks() {
           evEbit: data[0].evEbit,
           index: data[0].index,
           marketCapCategory: data[0].marketCapCategory,
+          NIFTY_50: data[0].NIFTY_50,
+          NIFTY_NEXT_50: data[0].NIFTY_NEXT_50,
+          NIFTY_100: data[0].NIFTY_100,
+          NIFTY_200: data[0].NIFTY_200,
+          NIFTY_SMALLCAP_100: data[0].NIFTY_SMALLCAP_100,
+          NIFTY_MIDSMALLCAP_400: data[0].NIFTY_MIDSMALLCAP_400,
+          NIFTY_LARGEMIDCAP_250: data[0].NIFTY_LARGEMIDCAP_250,
+          NIFTY_500: data[0].NIFTY_500,
         }));
       } catch (error: any) {
         setErrorMessage(error.message);
@@ -101,7 +117,15 @@ export default function UpdateStocks() {
         "Market_cap" ||
         "sector" ||
         "index" ||
-        "marketCapCategory"
+        "marketCapCategory" ||
+        "NIFTY_50" ||
+        "NIFTY_NEXT_50" ||
+        "NIFTY_100" ||
+        "NIFTY_200" ||
+        "NIFTY_SMALLCAP_100" ||
+        "NIFTY_MIDSMALLCAP_400" ||
+        "NIFTY_LARGEMIDCAP_250" ||
+        "NIFTY_500"
           ? value
           : parseFloat(value) || 0,
     });
@@ -126,7 +150,9 @@ export default function UpdateStocks() {
 
       toast.success("Stock record updated successfully!");
       setTimeout(() => {
-        router.push("/super-admin/database/stock-tables/stocks-screener-inc-stet");
+        router.push(
+          "/super-admin/database/stock-tables/stocks-screener-inc-stet"
+        );
       }, 1000);
     } catch (error: any) {
       setErrorMessage(error.message || "An unexpected error occurred.");
@@ -159,7 +185,15 @@ export default function UpdateStocks() {
                     key === "Market_cap" ||
                     key === "sector" ||
                     key === "index" ||
-                    key === "marketCapCategory"
+                    key === "marketCapCategory" ||
+                    key === "NIFTY_50" ||
+                    key === "NIFTY_NEXT_50" ||
+                    key === "NIFTY_100" ||
+                    key === "NIFTY_200" ||
+                    key === "NIFTY_SMALLCAP_100" ||
+                    key === "NIFTY_MIDSMALLCAP_400" ||
+                    key === "NIFTY_LARGEMIDCAP_250" ||
+                    key === "NIFTY_500"
                       ? "text"
                       : "number"
                   }
