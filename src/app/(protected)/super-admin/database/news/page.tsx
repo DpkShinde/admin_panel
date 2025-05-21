@@ -130,19 +130,19 @@ const EditDeleteNews: React.FC = () => {
       </div>
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {newsList.map((news) => (
-          <Card key={news.id} className="p-4 shadow-lg rounded-lg">
+          <Card key={news.id} className="p-4 shadow-lg rounded-lg w-auto">
             <CardContent>
-              <h2 className="text-xl font-bold">{news.title}</h2>
-              <p className="text-gray-600 line-clamp-3">{news.content}</p>
+              <h2 className="text-xl font-bold overflow-y-scroll h-24 p-2">{news.title}</h2>
+              <p className="text-gray-600 line-clamp-3 h-32 overflow-y-scroll p-2">{news.content}</p>
               <img
                 src={news.image_url}
                 alt={news.title}
-                className="w-full h-32 object-cover mt-2 rounded"
+                className="w-full h-32 object-cover mt-2 rounded p-2"
               />
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 pl-2">
                 Published: {new Date(news.created_at).toLocaleDateString()}
               </p>
-              <div className="mt-4 flex space-x-2">
+              <div className="mt-4 flex space-x-2 p-2">
                 <Button onClick={() => handleEdit(news)}>Edit</Button>
                 <Button
                   variant="destructive"

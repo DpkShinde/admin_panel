@@ -25,7 +25,7 @@ export default function EditEarningResult() {
   // Ref for the contentEditable div
   const editorRef = useRef<HTMLDivElement>(null);
   // console.log(editorRef.current?.innerHTML)
-  console.log(editorRef)
+  // console.log(editorRef)
 
   // Ref to track if we're programmatically updating the editor (to prevent input loop)
   const isUpdatingContentRef = useRef(false);
