@@ -1,5 +1,8 @@
 import pool from "@/utils/db";
 import { RowDataPacket, ResultSetHeader } from "mysql2";
+import authOptions from "@/../auth.config";
+import { getServerSession } from "next-auth";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
@@ -24,6 +27,23 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+
+     const session = await getServerSession(authOptions);
+
+    //checking user is authorize or not
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (session?.user?.role !== "superadmin") {
+      return NextResponse.json(
+        {
+          error: "Forbidden - Only superadmin can Add Plans",
+        },
+        { status: 403 }
+      );
+    }
+
     const {
       plan,
       halfyearly_price,
