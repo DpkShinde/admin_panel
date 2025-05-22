@@ -381,10 +381,10 @@ const EditDeleteBlog: React.FC = () => {
           return (
             <Card key={blog.id} className="p-4 shadow-lg rounded-lg">
               <CardContent>
-                <h2 className="text-xl font-bold">{blog.title}</h2>
-                <div className="line-clamp-3">{contentToDisplay}</div>
-                <p className="text-sm text-gray-500">Author: {blog.author}</p>
-                <p className="text-sm text-gray-500">
+                <h2 className="text-xl font-bold h-16 overflow-y-scroll">{blog.title}</h2>
+                <div className="line-clamp-3 overflow-y-scroll h-28">{contentToDisplay}</div>
+                <p className="text-sm text-gray-500 mt-3 font-bold">Author: {blog.author}</p>
+                <p className="text-sm text-green-400">
                   Category: {blog.category}
                 </p>
                 <p className="text-sm text-gray-400">

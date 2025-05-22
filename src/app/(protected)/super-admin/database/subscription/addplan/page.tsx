@@ -39,7 +39,7 @@ const AddPlan: React.FC = () => {
 
       toast.success(data.message);
 
-      router.push("/super-admin/");
+      router.push("/super-admin/database/subscription");
     } catch (err) {
       setError((err as Error).message);
     }
