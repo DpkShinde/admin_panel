@@ -1,3 +1,5 @@
+// next.config.js
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
@@ -5,6 +7,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  reactStrictMode: false, // <--- Add this line
 };
 
-export default nextConfig;
+module.exports = nextConfig;

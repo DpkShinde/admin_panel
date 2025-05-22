@@ -1,165 +1,207 @@
+// src/app/[protected]/super-admin/database/news/createnews/page.tsx
+
 "use client";
-import React, { useState } from "react";
-import dynamic from "next/dynamic";
-import {
-  convertToRaw,
-  EditorState,
-  RichUtils,
-  Modifier,
-  DraftInlineStyleType,
-} from "draft-js";
 
-// Dynamically import Editor to avoid SSR issues
-const Editor = dynamic(() => import("draft-js").then((mod) => mod.Editor), {
-  ssr: false,
-});
-
-import "draft-js/dist/Draft.css";
+import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-// Extended type for custom inline styles
-type CustomInlineStyleType =
-  | DraftInlineStyleType
-  | "STRIKETHROUGH"
-  | "SUPERSCRIPT"
-  | "SUBSCRIPT"
-  | "FONTSIZE-12"
-  | "FONTSIZE-14"
-  | "FONTSIZE-16"
-  | "FONTSIZE-18"
-  | "FONTSIZE-20"
-  | "FONTSIZE-24"
-  | "FONTSIZE-30"
-  | "FONTSIZE-36"
-  | "FONT-ARIAL"
-  | "FONT-TIMES"
-  | "FONT-COURIER"
-  | "FONT-GEORGIA"
-  | "FONT-VERDANA"
-  | "FONT-ROBOTO"
-  | "COLOR-BLACK"
-  | "COLOR-RED"
-  | "COLOR-BLUE"
-  | "COLOR-GREEN"
-  | "COLOR-PURPLE"
-  | "COLOR-ORANGE"
-  | "BG-YELLOW"
-  | "BG-CYAN"
-  | "BG-LIME"
-  | "BG-PINK"
-  | "BG-LIGHTBLUE"
-  | "BG-LIGHTGRAY";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Underline from "@tiptap/extension-underline";
+import TextStyle from "@tiptap/extension-text-style";
+import Color from "@tiptap/extension-color";
+import Highlight from "@tiptap/extension-highlight";
+import TextAlign from "@tiptap/extension-text-align";
+import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
+import Subscript from "@tiptap/extension-subscript";
+import Superscript from "@tiptap/extension-superscript";
+import Table from "@tiptap/extension-table";
+import TableRow from "@tiptap/extension-table-row";
+import TableHeader from "@tiptap/extension-table-header";
+import TableCell from "@tiptap/extension-table-cell";
+import FontFamily from "@tiptap/extension-font-family";
+import {
+  Bold,
+  Italic,
+  Underline as UnderlineIcon,
+  Strikethrough,
+  Code,
+  Heading1,
+  Heading2,
+  Heading3,
+  List,
+  ListOrdered,
+  Quote,
+  Undo,
+  Redo,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+  Link as LinkIcon,
+  Image as ImageIcon,
+  Table as TableIcon,
+  Palette,
+  Type,
+  Superscript as SuperIcon,
+  Subscript as SubIcon,
+  Highlighter,
+} from "lucide-react";
 
 interface NewsForm {
   title: string;
   image_url: string;
-  content: EditorState;
+  content: string;
 }
-
-const customStyleMap: Record<string, React.CSSProperties> = {
-  // Font sizes
-  "FONTSIZE-12": { fontSize: "12px" },
-  "FONTSIZE-14": { fontSize: "14px" },
-  "FONTSIZE-16": { fontSize: "16px" },
-  "FONTSIZE-18": { fontSize: "18px" },
-  "FONTSIZE-20": { fontSize: "20px" },
-  "FONTSIZE-24": { fontSize: "24px" },
-  "FONTSIZE-30": { fontSize: "30px" },
-  "FONTSIZE-36": { fontSize: "36px" },
-  // Text formatting
-  BOLD: { fontWeight: "bold" },
-  ITALIC: { fontStyle: "italic" },
-  UNDERLINE: { textDecoration: "underline" },
-  STRIKETHROUGH: { textDecoration: "line-through" },
-  SUPERSCRIPT: { verticalAlign: "super", fontSize: "smaller" },
-  SUBSCRIPT: { verticalAlign: "sub", fontSize: "smaller" },
-  // Font families
-  "FONT-ARIAL": { fontFamily: "Arial, sans-serif" },
-  "FONT-TIMES": { fontFamily: "Times New Roman, serif" },
-  "FONT-COURIER": { fontFamily: "Courier New, monospace" },
-  "FONT-GEORGIA": { fontFamily: "Georgia, serif" },
-  "FONT-VERDANA": { fontFamily: "Verdana, sans-serif" },
-  "FONT-ROBOTO": { fontFamily: "Roboto, sans-serif" },
-  // Text colors
-  "COLOR-BLACK": { color: "#000000" },
-  "COLOR-RED": { color: "#FF0000" },
-  "COLOR-BLUE": { color: "#0000FF" },
-  "COLOR-GREEN": { color: "#008000" },
-  "COLOR-PURPLE": { color: "#800080" },
-  "COLOR-ORANGE": { color: "#FFA500" },
-  // Background colors
-  "BG-YELLOW": { backgroundColor: "#FFFF00" },
-  "BG-CYAN": { backgroundColor: "#00FFFF" },
-  "BG-LIME": { backgroundColor: "#00FF00" },
-  "BG-PINK": { backgroundColor: "#FFC0CB" },
-  "BG-LIGHTBLUE": { backgroundColor: "#ADD8E6" },
-  "BG-LIGHTGRAY": { backgroundColor: "#D3D3D3" },
-  // Text alignment is handled by block styling
-};
 
 const CreateNews: React.FC = () => {
   const [news, setNews] = useState<NewsForm>({
     title: "",
     image_url: "",
-    content: EditorState.createEmpty(),
+    content: "",
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showHighlightPicker, setShowHighlightPicker] = useState(false);
 
-  //router
-  const router=useRouter();
+  const router = useRouter();
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Underline,
+      TextStyle,
+      Color,
+      Highlight.configure({
+        multicolor: true,
+      }),
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+      Image.configure({
+        HTMLAttributes: {
+          class: "max-w-full h-auto rounded-lg",
+        },
+      }),
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          class: "text-blue-600 underline hover:text-blue-800",
+        },
+      }),
+      Subscript,
+      Superscript,
+      FontFamily,
+      Table.configure({
+        resizable: true,
+      }),
+      TableRow,
+      TableHeader,
+      TableCell,
+    ],
+    content: news.content,
+    onUpdate: ({ editor }) => {
+      const html = editor.getHTML();
+      setNews((prev) => ({ ...prev, content: html }));
+    },
+    editorProps: {
+      attributes: {
+        class: "prose prose-lg max-w-none min-h-[300px] p-4 focus:outline-none",
+      },
+    },
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNews({ ...news, [e.target.name]: e.target.value });
   };
 
-  const handleEditorChange = (editorState: EditorState) => {
-    setNews({ ...news, content: editorState });
-  };
+  const addImage = useCallback(() => {
+    const url = window.prompt("Enter image URL:");
+    if (url && editor) {
+      editor.chain().focus().setImage({ src: url }).run();
+    }
+  }, [editor]);
 
-  const toggleInlineStyle = (style: CustomInlineStyleType) => {
-    handleEditorChange(RichUtils.toggleInlineStyle(news.content, style));
-  };
+  const addLink = useCallback(() => {
+    const previousUrl = editor?.getAttributes("link").href;
+    const url = window.prompt("Enter URL:", previousUrl);
 
-  const toggleBlockType = (blockType: string) => {
-    handleEditorChange(RichUtils.toggleBlockType(news.content, blockType));
-  };
+    if (url === null) {
+      return;
+    }
 
-  const applyInlineStyle = (prefix: string, value: string) => {
-    // Remove existing styles with the same prefix
-    const currentStyles = news.content.getCurrentInlineStyle().toArray();
-    let newState = news.content;
+    if (url === "") {
+      editor?.chain().focus().extendMarkRange("link").unsetLink().run();
+      return;
+    }
 
-    currentStyles.forEach((style) => {
-      if (style.startsWith(prefix)) {
-        newState = RichUtils.toggleInlineStyle(
-          newState,
-          style as CustomInlineStyleType
-        );
-      }
-    });
+    editor
+      ?.chain()
+      .focus()
+      .extendMarkRange("link")
+      .setLink({ href: url })
+      .run();
+  }, [editor]);
 
-    // Apply the new style
-    const styleToApply = `${prefix}-${value}` as CustomInlineStyleType;
-    handleEditorChange(RichUtils.toggleInlineStyle(newState, styleToApply));
-  };
+  const addTable = useCallback(() => {
+    if (editor) {
+      editor
+        .chain()
+        .focus()
+        .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+        .run();
+    }
+  }, [editor]);
 
-  const applyFontSize = (fontSize: string) => {
-    applyInlineStyle("FONTSIZE", fontSize);
-  };
+  const colors = [
+    "#000000",
+    "#e60000",
+    "#ff9900",
+    "#ffff00",
+    "#008a00",
+    "#0066cc",
+    "#9933ff",
+    "#ffffff",
+    "#facccc",
+    "#ffebcc",
+    "#ffffcc",
+    "#cce8cc",
+    "#cce0f5",
+    "#ebd6ff",
+    "#bbbbbb",
+    "#f06666",
+    "#ffc266",
+    "#ffff66",
+    "#66b266",
+    "#66a3e0",
+    "#c285ff",
+    "#888888",
+    "#a10000",
+    "#b26b00",
+    "#b2b200",
+    "#006100",
+    "#0047b2",
+    "#6b24b2",
+    "#444444",
+    "#5c0000",
+  ];
 
-  const applyFontFamily = (fontFamily: string) => {
-    applyInlineStyle("FONT", fontFamily);
-  };
-
-  const applyTextColor = (color: string) => {
-    applyInlineStyle("COLOR", color);
-  };
-
-  const applyBackgroundColor = (color: string) => {
-    applyInlineStyle("BG", color);
-  };
+  const highlightColors = [
+    "#ffff00",
+    "#00ff00",
+    "#00ffff",
+    "#ff00ff",
+    "#ffa500",
+    "#ff69b4",
+    "#98fb98",
+    "#87ceeb",
+    "#dda0dd",
+    "#f0e68c",
+    "#ffd700",
+    "#ffb6c1",
+  ];
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -167,10 +209,6 @@ const CreateNews: React.FC = () => {
     setMessage(null);
 
     try {
-      const contentRaw = JSON.stringify(
-        convertToRaw(news.content.getCurrentContent())
-      );
-
       const response = await fetch("/api/news", {
         method: "POST",
         headers: {
@@ -179,7 +217,7 @@ const CreateNews: React.FC = () => {
         body: JSON.stringify({
           title: news.title,
           image_url: news.image_url,
-          content: contentRaw,
+          content: news.content,
           action: "create",
         }),
       });
@@ -197,12 +235,14 @@ const CreateNews: React.FC = () => {
       setNews({
         title: "",
         image_url: "",
-        content: EditorState.createEmpty(),
+        content: "",
       });
+
+      editor?.commands.setContent("");
 
       setTimeout(() => {
         router.push(`/super-admin/database/news`);
-      }, 3000);
+      }, 1000);
     } catch (err) {
       setMessage((err as Error).message);
     } finally {
@@ -210,360 +250,658 @@ const CreateNews: React.FC = () => {
     }
   };
 
-  // Helper function to determine if a style is currently active
-  const hasInlineStyle = (prefix: string, value: string): boolean => {
-    const styleToCheck = prefix ? `${prefix}-${value}` : value;
-    return news.content.getCurrentInlineStyle().has(styleToCheck);
-  };
-
-  const isBlockType = (blockType: string): boolean => {
-    const selection = news.content.getSelection();
-    const blockKey = selection.getStartKey();
-    const currentBlockType = news.content
-      .getCurrentContent()
-      .getBlockForKey(blockKey)
-      .getType();
-    return currentBlockType === blockType;
-  };
+  if (!editor) {
+    return (
+      <div className="max-w-5xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-gray-500">Loading editor...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
-      <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">
-        Create News
-      </h3>
+    <div className="max-w-6xl mx-auto p-6 bg-white shadow-xl rounded-xl mt-10">
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-xl -mx-6 -mt-6 mb-6">
+        <h3 className="text-3xl font-bold text-center">Create News Article</h3>
+        <p className="text-center mt-2 text-blue-100">
+          Craft engaging news content with our advanced editor
+        </p>
+      </div>
 
-      {message && <p className="text-green-500 text-center">{message}</p>}
+      {message && (
+        <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-6">
+          {message}
+        </div>
+      )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="title" className="block font-medium text-gray-700">
-            News Title:
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            placeholder="Enter news title"
-            value={news.title}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border text-black border-gray-300 rounded focus:ring-2 focus:ring-indigo-500"
-          />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label
+              htmlFor="title"
+              className="block font-semibold text-gray-700 mb-2"
+            >
+              Article Title
+            </label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              placeholder="Enter a compelling news title..."
+              value={news.title}
+              onChange={handleChange}
+              required
+              className="w-full p-3 border-2 text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="image_url"
+              className="block font-semibold text-gray-700 mb-2"
+            >
+              Featured Image URL
+            </label>
+            <input
+              type="url"
+              id="image_url"
+              name="image_url"
+              placeholder="https://example.com/image.jpg"
+              value={news.image_url}
+              onChange={handleChange}
+              required
+              className="w-full p-3 border-2 text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+            />
+          </div>
         </div>
 
-        <div>
-          <label
-            htmlFor="image_url"
-            className="block font-medium text-gray-700"
-          >
-            Image URL:
-          </label>
-          <input
-            type="text"
-            id="image_url"
-            name="image_url"
-            placeholder="Enter image URL"
-            value={news.image_url}
-            onChange={handleChange}
-            required
-            className="w-full p-2 text-black border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+        {news.image_url && (
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="font-semibold text-gray-700 mb-2">Image Preview:</h4>
+            <img
+              src={news.image_url}
+              alt="Featured preview"
+              className="max-w-sm h-48 object-cover rounded-lg shadow-md"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = "none";
+              }}
+            />
+          </div>
+        )}
 
         <div>
-          <label htmlFor="content" className="block font-medium text-gray-700">
-            News Content:
+          <label className="block font-semibold text-gray-700 mb-2">
+            Article Content
           </label>
-          <div className="border border-gray-300 rounded">
-            {/* Formatting toolbar */}
-            <div className="bg-gray-100 p-2 border-b border-gray-300">
-              {/* Text formatting section */}
-              <div className="flex flex-wrap gap-1 mb-2">
+
+          {/* Toolbar */}
+          <div className="border border-gray-300 rounded-t-lg bg-gray-50 p-3">
+            <div className="flex flex-wrap gap-2">
+              {/* Text Formatting */}
+              <div className="flex gap-1 border-r border-gray-300 pr-2">
                 <button
                   type="button"
-                  className={`px-2 py-1 ${
-                    hasInlineStyle("", "BOLD") ? "bg-gray-400" : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleInlineStyle("BOLD")}
+                  onClick={() => editor.chain().focus().toggleBold().run()}
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive("bold") ? "bg-blue-200 text-blue-800" : ""
+                  }`}
                   title="Bold"
                 >
-                  <strong>B</strong>
+                  <Bold size={16} />
                 </button>
                 <button
                   type="button"
-                  className={`px-2 py-1 ${
-                    hasInlineStyle("", "ITALIC") ? "bg-gray-400" : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleInlineStyle("ITALIC")}
+                  onClick={() => editor.chain().focus().toggleItalic().run()}
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive("italic") ? "bg-blue-200 text-blue-800" : ""
+                  }`}
                   title="Italic"
                 >
-                  <em>I</em>
+                  <Italic size={16} />
                 </button>
                 <button
                   type="button"
-                  className={`px-2 py-1 ${
-                    hasInlineStyle("", "UNDERLINE")
-                      ? "bg-gray-400"
-                      : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleInlineStyle("UNDERLINE")}
+                  onClick={() => editor.chain().focus().toggleUnderline().run()}
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive("underline")
+                      ? "bg-blue-200 text-blue-800"
+                      : ""
+                  }`}
                   title="Underline"
                 >
-                  <span className="underline">U</span>
+                  <UnderlineIcon size={16} />
                 </button>
                 <button
                   type="button"
-                  className={`px-2 py-1 ${
-                    hasInlineStyle("", "STRIKETHROUGH")
-                      ? "bg-gray-400"
-                      : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleInlineStyle("STRIKETHROUGH")}
+                  onClick={() => editor.chain().focus().toggleStrike().run()}
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive("strike") ? "bg-blue-200 text-blue-800" : ""
+                  }`}
                   title="Strikethrough"
                 >
-                  <span className="line-through">S</span>
+                  <Strikethrough size={16} />
                 </button>
+              </div>
+
+              {/* Script */}
+              <div className="flex gap-1 border-r border-gray-300 pr-2">
                 <button
                   type="button"
-                  className={`px-2 py-1 ${
-                    hasInlineStyle("", "SUPERSCRIPT")
-                      ? "bg-gray-400"
-                      : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleInlineStyle("SUPERSCRIPT")}
+                  onClick={() =>
+                    editor.chain().focus().toggleSuperscript().run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive("superscript")
+                      ? "bg-blue-200 text-blue-800"
+                      : ""
+                  }`}
                   title="Superscript"
                 >
-                  x<sup>2</sup>
+                  <SuperIcon size={16} />
                 </button>
                 <button
                   type="button"
-                  className={`px-2 py-1 ${
-                    hasInlineStyle("", "SUBSCRIPT")
-                      ? "bg-gray-400"
-                      : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleInlineStyle("SUBSCRIPT")}
+                  onClick={() => editor.chain().focus().toggleSubscript().run()}
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive("subscript")
+                      ? "bg-blue-200 text-blue-800"
+                      : ""
+                  }`}
                   title="Subscript"
                 >
-                  H<sub>2</sub>O
+                  <SubIcon size={16} />
                 </button>
+              </div>
 
-                {/* Block type controls */}
-                <div className="border-l border-gray-300 mx-1"></div>
+              {/* Headers */}
+              <div className="flex gap-1 border-r border-gray-300 pr-2">
                 <button
                   type="button"
-                  className={`px-2 py-1 ${
-                    isBlockType("header-one") ? "bg-gray-400" : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleBlockType("header-one")}
+                  onClick={() =>
+                    editor.chain().focus().toggleHeading({ level: 1 }).run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive("heading", { level: 1 })
+                      ? "bg-blue-200 text-blue-800"
+                      : ""
+                  }`}
                   title="Heading 1"
                 >
-                  H1
+                  <Heading1 size={16} />
                 </button>
                 <button
                   type="button"
-                  className={`px-2 py-1 ${
-                    isBlockType("header-two") ? "bg-gray-400" : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleBlockType("header-two")}
+                  onClick={() =>
+                    editor.chain().focus().toggleHeading({ level: 2 }).run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive("heading", { level: 2 })
+                      ? "bg-blue-200 text-blue-800"
+                      : ""
+                  }`}
                   title="Heading 2"
                 >
-                  H2
+                  <Heading2 size={16} />
                 </button>
                 <button
                   type="button"
-                  className={`px-2 py-1 ${
-                    isBlockType("header-three") ? "bg-gray-400" : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleBlockType("header-three")}
+                  onClick={() =>
+                    editor.chain().focus().toggleHeading({ level: 3 }).run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive("heading", { level: 3 })
+                      ? "bg-blue-200 text-blue-800"
+                      : ""
+                  }`}
                   title="Heading 3"
                 >
-                  H3
+                  <Heading3 size={16} />
                 </button>
+              </div>
+
+              {/* Lists */}
+              <div className="flex gap-1 border-r border-gray-300 pr-2">
                 <button
                   type="button"
-                  className={`px-2 py-1 ${
-                    isBlockType("unordered-list-item")
-                      ? "bg-gray-400"
-                      : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleBlockType("unordered-list-item")}
+                  onClick={() =>
+                    editor.chain().focus().toggleBulletList().run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive("bulletList")
+                      ? "bg-blue-200 text-blue-800"
+                      : ""
+                  }`}
                   title="Bullet List"
                 >
-                  • List
+                  <List size={16} />
                 </button>
                 <button
                   type="button"
-                  className={`px-2 py-1 ${
-                    isBlockType("ordered-list-item")
-                      ? "bg-gray-400"
-                      : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleBlockType("ordered-list-item")}
+                  onClick={() =>
+                    editor.chain().focus().toggleOrderedList().run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive("orderedList")
+                      ? "bg-blue-200 text-blue-800"
+                      : ""
+                  }`}
                   title="Numbered List"
                 >
-                  1. List
-                </button>
-                <button
-                  type="button"
-                  className={`px-2 py-1 ${
-                    isBlockType("blockquote") ? "bg-gray-400" : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleBlockType("blockquote")}
-                  title="Quote"
-                >
-                  " Quote
-                </button>
-                <button
-                  type="button"
-                  className={`px-2 py-1 ${
-                    isBlockType("code-block") ? "bg-gray-400" : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleBlockType("code-block")}
-                  title="Code Block"
-                >
-                  {"</>"}
+                  <ListOrdered size={16} />
                 </button>
               </div>
 
-              {/* Font control section */}
-              <div className="flex flex-wrap gap-1 mb-2">
-                <select
-                  className="px-2 py-1 bg-gray-200 border border-gray-300 rounded text-xs"
-                  onChange={(e) => applyFontFamily(e.target.value)}
-                  value=""
-                >
-                  <option value="" disabled>
-                    Font Family
-                  </option>
-                  <option value="ARIAL">Arial</option>
-                  <option value="TIMES">Times New Roman</option>
-                  <option value="COURIER">Courier New</option>
-                  <option value="GEORGIA">Georgia</option>
-                  <option value="VERDANA">Verdana</option>
-                  <option value="ROBOTO">Roboto</option>
-                </select>
-
-                <select
-                  className="px-2 py-1 bg-gray-200 border border-gray-300 rounded text-xs"
-                  onChange={(e) => applyFontSize(e.target.value)}
-                  value=""
-                >
-                  <option value="" disabled>
-                    Font Size
-                  </option>
-                  <option value="12">12px</option>
-                  <option value="14">14px</option>
-                  <option value="16">16px</option>
-                  <option value="18">18px</option>
-                  <option value="20">20px</option>
-                  <option value="24">24px</option>
-                  <option value="30">30px</option>
-                  <option value="36">36px</option>
-                </select>
-
-                <div className="border-l border-gray-300 mx-1"></div>
-
-                <select
-                  className="px-2 py-1 bg-gray-200 border border-gray-300 rounded text-xs"
-                  onChange={(e) => applyTextColor(e.target.value)}
-                  value=""
-                >
-                  <option value="" disabled>
-                    Text Color
-                  </option>
-                  <option value="BLACK">Black</option>
-                  <option value="RED">Red</option>
-                  <option value="BLUE">Blue</option>
-                  <option value="GREEN">Green</option>
-                  <option value="PURPLE">Purple</option>
-                  <option value="ORANGE">Orange</option>
-                </select>
-
-                <select
-                  className="px-2 py-1 bg-gray-200 border border-gray-300 rounded text-xs"
-                  onChange={(e) => applyBackgroundColor(e.target.value)}
-                  value=""
-                >
-                  <option value="" disabled>
-                    Background
-                  </option>
-                  <option value="YELLOW">Yellow</option>
-                  <option value="CYAN">Cyan</option>
-                  <option value="LIME">Lime</option>
-                  <option value="PINK">Pink</option>
-                  <option value="LIGHTBLUE">Light Blue</option>
-                  <option value="LIGHTGRAY">Light Gray</option>
-                </select>
-              </div>
-
-              {/* Text alignment section */}
-              <div className="flex flex-wrap gap-1">
+              {/* Alignment */}
+              <div className="flex gap-1 border-r border-gray-300 pr-2">
                 <button
                   type="button"
-                  className={`px-2 py-1 ${
-                    isBlockType("left") ? "bg-gray-400" : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleBlockType("left")}
+                  onClick={() =>
+                    editor.chain().focus().setTextAlign("left").run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive({ textAlign: "left" })
+                      ? "bg-blue-200 text-blue-800"
+                      : ""
+                  }`}
                   title="Align Left"
                 >
-                  ←
+                  <AlignLeft size={16} />
                 </button>
                 <button
                   type="button"
-                  className={`px-2 py-1 ${
-                    isBlockType("center") ? "bg-gray-400" : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleBlockType("center")}
+                  onClick={() =>
+                    editor.chain().focus().setTextAlign("center").run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive({ textAlign: "center" })
+                      ? "bg-blue-200 text-blue-800"
+                      : ""
+                  }`}
                   title="Align Center"
                 >
-                  ↔
+                  <AlignCenter size={16} />
                 </button>
                 <button
                   type="button"
-                  className={`px-2 py-1 ${
-                    isBlockType("right") ? "bg-gray-400" : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleBlockType("right")}
+                  onClick={() =>
+                    editor.chain().focus().setTextAlign("right").run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive({ textAlign: "right" })
+                      ? "bg-blue-200 text-blue-800"
+                      : ""
+                  }`}
                   title="Align Right"
                 >
-                  →
+                  <AlignRight size={16} />
                 </button>
                 <button
                   type="button"
-                  className={`px-2 py-1 ${
-                    isBlockType("justify") ? "bg-gray-400" : "bg-gray-200"
-                  } hover:bg-gray-300 rounded text-xs`}
-                  onClick={() => toggleBlockType("justify")}
+                  onClick={() =>
+                    editor.chain().focus().setTextAlign("justify").run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive({ textAlign: "justify" })
+                      ? "bg-blue-200 text-blue-800"
+                      : ""
+                  }`}
                   title="Justify"
                 >
-                  ⇌
+                  <AlignJustify size={16} />
+                </button>
+              </div>
+
+              {/* Colors */}
+              <div className="flex gap-1 border-r border-gray-300 pr-2 relative">
+                <button
+                  type="button"
+                  onClick={() => setShowColorPicker(!showColorPicker)}
+                  className="p-2 rounded hover:bg-gray-200 transition-colors"
+                  title="Text Color"
+                >
+                  <Palette size={16} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowHighlightPicker(!showHighlightPicker)}
+                  className="p-2 rounded hover:bg-gray-200 transition-colors"
+                  title="Highlight"
+                >
+                  <Highlighter size={16} />
+                </button>
+
+                {showColorPicker && (
+                  <div className="absolute top-12 left-0 bg-white border border-gray-300 rounded-lg p-2 shadow-lg z-10">
+                    <div className="grid grid-cols-6 gap-1">
+                      {colors.map((color) => (
+                        <button
+                          key={color}
+                          type="button"
+                          className="w-6 h-6 rounded border border-gray-300 hover:scale-110 transition-transform"
+                          style={{ backgroundColor: color }}
+                          onClick={() => {
+                            editor.chain().focus().setColor(color).run();
+                            setShowColorPicker(false);
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {showHighlightPicker && (
+                  <div className="absolute top-12 left-0 bg-white border border-gray-300 rounded-lg p-2 shadow-lg z-10">
+                    <div className="grid grid-cols-4 gap-1">
+                      {highlightColors.map((color) => (
+                        <button
+                          key={color}
+                          type="button"
+                          className="w-6 h-6 rounded border border-gray-300 hover:scale-110 transition-transform"
+                          style={{ backgroundColor: color }}
+                          onClick={() => {
+                            editor
+                              .chain()
+                              .focus()
+                              .toggleHighlight({ color })
+                              .run();
+                            setShowHighlightPicker(false);
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Media & Other */}
+              <div className="flex gap-1 border-r border-gray-300 pr-2">
+                <button
+                  type="button"
+                  onClick={addLink}
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive("link") ? "bg-blue-200 text-blue-800" : ""
+                  }`}
+                  title="Add Link"
+                >
+                  <LinkIcon size={16} />
+                </button>
+                <button
+                  type="button"
+                  onClick={addImage}
+                  className="p-2 rounded hover:bg-gray-200 transition-colors"
+                  title="Add Image"
+                >
+                  <ImageIcon size={16} />
+                </button>
+                <button
+                  type="button"
+                  onClick={addTable}
+                  className="p-2 rounded hover:bg-gray-200 transition-colors"
+                  title="Add Table"
+                >
+                  <TableIcon size={16} />
+                </button>
+              </div>
+
+              {/* Quote & Code */}
+              <div className="flex gap-1 border-r border-gray-300 pr-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    editor.chain().focus().toggleBlockquote().run()
+                  }
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive("blockquote")
+                      ? "bg-blue-200 text-blue-800"
+                      : ""
+                  }`}
+                  title="Quote"
+                >
+                  <Quote size={16} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().toggleCode().run()}
+                  className={`p-2 rounded hover:bg-gray-200 transition-colors ${
+                    editor.isActive("code") ? "bg-blue-200 text-blue-800" : ""
+                  }`}
+                  title="Inline Code"
+                >
+                  <Code size={16} />
+                </button>
+              </div>
+
+              {/* Undo/Redo */}
+              <div className="flex gap-1">
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().undo().run()}
+                  disabled={!editor.can().chain().focus().undo().run()}
+                  className="p-2 rounded hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Undo"
+                >
+                  <Undo size={16} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().redo().run()}
+                  disabled={!editor.can().chain().focus().redo().run()}
+                  className="p-2 rounded hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Redo"
+                >
+                  <Redo size={16} />
                 </button>
               </div>
             </div>
-
-            {/* Editor area - Added fixed height and overflow style */}
-            <div className="h-64 overflow-y-auto border p-3 bg-white text-black">
-              {Editor && (
-                <Editor
-                  placeholder="Enter news content here..."
-                  editorState={news.content}
-                  onChange={handleEditorChange}
-                  customStyleMap={customStyleMap}
-                />
-              )}
-            </div>
           </div>
+
+          {/* Editor */}
+          <div className="border border-t-0 border-gray-300 rounded-b-lg bg-white h-72 overflow-y-scroll">
+            <EditorContent editor={editor} className="tiptap-editor" />
+          </div>
+        </div>
+
+        {/* Content Preview */}
+        <div className="bg-gray-50 p-6 rounded-lg">
+          <h4 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
+            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+            Live Preview
+          </h4>
+          <div
+            className="prose prose-lg max-w-none bg-white p-6 rounded border min-h-24"
+            dangerouslySetInnerHTML={{
+              __html:
+                news.content ||
+                '<p class="text-gray-400">Your content will appear here as you type...</p>',
+            }}
+          />
         </div>
 
         <button
           type="submit"
-          disabled={loading}
-          className="w-full p-2 text-white bg-blue-600 hover:bg-blue-700 rounded mt-4 transition"
+          disabled={
+            loading ||
+            !news.title.trim() ||
+            !news.image_url.trim() ||
+            !news.content.trim()
+          }
+          className="w-full p-4 text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
         >
-          {loading ? "Creating..." : "Create News"}
+          {loading ? (
+            <span className="flex items-center justify-center gap-3">
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Creating Article...
+            </span>
+          ) : (
+            "Publish News Article"
+          )}
         </button>
       </form>
+
+      <style jsx global>{`
+        .tiptap-editor .ProseMirror {
+          padding: 1.5rem;
+          outline: none;
+          min-height: 300px;
+          font-size: 16px;
+          line-height: 1.6;
+          color: #374151;
+        }
+
+        .tiptap-editor .ProseMirror h1 {
+          font-size: 2rem;
+          font-weight: bold;
+          margin: 1.5rem 0 1rem;
+          color: #1f2937;
+        }
+
+        .tiptap-editor .ProseMirror h2 {
+          font-size: 1.5rem;
+          font-weight: bold;
+          margin: 1.25rem 0 0.75rem;
+          color: #1f2937;
+        }
+
+        .tiptap-editor .ProseMirror h3 {
+          font-size: 1.25rem;
+          font-weight: bold;
+          margin: 1rem 0 0.5rem;
+          color: #1f2937;
+        }
+
+        .tiptap-editor .ProseMirror p {
+          margin: 0.75rem 0;
+        }
+
+        .tiptap-editor .ProseMirror ul,
+        .tiptap-editor .ProseMirror ol {
+          margin: 1rem 0;
+          padding-left: 1.5rem;
+        }
+
+        .tiptap-editor .ProseMirror blockquote {
+          border-left: 4px solid #e5e7eb;
+          margin: 1.5rem 0;
+          padding-left: 1rem;
+          font-style: italic;
+          color: #6b7280;
+        }
+
+        .tiptap-editor .ProseMirror code {
+          background-color: #f3f4f6;
+          color: #ef4444;
+          padding: 0.2rem 0.4rem;
+          border-radius: 0.25rem;
+          font-size: 0.875rem;
+          font-family: "Courier New", monospace;
+        }
+
+        .tiptap-editor .ProseMirror table {
+          border-collapse: collapse;
+          margin: 1rem 0;
+          overflow: hidden;
+          table-layout: fixed;
+          width: 100%;
+        }
+
+        .tiptap-editor .ProseMirror table td,
+        .tiptap-editor .ProseMirror table th {
+          border: 2px solid #e5e7eb;
+          box-sizing: border-box;
+          min-width: 1em;
+          padding: 0.5rem;
+          position: relative;
+          vertical-align: top;
+        }
+
+        .tiptap-editor .ProseMirror table th {
+          background-color: #f9fafb;
+          font-weight: bold;
+          text-align: left;
+        }
+
+        .tiptap-editor .ProseMirror img {
+          max-width: 100%;
+          height: auto;
+          border-radius: 0.5rem;
+          margin: 1rem 0;
+        }
+
+        .tiptap-editor .ProseMirror a {
+          color: #2563eb;
+          text-decoration: underline;
+        }
+
+        .tiptap-editor .ProseMirror a:hover {
+          color: #1d4ed8;
+        }
+
+        .tiptap-editor .ProseMirror mark {
+          border-radius: 0.25rem;
+          padding: 0.1rem 0.2rem;
+        }
+
+        .prose img {
+          max-width: 100%;
+          height: auto;
+          border-radius: 0.5rem;
+          margin: 1rem 0;
+        }
+
+        .prose blockquote {
+          border-left: 4px solid #e5e7eb;
+          margin: 1.5rem 0;
+          padding-left: 1rem;
+          font-style: italic;
+          color: #6b7280;
+        }
+
+        .prose code {
+          background-color: #f3f4f6;
+          color: #ef4444;
+          padding: 0.2rem 0.4rem;
+          border-radius: 0.25rem;
+          font-size: 0.875rem;
+        }
+
+        .prose table {
+          width: 100%;
+          margin: 1rem 0;
+          border-collapse: collapse;
+        }
+
+        .prose table td,
+        .prose table th {
+          border: 1px solid #e5e7eb;
+          padding: 0.5rem;
+          text-align: left;
+        }
+
+        .prose table th {
+          background-color: #f9fafb;
+          font-weight: bold;
+        }
+      `}</style>
     </div>
   );
 };
