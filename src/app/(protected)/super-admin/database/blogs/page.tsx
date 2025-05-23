@@ -9,13 +9,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { convertFromRaw, EditorState } from "draft-js";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-const Editor = dynamic(() => import("draft-js").then((mod) => mod.Editor), {
-  ssr: false,
-});
 
 interface Blog {
   id: number;
@@ -56,7 +51,6 @@ const BlogListTable: React.FC = () => {
   }, []);
 
   const handleEdit = (blog: Blog) => {
-    // Navigate to separate edit component
     router.push(`/super-admin/database/blogs/${blog.id}`);
   };
 
@@ -93,20 +87,6 @@ const BlogListTable: React.FC = () => {
     }
   };
 
-  const renderContent = (content: string) => {
-    try {
-      const rawContent = JSON.parse(content);
-      const contentState = convertFromRaw(rawContent);
-      const editorState = EditorState.createWithContent(contentState);
-      const plainText = contentState.getPlainText();
-      return plainText.length > 100
-        ? plainText.substring(0, 100) + "..."
-        : plainText;
-    } catch (error) {
-      return content.length > 100 ? content.substring(0, 100) + "..." : content;
-    }
-  };
-
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -114,6 +94,16 @@ const BlogListTable: React.FC = () => {
   const totalPages = Math.ceil(blogs.length / itemsPerPage);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+   const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
+
+  const stripHtml = (html: string) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -141,9 +131,6 @@ const BlogListTable: React.FC = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
-                    IMAGE
-                  </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     TITLE
                   </th>
@@ -167,23 +154,6 @@ const BlogListTable: React.FC = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {currentBlogs.map((blog) => (
                   <tr key={blog.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-content-center">
-                        <svg
-                          className="w-6 h-6 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
-                        </svg>
-                      </div>
-                    </td>
                     <td className="px-6 py-4">
                       <div className="text-sm font-medium text-gray-900 max-w-xs">
                         {blog.title.length > 50
@@ -193,7 +163,7 @@ const BlogListTable: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm text-gray-900 max-w-md">
-                        {renderContent(blog.content)}
+                        {truncateText(stripHtml(blog.content),100)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
