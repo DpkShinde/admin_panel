@@ -6,10 +6,6 @@ export async function POST(req: NextRequest) {
   try {
     const { title, content, author, category } = await req.json();
 
-    const rawContent = JSON.parse(content)
-
-    console.log(rawContent)
-
     if (!title || !content || !author || !category) {
       return NextResponse.json(
         { success: false, message: "All fields are required." },
@@ -18,7 +14,7 @@ export async function POST(req: NextRequest) {
     }
 
     const query = `INSERT INTO blogs (title, content, author, category) VALUES (?, ?, ?, ?)`;
-    const values = [title, rawContent, author, category];
+    const values = [title, content, author, category];
 
     const [result] = await pool.execute<ResultSetHeader>(query, values);
 

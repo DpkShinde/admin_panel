@@ -523,3 +523,13 @@ export interface CompanyFinancialResult {
   created_at?: string | Date | null;
   updated_at?: string | Date | null;
 }
+
+//interface of blogs
+interface Blog {
+  id: number;
+  title: string;
+  content: string;
+  author: string;
+  category: string;
+  created_at: string;
+}
