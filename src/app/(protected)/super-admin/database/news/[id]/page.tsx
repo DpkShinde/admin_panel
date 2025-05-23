@@ -1,9 +1,6 @@
-// src/app/[protected]/super-admin/database/news/createnews/page.tsx
-
 "use client";
-
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { use, useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import RichTextEditor from "@/components/text-editors/RichTextEditor";
 
@@ -13,16 +10,17 @@ interface NewsForm {
   content: string;
 }
 
-const CreateNews: React.FC = () => {
+const UpdateNews: React.FC = () => {
   const [news, setNews] = useState<NewsForm>({
     title: "",
     image_url: "",
     content: "",
   });
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
 
   const router = useRouter();
+  //getting id from params
+  const { id } = useParams();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNews({ ...news, [e.target.name]: e.target.value });
@@ -32,14 +30,42 @@ const CreateNews: React.FC = () => {
     setNews((prev) => ({ ...prev, content }));
   };
 
+  //getting data of selected news
+  const getData = async () => {
+    if (!id) return toast.error("Id cannot found");
+    console.log(id);
+    try {
+      const response = await fetch(`/api/news/${id}`);
+      const data = await response.json();
+      console.log(data);
+      if (response.ok) {
+        toast.success(`Successfully get news`);
+        setNews({
+          title: data.title,
+          image_url: data.image_url,
+          content: data.content || "",
+        });
+      } else {
+        toast.error(data.message || "Failed to fetch news");
+      }
+    } catch (error: any) {
+      console.error("Error fetching data:", error);
+      toast.error("Something went wrong while fetching data");
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    setMessage(null);
 
     try {
-      const response = await fetch("/api/news", {
-        method: "POST",
+      const response = await fetch(`/api/news/${id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -47,7 +73,7 @@ const CreateNews: React.FC = () => {
           title: news.title,
           image_url: news.image_url,
           content: news.content,
-          action: "create",
+          action: "update",
         }),
       });
 
@@ -58,9 +84,7 @@ const CreateNews: React.FC = () => {
         throw new Error(data.message || "Failed to create news");
       }
 
-      setMessage(data.message || "News created successfully!");
       toast.success(data.message || "News created successfully!");
-
       setNews({
         title: "",
         image_url: "",
@@ -71,26 +95,20 @@ const CreateNews: React.FC = () => {
         router.push(`/super-admin/database/news`);
       }, 1000);
     } catch (err) {
-      setMessage((err as Error).message);
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white shadow-xl rounded-xl mt-10">
+    <div className="max-w-6xl mx-auto p-6 bg-white shadow-xl rounded-xl mt-0">
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-xl -mx-6 -mt-6 mb-6">
         <h3 className="text-3xl font-bold text-center">Create News Article</h3>
         <p className="text-center mt-2 text-blue-100">
           Craft engaging news content with our advanced editor
         </p>
       </div>
-
-      {message && (
-        <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-6">
-          {message}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -194,10 +212,10 @@ const CreateNews: React.FC = () => {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Creating Article...
+                  Updating Article...
                 </span>
               ) : (
-                "Publish News Article"
+                "Update News Article"
               )}
             </button>
           </div>
@@ -216,4 +234,4 @@ const CreateNews: React.FC = () => {
   );
 };
 
-export default CreateNews;
+export default UpdateNews;
