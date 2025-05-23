@@ -25,18 +25,27 @@ const EditDeleteNews: React.FC = () => {
   const [selectedNews, setSelectedNews] = useState<News | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 10;
 
   const router = useRouter();
 
   useEffect(() => {
-    fetchNews();
-  }, []);
+    fetchNews(page);
+  }, [page]);
 
-  const fetchNews = async () => {
+  const fetchNews = async (pageNumber = 1) => {
     try {
-      const res = await fetch("/api/news/all");
+      const res = await fetch(
+        `/api/news/all?page=${pageNumber}&limit=${limit}`
+      );
       const data = await res.json();
-      if (Array.isArray(data)) setNewsList(data);
+      console.log(data);
+      if (res.ok) {
+        setNewsList(data?.data);
+        setTotalPages(data?.totalPages);
+      }
     } catch (error) {
       console.error("Error fetching news:", error);
       toast.error("Failed to fetch news articles.");
@@ -197,6 +206,22 @@ const EditDeleteNews: React.FC = () => {
             </p>
           </div>
         )}
+      </div>
+
+      {/* paginetion */}
+      <div className="flex justify-between items-center mt-4">
+        <Button disabled={page === 1} onClick={() => setPage(page - 1)}>
+          Previous
+        </Button>
+        <span>
+          Page {page} of {totalPages}
+        </span>
+        <Button
+          disabled={page === totalPages}
+          onClick={() => setPage(page + 1)}
+        >
+          Next
+        </Button>
       </div>
 
       {/* Delete Confirmation Dialog */}
