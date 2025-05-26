@@ -17,6 +17,8 @@ const UpdateNews: React.FC = () => {
     content: "",
   });
   const [loading, setLoading] = useState(false);
+  const [fetchingData, setFetchingData] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
   //getting id from params
@@ -32,31 +34,38 @@ const UpdateNews: React.FC = () => {
 
   //getting data of selected news
   const getData = async () => {
-    if (!id) return toast.error("Id cannot found");
-    console.log(id);
+    if (!id) {
+      setError("No news ID provided");
+      setFetchingData(false);
+      return;
+    }
+
+    setFetchingData(true);
     try {
       const response = await fetch(`/api/news/${id}`);
       const data = await response.json();
-      console.log(data);
+
       if (response.ok) {
-        toast.success(`Successfully get news`);
         setNews({
           title: data.title,
           image_url: data.image_url,
           content: data.content || "",
         });
+        setError(null);
       } else {
-        toast.error(data.message || "Failed to fetch news");
+        setError(data.message || "Failed to fetch news");
       }
     } catch (error: any) {
       console.error("Error fetching data:", error);
-      toast.error("Something went wrong while fetching data");
+      setError("Something went wrong while fetching data");
+    } finally {
+      setFetchingData(false);
     }
   };
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -79,153 +88,310 @@ const UpdateNews: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        toast.error(data.message || "Failed to create news");
-        throw new Error(data.message || "Failed to create news");
+        toast.error(data.message || "Failed to update news");
+        throw new Error(data.message || "Failed to update news");
       }
 
-      toast.success(data.message || "News created successfully!");
-      setNews({
-        title: "",
-        image_url: "",
-        content: "",
-      });
-
+      toast.success(data.message || "News updated successfully!");
       setTimeout(() => {
         router.push(`/super-admin/database/news`);
       }, 1000);
     } catch (err) {
       console.error(err);
+      setError("Failed to update news article");
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="max-w-6xl mx-auto p-6 bg-white shadow-xl rounded-xl mt-0">
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-t-xl -mx-6 -mt-6 mb-6">
-        <h3 className="text-3xl font-bold text-center">Update News Article</h3>
+  if (fetchingData) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+          <p className="text-gray-600 font-medium">Loading news article...</p>
+        </div>
       </div>
+    );
+  }
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label
-              htmlFor="title"
-              className="block font-semibold text-gray-700 mb-2"
-            >
-              Article Title
-            </label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              placeholder="Enter a compelling news title..."
-              value={news.title}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border-2 text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-            />
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+          <div className="flex items-center space-x-3">
+            <div className="flex-shrink-0">
+              <svg
+                className="h-8 w-8 text-red-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-red-800 font-medium">Error Loading News</h3>
+              <p className="text-red-600 text-sm mt-1">{error}</p>
+            </div>
           </div>
+        </div>
+      </div>
+    );
+  }
 
-          <div>
-            <label
-              htmlFor="image_url"
-              className="block font-semibold text-gray-700 mb-2"
-            >
-              Featured Image URL
-            </label>
-            <input
-              type="url"
-              id="image_url"
-              name="image_url"
-              placeholder="https://example.com/image.jpg"
-              value={news.image_url}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border-2 text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-            />
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4">
+      <div className="max-w-full mx-auto">
+        {/* Header Section */}
+        <div className="bg-white rounded-2xl shadow-xl mb-6 overflow-hidden">
+          <div className="bg-gradient-to-r from-green-600 via-green-500 to-emerald-500 px-8 py-6">
+            <div className="flex items-center space-x-4">
+              <div className="bg-white/20 rounded-full p-3">
+                <svg
+                  className="h-8 w-8 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-white">
+                  Update News Article
+                </h1>
+                <p className="text-green-100 mt-1">
+                  Edit and update your news content
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {news.image_url && (
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-700 mb-2">Image Preview:</h4>
-            <img
-              src={news.image_url}
-              alt="Featured preview"
-              className="max-w-sm h-48 object-cover rounded-lg shadow-md"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = "none";
-              }}
-            />
-          </div>
-        )}
-
-        <div>
-          <label className="block font-semibold text-gray-700 mb-2">
-            Article Content
-          </label>
-          <RichTextEditor
-            content={news.content}
-            onChange={handleContentChange}
-            placeholder="Your content will appear here as you type..."
-            minHeight="400px"
-            showPreview={true}
-          />
-        </div>
-
-        <div className="flex justify-between">
-          <div>
-            <button
-              type="submit"
-              disabled={
-                loading ||
-                !news.title.trim() ||
-                !news.image_url.trim() ||
-                !news.content.trim()
-              }
-              className="w-52 p-2 cursor-pointer text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
-            >
-              {loading ? (
-                <span className="flex items-center justify-center gap-3">
+        {/* Main Form */}
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          <form onSubmit={handleSubmit} className="p-8 space-y-8">
+            {/* Title and Image URL Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Article Title */}
+              <div className="space-y-3">
+                <label
+                  htmlFor="title"
+                  className="flex items-center space-x-2 text-lg font-semibold text-gray-800"
+                >
                   <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-green-600"
                     fill="none"
                     viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
                     <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                    />
                   </svg>
-                  Updating Article...
-                </span>
-              ) : (
-                "Update News Article"
-              )}
-            </button>
-          </div>
-          <div>
-            <button
-              type="button"
-              className="w-52 p-2 cursor-pointer text-white bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
-              onClick={() => router.push(`/super-admin/database/news`)}
-            >
-              Cancel
-            </button>
-          </div>
+                  <span>Article Title</span>
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  placeholder="Enter a compelling news title..."
+                  value={news.title}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-800 
+                           focus:border-green-500 focus:ring-4 focus:ring-green-100 
+                           transition-all duration-200 bg-gray-50 hover:bg-white
+                           placeholder-gray-400 text-lg"
+                />
+              </div>
+
+              {/* Featured Image URL */}
+              <div className="space-y-3">
+                <label
+                  htmlFor="image_url"
+                  className="flex items-center space-x-2 text-lg font-semibold text-gray-800"
+                >
+                  <svg
+                    className="h-5 w-5 text-green-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <span>Featured Image URL</span>
+                </label>
+                <input
+                  type="url"
+                  id="image_url"
+                  name="image_url"
+                  placeholder="https://example.com/image.jpg"
+                  value={news.image_url}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-800 
+                           focus:border-green-500 focus:ring-4 focus:ring-green-100 
+                           transition-all duration-200 bg-gray-50 hover:bg-white
+                           placeholder-gray-400"
+                />
+              </div>
+            </div>
+
+            {/* Image Preview */}
+            {news.image_url && (
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200">
+                <div className="flex items-center space-x-2 mb-4">
+                  <svg
+                    className="h-5 w-5 text-green-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                  </svg>
+                  <h4 className="font-semibold text-gray-800">Image Preview</h4>
+                </div>
+                <div className="flex justify-center">
+                  <img
+                    src={news.image_url}
+                    alt="Featured preview"
+                    className="max-w-md h-48 object-cover rounded-lg shadow-md border border-gray-200"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Article Content */}
+            <div className="space-y-3">
+              <label className="flex items-center space-x-2 text-lg font-semibold text-gray-800">
+                <svg
+                  className="h-5 w-5 text-green-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                <span>Article Content</span>
+              </label>
+              <div className="border-2 border-gray-200 rounded-xl overflow-hidden hover:border-green-300 transition-colors duration-200">
+                <RichTextEditor
+                  content={news.content}
+                  onChange={handleContentChange}
+                  placeholder="Your content will appear here as you type..."
+                  minHeight="500px"
+                  showPreview={true}
+                />
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4 pt-6 border-t border-gray-200">
+              <button
+                type="submit"
+                disabled={
+                  loading ||
+                  !news.title.trim() ||
+                  !news.image_url.trim() ||
+                  !news.content.trim()
+                }
+                className="w-full sm:w-auto px-8 py-3 text-white bg-gradient-to-r from-green-600 to-emerald-600 
+                         hover:from-green-700 hover:to-emerald-700 rounded-xl font-semibold
+                         transition-all duration-200 flex items-center justify-center space-x-2
+                         focus:ring-4 focus:ring-green-200 disabled:opacity-50 disabled:cursor-not-allowed
+                         shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <span>Updating...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    <span>Update Article</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => router.push(`/super-admin/database/news`)}
+                className="w-full sm:w-auto px-8 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 
+                         border-2 border-gray-300 hover:border-gray-400 rounded-xl font-semibold
+                         transition-all duration-200 flex items-center justify-center space-x-2
+                         focus:ring-4 focus:ring-gray-200"
+              >
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+                <span>Cancel</span>
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 };
