@@ -3,16 +3,10 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import RichTextEditor from "@/components/text-editors/RichTextEditor";
-
-interface Blog {
-  title: string;
-  content: string;
-  author: string;
-  category: string;
-}
+import { CBlog } from "@/types";
 
 const EditBlog: React.FC = () => {
-  const [blog, setBlog] = useState<Blog | null>(null);
+  const [blog, setBlog] = useState<CBlog | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

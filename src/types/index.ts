@@ -525,11 +525,45 @@ export interface CompanyFinancialResult {
 }
 
 //interface of blogs
-interface Blog {
+export interface Blog {
   id: number;
   title: string;
   content: string;
   author: string;
   category: string;
   created_at: string;
+}
+
+//interface of createflogs page
+export interface CBlog {
+  title: string;
+  content: string; // Change from EditorState to string (HTML)
+  author: string;
+  category: string;
+}
+
+//interface of earninng results
+export interface EarningResult {
+  id: number;
+  company_id: number;
+  image_url: string;
+  title: string;
+  MainContent: string;
+  created_date: string;
+}
+
+//interface of news component
+export interface News {
+  id: number;
+  title: string;
+  content?: string;
+  image_url: string;
+  created_at: string;
+}
+
+//interface of create news component
+export interface NewsForm {
+  title: string;
+  image_url: string;
+  content: string;
 }

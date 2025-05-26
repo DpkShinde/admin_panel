@@ -8,18 +8,9 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { convertFromRaw, EditorState } from "draft-js";
+import { Blog } from "@/types";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-interface Blog {
-  id: number;
-  title: string;
-  content: string;
-  author: string;
-  category: string;
-  created_at: string;
-}
 
 const BlogListTable: React.FC = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);

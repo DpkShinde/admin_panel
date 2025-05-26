@@ -3,16 +3,10 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import RichTextEditor from "@/components/text-editors/RichTextEditor"; // Your Tiptap-based editor
-
-interface Blog {
-  title: string;
-  content: string; // Change from EditorState to string (HTML)
-  author: string;
-  category: string;
-}
+import { CBlog } from "@/types";
 
 const CreateBlog: React.FC = () => {
-  const [blog, setBlog] = useState<Blog>({
+  const [blog, setBlog] = useState<CBlog>({
     title: "",
     content: "", // Initialize with an empty string for HTML
     author: "",

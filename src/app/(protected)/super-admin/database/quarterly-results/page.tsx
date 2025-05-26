@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,25 +10,19 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-
-interface EarningResult {
-  id: number;
-  company_id: number;
-  image_url: string;
-  title: string;
-  MainContent: string;
-  created_date: string;
-}
+import { EarningResult } from "@/types";
 
 export default function EarningResultsList() {
   const [results, setResults] = useState<EarningResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedResult, setSelectedResult] = useState<EarningResult | null>(null);
+  const [selectedResult, setSelectedResult] = useState<EarningResult | null>(
+    null
+  );
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
-  
+
   const router = useRouter();
 
   useEffect(() => {
@@ -143,7 +136,9 @@ export default function EarningResultsList() {
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
             <div className="text-red-500 text-xl mb-4">⚠️</div>
-            <p className="text-red-500">Error loading earning results: {error}</p>
+            <p className="text-red-500">
+              Error loading earning results: {error}
+            </p>
           </div>
         </div>
       </div>
@@ -156,7 +151,9 @@ export default function EarningResultsList() {
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <h1 className="text-2xl font-bold text-gray-900">Manage Earning Results</h1>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Manage Earning Results
+            </h1>
             <Button
               onClick={() =>
                 router.push("/super-admin/database/quarterly-results/add")
@@ -205,7 +202,9 @@ export default function EarningResultsList() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{result.company_id}</div>
+                      <div className="text-sm text-gray-900">
+                        {result.company_id}
+                      </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm font-medium text-gray-900 max-w-xs">
@@ -250,8 +249,12 @@ export default function EarningResultsList() {
           {results.length === 0 && (
             <div className="text-center py-12">
               <div className="text-gray-400 text-6xl mb-4">📊</div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No earning results found</h3>
-              <p className="text-gray-500 mb-4">Get started by creating your first earning result.</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No earning results found
+              </h3>
+              <p className="text-gray-500 mb-4">
+                Get started by creating your first earning result.
+              </p>
               <Button
                 onClick={() =>
                   router.push("/super-admin/database/quarterly-results/add")
@@ -342,8 +345,8 @@ export default function EarningResultsList() {
           </DialogHeader>
           <div className="py-4">
             <p className="text-gray-600">
-              Are you sure you want to delete this earning result? This action cannot be
-              undone.
+              Are you sure you want to delete this earning result? This action
+              cannot be undone.
             </p>
             {selectedResult && (
               <div className="mt-3 p-3 bg-gray-50 rounded-md">

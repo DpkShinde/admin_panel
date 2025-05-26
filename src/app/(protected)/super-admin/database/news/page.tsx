@@ -11,14 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
-interface News {
-  id: number;
-  title: string;
-  content: string;
-  image_url: string;
-  created_at: string;
-}
+import { News } from "@/types";
 
 const EditDeleteNews: React.FC = () => {
   const [newsList, setNewsList] = useState<News[]>([]);
@@ -163,7 +156,7 @@ const EditDeleteNews: React.FC = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-[--text-color-default] max-w-md">
-                      {truncateText(stripHtml(news.content), 100)}
+                      {truncateText(stripHtml(news.content ?? ""), 100)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
