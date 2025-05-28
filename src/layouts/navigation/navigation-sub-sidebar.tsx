@@ -60,6 +60,10 @@ const menuItems = [
     ],
   },
   {
+    name: "Stock Research Table",
+    path: "/super-admin/database/research-table",
+  },
+  {
     name: "User Tables",
     path: "/super-admin/database/users",
   },
