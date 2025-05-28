@@ -4,7 +4,6 @@ import { ResultSetHeader } from "mysql2";
 import { getServerSession } from "next-auth";
 import authOptions from "@/../auth.config";
 
-
 export async function PUT(
   req: Request,
   { params }: { params: { userId: string } }
@@ -76,12 +75,29 @@ export async function DELETE(
       );
     }
 
+    //delete details from user details table
     const [result] = await pool.query<ResultSetHeader>(
       `DELETE FROM user_details WHERE user_id = ?`,
       [userId]
     );
 
-    if (result.affectedRows === 0) {
+    //delete details from usertable
+    const [result2] = await pool.query<ResultSetHeader>(
+      `DELETE FROM userstable WHERE user_id = ?`,
+      [userId]
+    );
+
+    //delete records from user_investment_details table
+    const [result3] = await pool.query<ResultSetHeader>(
+      `DELETE FROM user_investment_details WHERE user_id = ?`,
+      [userId]
+    );
+
+    if (
+      result.affectedRows === 0 ||
+      result2.affectedRows === 0 ||
+      result3.affectedRows === 0
+    ) {
       console.log("User not found");
       return new Response(JSON.stringify({ error: "User not found" }), {
         status: 404,
