@@ -4,6 +4,16 @@ import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import RichTextEditor from "@/components/text-editors/RichTextEditor";
 import { CBlog } from "@/types";
+import {
+  BlogAuthorIcon,
+  BlogCategoryIcon,
+  BlogContentIcon,
+  BlogTitle,
+  CancelBtnIcon,
+  EditBlogIcon,
+  ErrorLoadingBlogIcon,
+  UpdateBlogBtn,
+} from "../(utils)/assets";
 
 const EditBlog: React.FC = () => {
   const [blog, setBlog] = useState<CBlog | null>(null);
@@ -92,19 +102,7 @@ const EditBlog: React.FC = () => {
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
           <div className="flex items-center space-x-3">
             <div className="flex-shrink-0">
-              <svg
-                className="h-8 w-8 text-red-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <ErrorLoadingBlogIcon />
             </div>
             <div>
               <h3 className="text-red-800 font-medium">Error Loading Blog</h3>
@@ -126,19 +124,7 @@ const EditBlog: React.FC = () => {
           <div className="bg-gradient-to-r from-green-600 via-green-500 to-emerald-500 px-8 py-6">
             <div className="flex items-center space-x-4">
               <div className="bg-white/20 rounded-full p-3">
-                <svg
-                  className="h-8 w-8 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                  />
-                </svg>
+                <EditBlogIcon />
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-white">
@@ -161,19 +147,7 @@ const EditBlog: React.FC = () => {
                 htmlFor="title"
                 className="flex items-center space-x-2 text-lg font-semibold text-gray-800"
               >
-                <svg
-                  className="h-5 w-5 text-green-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                  />
-                </svg>
+                <BlogTitle />
                 <span>Blog Title</span>
               </label>
               <input
@@ -194,19 +168,7 @@ const EditBlog: React.FC = () => {
             {/* Blog Content */}
             <div className="space-y-3">
               <label className="flex items-center space-x-2 text-lg font-semibold text-gray-800">
-                <svg
-                  className="h-5 w-5 text-green-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
+                <BlogContentIcon />
                 <span>Blog Content</span>
               </label>
               <div className="border-2 border-gray-200 rounded-xl overflow-hidden hover:border-green-300 transition-colors duration-200">
@@ -228,19 +190,7 @@ const EditBlog: React.FC = () => {
                   htmlFor="author"
                   className="flex items-center space-x-2 text-lg font-semibold text-gray-800"
                 >
-                  <svg
-                    className="h-5 w-5 text-green-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
+                  <BlogAuthorIcon />
                   <span>Author</span>
                 </label>
                 <input
@@ -264,19 +214,7 @@ const EditBlog: React.FC = () => {
                   htmlFor="category"
                   className="flex items-center space-x-2 text-lg font-semibold text-gray-800"
                 >
-                  <svg
-                    className="h-5 w-5 text-green-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                    />
-                  </svg>
+                  <BlogCategoryIcon />
                   <span>Category</span>
                 </label>
                 <input
@@ -313,19 +251,7 @@ const EditBlog: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <svg
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
+                    <UpdateBlogBtn />
                     <span>Update Blog</span>
                   </>
                 )}
@@ -339,19 +265,7 @@ const EditBlog: React.FC = () => {
                          transition-all duration-200 flex items-center justify-center space-x-2
                          focus:ring-4 focus:ring-gray-200"
               >
-                <svg
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <CancelBtnIcon />
                 <span>Cancel</span>
               </button>
             </div>
