@@ -567,3 +567,19 @@ export interface NewsForm {
   image_url: string;
   content: string;
 }
+
+//interface of stock research page
+export interface Stock  {
+  research_stock_id: string | number;
+  symbol: string;
+  icon?: string;
+  price?: string | number;
+  price_raw?: string | number;
+  change_perc?: string;
+  market_cap?: string;
+  target?: string | number;
+  rating?: string;
+  profit_booked?: string;
+  upside_downside?: string;
+  date?: string;
+};

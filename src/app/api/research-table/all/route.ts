@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   try {
     //paginetion logic
     const { searchParams } = new URL(req.url);
-
+    // console.log(req.url)
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "10", 10);
     const offset = (page - 1) * limit;
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     const query = `SELECT * FROM research_stocks LIMIT ? OFFSET ?`;
     const countQuery = `SELECT COUNT(*) as total from research_stocks`;
 
-    const [data]: any = await pool.query<ResultSetHeader>(query, offset);
+    const [data]: any = await pool.query<ResultSetHeader>(query,[limit,offset]);
     const [countResult]: any = await pool.query(countQuery);
 
     const total = countResult[0]?.total ?? 0;
@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(
       {
+        message:"successfully get stocks",
         success: true,
         data: data,
         total,
