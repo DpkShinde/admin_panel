@@ -51,6 +51,7 @@ export async function POST(req: NextRequest) {
         { status: 404 } // Not Found
       );
     }
+    
 
     // --- Insert into related tables, linking to the retrieved stockId ---
     // (No changes to the following sections, as they correctly use `stockId`)

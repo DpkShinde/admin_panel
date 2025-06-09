@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import pool from "@/utils/db";
 import pool4 from "@/utils/db3QuaterlyE";
 
 export async function POST(req: NextRequest) {

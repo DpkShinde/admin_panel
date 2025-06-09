@@ -158,7 +158,7 @@ export default function EarningResultsList() {
               onClick={() =>
                 router.push("/super-admin/database/quarterly-results/add")
               }
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+              variant={"add"}
             >
               Add New Result
             </Button>
@@ -187,6 +187,9 @@ export default function EarningResultsList() {
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     CREATED DATE
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    UPDATED DATE
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     ACTIONS
@@ -221,6 +224,11 @@ export default function EarningResultsList() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
                         {formatDate(result.created_date)}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {formatDate(result.updated_date)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

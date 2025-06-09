@@ -550,6 +550,7 @@ export interface EarningResult {
   title: string;
   MainContent: string;
   created_date: string;
+  updated_date:string;
 }
 
 //interface of news component

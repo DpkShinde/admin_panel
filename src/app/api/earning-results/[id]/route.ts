@@ -38,7 +38,7 @@ export async function PUT(
     }
 
     const updatedResult: any[] = await pool4.query(
-      `UPDATE company_articles SET company_id = ?, image_url = ?, title = ?, MainContent = ?, created_date = ? WHERE id = ?`,
+      `UPDATE company_articles SET company_id = ?, image_url = ?, title = ?, MainContent = ?, updated_date = ? WHERE id = ?`,
       [
         data.company_id,
         data.image_url,
