@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/utils/db";
+import authOptions from "@/../auth.config";
+import { getServerSession } from "next-auth";
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,24 +23,20 @@ export async function POST(req: NextRequest) {
       Amount,
       Status,
     } = await req.json();
-    console.log(
-      email,
-      plan_id,
-      billing_cycle,
-      payment_method,
-      card_num,
-      card_expiry_date,
-      upi_id,
-      price_payed,
-      payment_date_time,
-      initail_date,
-      ending_date,
-      //for orders table
-      order_name,
-      order_date,
-      Amount,
-      Status
-    );
+
+    const session = await getServerSession(authOptions);
+
+    //checking user is authorize
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (session?.user?.role !== "superadmin") {
+      return NextResponse.json(
+        { error: "Forbidden – only superadmins can assign subscription plans to users." },
+        { status: 403 }
+      );
+    }
 
     if (!email || !plan_id || !payment_method) {
       return NextResponse.json(
