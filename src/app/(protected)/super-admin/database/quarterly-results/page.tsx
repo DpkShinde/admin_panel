@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { EarningResult } from "@/types";
+import { format, parseISO } from "date-fns";
 
 export default function EarningResultsList() {
   const [results, setResults] = useState<EarningResult[]>([]);
@@ -106,11 +107,8 @@ export default function EarningResultsList() {
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "N/A";
     try {
-      return new Date(dateString).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      });
+      const parseDate = parseISO(dateString);
+      return format(parseDate, "MMM dd,yyyy");
     } catch (error: any) {
       console.log("Error formatting date:", dateString, error);
       return "Invalid Date";

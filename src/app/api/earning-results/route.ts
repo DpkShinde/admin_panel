@@ -4,6 +4,7 @@ import pool4 from "@/utils/db3QuaterlyE";
 export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
+    console.log(data);
 
     if (!data.company_id || !data.title) {
       return NextResponse.json(
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest) {
         data.image_url,
         data.title,
         data.MainContent,
-        new Date().toISOString().slice(0, 19).replace("T", " "),
+        data.created_date
       ]
     );
 
