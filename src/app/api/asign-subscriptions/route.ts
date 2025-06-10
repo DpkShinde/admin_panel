@@ -33,7 +33,10 @@ export async function POST(req: NextRequest) {
 
     if (session?.user?.role !== "superadmin") {
       return NextResponse.json(
-        { error: "Forbidden – only superadmins can assign subscription plans to users." },
+        {
+          error:
+            "Forbidden – only superadmins can assign subscription plans to users.",
+        },
         { status: 403 }
       );
     }
@@ -91,7 +94,7 @@ export async function POST(req: NextRequest) {
     // Insert into orders table
     const [orderResult] = await pool.query(
       `INSERT INTO orders(order_name, order_date, Amount, Status, user_id) VALUES(?, ?, ?, ?, ?)`,
-      [order_name, order_date, Amount, Status, user_id]
+      [order_name, order_date, Amount || "", Status || "", user_id]
     );
 
     //response

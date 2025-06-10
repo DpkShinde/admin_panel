@@ -48,7 +48,7 @@ export default function SubscriptionForm() {
       }
       showToast(result.message, "success");
       reset();
-      router.push(`super-admin/database/subscription`);
+      router.push(`/super-admin/database/subscription`);
     } catch (err) {
       console.error("Submission Error:", err);
       showToast("Something went wrong", "error");
@@ -301,7 +301,7 @@ export default function SubscriptionForm() {
                 </div>
 
                 {/* Conditional Card Fields */}
-                {paymentMethod === "card" && (
+                {/* {paymentMethod === "card" && (
                   <>
                     <div className="space-y-2">
                       <label className="block text-sm font-medium text-gray-700">
@@ -325,10 +325,10 @@ export default function SubscriptionForm() {
                       />
                     </div>
                   </>
-                )}
+                )} */}
 
                 {/* UPI ID */}
-                {paymentMethod === "upi" && (
+                {/* {paymentMethod === "upi" && (
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700">
                       UPI ID (optional)
@@ -339,7 +339,7 @@ export default function SubscriptionForm() {
                       className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 placeholder-gray-400 text-sm"
                     />
                   </div>
-                )}
+                )} */}
 
                 {/* Initial Date */}
                 <div className="space-y-2">
@@ -410,8 +410,6 @@ export default function SubscriptionForm() {
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-sm"
                   >
                     <option value="">Select Order</option>
-                    <option value="Elite half year">Elite half year</option>
-                    <option value="Premium half year">Premium half year</option>
                     <option value="Elite yearly">Elite yearly</option>
                     <option value="Premium yearly">Premium yearly</option>
                   </select>
@@ -430,7 +428,7 @@ export default function SubscriptionForm() {
                   />
                 </div>
 
-                {/* Amount */}
+                {/* Amount
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Amount
@@ -440,9 +438,9 @@ export default function SubscriptionForm() {
                     placeholder="Amount"
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 placeholder-gray-400 text-sm"
                   />
-                </div>
+                </div> */}
 
-                {/* Status */}
+                {/* Status
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Status
@@ -454,9 +452,9 @@ export default function SubscriptionForm() {
                     <option value="">Select Status</option>
                     <option value="Completed">Completed</option>
                   </select>
-                </div>
+                </div> */}
 
-                {/* Order Ending Date */}
+                {/* Order Ending Date
                 <div className="space-y-2 md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Order Ending Date
@@ -467,7 +465,7 @@ export default function SubscriptionForm() {
                     placeholder="Order Ending Date"
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 placeholder-gray-400 text-sm"
                   />
-                </div>
+                </div> */}
               </div>
             </div>
 
