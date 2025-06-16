@@ -52,12 +52,6 @@ const menuItems = [
   {
     name: "Funds Tables",
     path: "/super-admin/database/Funds",
-    subItems: [
-      {
-        name: "Fund Details",
-        path: "/super-admin/database/Funds/fund_details",
-      },
-    ],
   },
   {
     name: "Stock Research Table",
