@@ -8,7 +8,7 @@ export async function PUT(req: NextRequest) {
   let connection; // Declare connection outside try-catch for finally block access
   try {
     const body = await req.json();
-    // console.log("Received body for PUT:", body);
+    console.log("Received body for PUT:", body);
 
     // 1. Validate the entire request body against the master schema
     const validatedData = fullStockResearchSchema.parse(body);
@@ -439,7 +439,8 @@ export async function GET(
 ) {
   let connection;
   try {
-    const stockId = parseInt(params.stockId, 10);
+    const stockId = parseInt(params.id, 10);
+    console.log(stockId)
 
     if (isNaN(stockId)) {
       return NextResponse.json({ message: "Invalid stock ID" }, { status: 400 });
@@ -452,7 +453,7 @@ export async function GET(
 
     // 1. Get basic stock information (symbol, company_name, etc.)
     const [stockRows] = await connection.execute<RowDataPacket[]>(
-      `SELECT research_stock_id, symbol, company_name FROM research_stocks WHERE research_stock_id = ?`,
+      `SELECT * FROM research_stocks WHERE research_stock_id = ?`,
       [stockId]
     );
 

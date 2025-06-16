@@ -112,7 +112,7 @@ export async function DELETE(req: Request) {
     }
 
     const [result] = await pool.query<ResultSetHeader>(
-      `DELETE FROM defaultdb.subscription_plan WHERE plan_id = ?`,
+      `DELETE FROM subscription_plan WHERE plan_id = ?`,
       [plan_id]
     );
 

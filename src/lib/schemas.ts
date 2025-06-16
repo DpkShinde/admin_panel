@@ -36,7 +36,7 @@ export const researchStockBalanceSheetSchema = z.object({
   stock_id: z.number().int().positive().optional(), // Make optional for frontend
 
   fiscal_year: z.number().int().min(1900).max(2100),
-  is_estimate: z.boolean(),
+ is_estimate: z.boolean().optional(), 
   equity_capital: z
     .number()
     .multipleOf(0.01)

@@ -56,7 +56,7 @@ export default function SubscriptionForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 -mt-8">
       {/* Toast Notification */}
       {toast.show && (
         <div
@@ -101,7 +101,7 @@ export default function SubscriptionForm() {
             </p>
           </div>
 
-          <div className="p-8">
+          <div className="p-6">
             {/* Subscription Details Section */}
             <div className="mb-8">
               <div className="flex items-center space-x-3 mb-6">
@@ -115,7 +115,7 @@ export default function SubscriptionForm() {
                 </h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 {/* Email */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
@@ -300,47 +300,6 @@ export default function SubscriptionForm() {
                   )}
                 </div>
 
-                {/* Conditional Card Fields */}
-                {/* {paymentMethod === "card" && (
-                  <>
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Card Number (optional)
-                      </label>
-                      <input
-                        {...register("card_num")}
-                        placeholder="Card Number"
-                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 placeholder-gray-400 text-sm"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Card Expiry Date
-                      </label>
-                      <input
-                        {...register("card_expiry_date")}
-                        placeholder="Card Expiry Date (YYYY-MM-DD)"
-                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 placeholder-gray-400 text-sm"
-                      />
-                    </div>
-                  </>
-                )} */}
-
-                {/* UPI ID */}
-                {/* {paymentMethod === "upi" && (
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      UPI ID (optional)
-                    </label>
-                    <input
-                      {...register("upi_id")}
-                      placeholder="UPI ID"
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 placeholder-gray-400 text-sm"
-                    />
-                  </div>
-                )} */}
-
                 {/* Initial Date */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
@@ -386,7 +345,7 @@ export default function SubscriptionForm() {
             </div>
 
             {/* Order Details Section */}
-            <div className="border-t border-gray-200 pt-8">
+            <div className="border-t border-gray-200 pt-5">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                   <span className="text-blue-600 font-semibold text-sm">2</span>
@@ -399,9 +358,10 @@ export default function SubscriptionForm() {
                 </h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Using flexbox instead of grid for better control */}
+              <div className="flex flex-wrap gap-6">
                 {/* Order Name */}
-                <div className="space-y-2">
+                <div className="space-y-2 w-full sm:w-60">
                   <label className="block text-sm font-medium text-gray-700">
                     Order Name
                   </label>
@@ -416,7 +376,7 @@ export default function SubscriptionForm() {
                 </div>
 
                 {/* Order Date */}
-                <div className="space-y-2">
+                <div className="space-y-2 w-full sm:w-60">
                   <label className="block text-sm font-medium text-gray-700">
                     Order Date
                   </label>
@@ -427,50 +387,11 @@ export default function SubscriptionForm() {
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 placeholder-gray-400 text-sm"
                   />
                 </div>
-
-                {/* Amount
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Amount
-                  </label>
-                  <input
-                    {...register("Amount")}
-                    placeholder="Amount"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 placeholder-gray-400 text-sm"
-                  />
-                </div> */}
-
-                {/* Status
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Status
-                  </label>
-                  <select
-                    {...register("Status")}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-sm"
-                  >
-                    <option value="">Select Status</option>
-                    <option value="Completed">Completed</option>
-                  </select>
-                </div> */}
-
-                {/* Order Ending Date
-                <div className="space-y-2 md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Order Ending Date
-                  </label>
-                  <input
-                    {...register("order_ending_date")}
-                    type="datetime-local"
-                    placeholder="Order Ending Date"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 placeholder-gray-400 text-sm"
-                  />
-                </div> */}
               </div>
             </div>
 
             {/* Submit Button */}
-            <div className="flex justify-between pt-8 mt-8 border-t border-gray-200">
+            <div className="flex justify-between pt-8 mt-5 border-t border-gray-200">
               <button
                 type="submit"
                 disabled={isSubmitting}

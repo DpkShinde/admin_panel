@@ -290,6 +290,11 @@ export default function ResearchTable() {
                           size="sm"
                           variant="outline"
                           className="cursor-pointer"
+                          onClick={() =>
+                            router.push(
+                              `/super-admin/database/research-table/${stock.research_stock_id}`
+                            )
+                          }
                         >
                           View/Edit
                         </Button>
