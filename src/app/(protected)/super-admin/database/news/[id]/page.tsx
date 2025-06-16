@@ -19,6 +19,7 @@ const UpdateNews: React.FC = () => {
     title: "",
     image_url: "",
     content: "",
+    created_date: "",
   });
   const [loading, setLoading] = useState(false);
   const [fetchingData, setFetchingData] = useState(true);
@@ -49,11 +50,18 @@ const UpdateNews: React.FC = () => {
       const response = await fetch(`/api/news/${id}`);
       const data = await response.json();
 
+      const formattedDate = data.created_at
+        ? data.created_at.slice(0, 10) // YYYY-MM-DD
+        : "";
+
+      console.log(formattedDate);
+
       if (response.ok) {
         setNews({
           title: data.title,
           image_url: data.image_url,
           content: data.content || "",
+          created_date: formattedDate,
         });
         setError(null);
       } else {
@@ -85,6 +93,7 @@ const UpdateNews: React.FC = () => {
           title: news.title,
           image_url: news.image_url,
           content: news.content,
+          created_at: news.created_date,
           action: "update",
         }),
       });
@@ -175,7 +184,7 @@ const UpdateNews: React.FC = () => {
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <form onSubmit={handleSubmit} className="p-8 space-y-8">
             {/* Title and Image URL Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Article Title */}
               <div className="space-y-3">
                 <label
@@ -221,6 +230,37 @@ const UpdateNews: React.FC = () => {
                            focus:border-green-500 focus:ring-4 focus:ring-green-100 
                            transition-all duration-200 bg-gray-50 hover:bg-white
                            placeholder-gray-400"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <label
+                  htmlFor="created_date"
+                  className="flex items-center space-x-2 text-lg font-semibold text-gray-800"
+                >
+                  <svg
+                    className="h-5 w-5 text-blue-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 7V3m8 4V3m-9 8h.01M7 12h.01M7 15h.01M17 12h.01M17 15h.01M17 18h.01M16 21H5a2 2 0 01-2-2V7a2 2 0 012-2h14a2 2 0 012 2v12a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                  <span>Created Date</span>
+                </label>
+                <input
+                  type="date"
+                  id="created_date"
+                  name="created_date"
+                  value={news.created_date}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 bg-gray-50 hover:bg-white placeholder-gray-400 text-lg"
                 />
               </div>
             </div>

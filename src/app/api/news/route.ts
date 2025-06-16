@@ -3,10 +3,11 @@ import pool from "@/utils/db";
 
 export async function POST(req: Request) {
   try {
-    const { title, content, image_url } = await req.json();
+    const { title, content, image_url, created_at } = await req.json();
+
     await pool.query(
-      "INSERT INTO news (title, content, image_url) VALUES (?, ?, ?)",
-      [title, content, image_url]
+      "INSERT INTO news (title, content, image_url,created_at) VALUES (?, ?, ?, ?)",
+      [title, content, image_url, created_at]
     );
 
     return NextResponse.json(

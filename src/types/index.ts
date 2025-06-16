@@ -567,6 +567,7 @@ export interface NewsForm {
   title: string;
   image_url: string;
   content: string;
+  created_date: string;
 }
 
 //interface of stock research page

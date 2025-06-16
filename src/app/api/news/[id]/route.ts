@@ -46,10 +46,11 @@ export async function PUT(
       );
     }
 
-    const { title, content, image_url } = await req.json();
+    const { title, content, image_url, created_at } = await req.json();
+    // console.log(created_at);
     await pool.query(
-      "UPDATE news SET title = ?, content = ?, image_url = ? WHERE id = ?",
-      [title, content, image_url, newsId]
+      "UPDATE news SET title = ?, content = ?, image_url = ?, created_at = ? WHERE id = ?",
+      [title, content, image_url, created_at, newsId]
     );
 
     return NextResponse.json(
