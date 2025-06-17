@@ -1,5 +1,5 @@
-import pool from "@/utils/db";
 import { NextRequest, NextResponse } from "next/server";
+import pool from "@/utils/db";
 
 export async function GET(req: NextRequest) {
   try {
@@ -9,14 +9,8 @@ export async function GET(req: NextRequest) {
     const limit = Math.max(parseInt(searchParams.get("limit") || "10", 10), 1);
     const offset = (page - 1) * limit;
 
-    const fetchQuery = `
-      SELECT * FROM etfs
-      LIMIT ? OFFSET ?
-    `;
-
-    const countQuery = `
-      SELECT COUNT(*) AS total FROM etfs
-    `;
+    const fetchQuery: string = `SELECT * FROM etfsDirect LIMIT ? OFFSET ?`;
+    const countQuery: string = `SELECT (*) COUNT AS TOTAL FROM etfsDirect`;
 
     const [data]: any[] = await pool.query(fetchQuery, [limit, offset]);
     const [countResult]: any[] = await pool.query(countQuery);
@@ -32,7 +26,9 @@ export async function GET(req: NextRequest) {
         totalPages,
         currentPage: page,
       },
-      { status: 200 }
+      {
+        status: 200,
+      }
     );
   } catch (error: any) {
     console.error("Error fetching ETF data:", error);
