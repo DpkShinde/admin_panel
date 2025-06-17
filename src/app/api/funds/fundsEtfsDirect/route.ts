@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/utils/db";
-import { fundSchema, excelFundArraySchema } from "@/lib/fund.schema";
+import {
+  etfsDirectArraySchema,
+  etfsDirectSchema,
+} from "@/lib/etfsDirect.schema";
 import { ResultSetHeader } from "mysql2";
 
 //Utility to convert stringified numbers to numbers safely
-function parseNumber(value: any): number | null {
+function parseNumber(value: any) {
   const num = Number(value);
   return isNaN(num) ? null : num;
 }
@@ -14,20 +17,21 @@ export async function POST(req: NextRequest) {
     const requestData = await req.json();
     const { data } = requestData;
 
-    //handle bulk insert (for excel sheet)
+    //handle buld insert(for excel sheet)
     if (Array.isArray(data)) {
-      const parsed = excelFundArraySchema.safeParse(data);
+      const parsed = etfsDirectArraySchema.safeParse(data);
 
       if (!parsed.success) {
         return NextResponse.json(
-          { success: false, error: parsed.error.flatten() },
           {
-            status: 400,
-          }
+            success: false,
+            error: parsed.error.flatten(),
+          },
+          { status: 400 }
         );
       }
 
-      const values = parsed.data.map((entry) => [
+      const values = parsed.data.map((entry: any) => [
         entry.fund_name,
         parseNumber(entry.nav),
         parseNumber(entry.aum_crore),
@@ -38,22 +42,31 @@ export async function POST(req: NextRequest) {
         parseNumber(entry.return_5yr),
       ]);
 
-      const insertQuery = `INSERT INTO etfs(fund_name, nav, aum_crore, sip_amount, expense_ratio, return_1yr, return_3yr, return_5yr) VALUES ?`;
+      const insertQuery = `INSERT INTO etfsDirect(fund_name, nav, aum_crore, sip_amount,
+          expense_ratio, return_1yr, return_3yr, return_5yr) VALUES ?`;
 
       const [result] = await pool.query<ResultSetHeader>(insertQuery, [values]);
 
+      //response
       return NextResponse.json(
-        { success: true, message: `${result.affectedRows} records inserted.` },
+        {
+          success: true,
+          message: `${result.affectedRows} records inserted`,
+        },
         { status: 201 }
       );
     }
 
     //for single object
     if (typeof data === "object" && data !== null) {
-      const parsed = fundSchema.safeParse(data);
+      const parsed = etfsDirectSchema.safeParse(data);
+
       if (!parsed.success) {
         return NextResponse.json(
-          { success: false, error: parsed.error.flatten() },
+          {
+            success: false,
+            error: parsed.error.flatten(),
+          },
           { status: 400 }
         );
       }
@@ -69,7 +82,8 @@ export async function POST(req: NextRequest) {
         return_5yr,
       } = parsed.data;
 
-      const insertQuery = `INSERT INTO etfs(fund_name, nav, aum_crore, sip_amount, expense_ratio, return_1yr, return_3yr, return_5yr) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
+      const insertQuery = `INSERT INTO etfsDirect(fund_name, nav, aum_crore, sip_amount,
+          expense_ratio, return_1yr, return_3yr, return_5yr) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 
       const values = [
         fund_name,
@@ -83,17 +97,22 @@ export async function POST(req: NextRequest) {
       ];
 
       const [result] = await pool.query<ResultSetHeader>(insertQuery, values);
+
       return NextResponse.json(
         {
           success: true,
-          message: "Single record inserted.",
+          message: "Single record inserted",
           id: result.insertId,
         },
         { status: 201 }
       );
     }
+
     return NextResponse.json(
-      { success: false, message: "Invalid input field." },
+      {
+        success: false,
+        message: "Invalid input field",
+      },
       { status: 400 }
     );
   } catch (error: any) {
