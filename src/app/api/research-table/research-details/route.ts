@@ -21,11 +21,13 @@ export async function POST(req: NextRequest) {
     let stockId: number; // To store the ID of the existing stock
 
     // Helper function to prepare date strings for MySQL
-    const toMySQLDate = (isoDateString: string | null | undefined): Date | null => {
+    const toMySQLDate = (
+      isoDateString: string | null | undefined
+    ): Date | null => {
       if (!isoDateString) return null;
       return new Date(isoDateString);
     };
-    
+
     // --- Retrieve stock_id from existing research_stocks entry ---
     const stockSymbol = validatedData.stock.symbol;
 
@@ -39,7 +41,9 @@ export async function POST(req: NextRequest) {
     if (existingStocks.length > 0) {
       // Stock exists, use its ID
       stockId = existingStocks[0].research_stock_id;
-      console.log(`Using existing stock_id: ${stockId} for symbol: ${stockSymbol}`);
+      console.log(
+        `Using existing stock_id: ${stockId} for symbol: ${stockSymbol}`
+      );
       results.stock = { symbol: stockSymbol, research_stock_id: stockId };
     } else {
       // Stock does not exist, return an error
@@ -51,7 +55,6 @@ export async function POST(req: NextRequest) {
         { status: 404 } // Not Found
       );
     }
-    
 
     // --- Insert into related tables, linking to the retrieved stockId ---
     // (No changes to the following sections, as they correctly use `stockId`)

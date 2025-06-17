@@ -25,6 +25,7 @@ interface FormField {
   required?: boolean;
   isTextArea?: boolean;
   isCheckbox?: boolean;
+  options?: { value: string; label: string }[]; // Added for select fields
 }
 
 interface FormSection {
@@ -71,6 +72,32 @@ export default function AddDetailInfo() {
   });
 
   const selectedCompanySymbol = watch("stock.symbol");
+
+  // Define period type options
+  const financialRatiosPeriodTypes = useMemo(
+    () => [
+      { value: "Annual", label: "Annual" },
+      { value: "Quarterly", label: "Quarterly" },
+      { value: "Half-Yearly", label: "Half-Yearly" },
+      { value: "YTD", label: "YTD" },
+    ],
+    []
+  );
+
+  const performanceMetricsPeriodTypes = useMemo(
+    () => [
+      { value: "1D", label: "1 Day" },
+      { value: "1W", label: "1 Week" },
+      { value: "1M", label: "1 Month" },
+      { value: "3M", label: "3 Months" },
+      { value: "6M", label: "6 Months" },
+      { value: "1Y", label: "1 Year" },
+      { value: "3Y", label: "3 Years" },
+      { value: "5Y", label: "5 Years" },
+      { value: "YTD", label: "Year to Date" },
+    ],
+    []
+  );
 
   // Define form sections configuration using useMemo for stability
   const formSections: FormSection[] = useMemo(
@@ -241,7 +268,12 @@ export default function AddDetailInfo() {
         textColor: "text-teal-700",
         fields: [
           { name: "fiscal_year", label: "Fiscal Year", type: "number" },
-          { name: "period_type", label: "Period Type" },
+          {
+            name: "period_type",
+            label: "Period Type",
+            type: "select", // Custom type for select
+            options: financialRatiosPeriodTypes,
+          },
           { name: "roe", label: "ROE", type: "number", step: "0.01" },
           { name: "roce", label: "ROCE", type: "number", step: "0.01" },
           {
@@ -359,7 +391,12 @@ export default function AddDetailInfo() {
         borderColor: "border-cyan-200",
         textColor: "text-cyan-700",
         fields: [
-          { name: "period_type", label: "Period Type" },
+          {
+            name: "period_type",
+            label: "Period Type",
+            type: "select", // Custom type for select
+            options: performanceMetricsPeriodTypes,
+          },
           {
             name: "stock_return",
             label: "Stock Return",
@@ -445,7 +482,7 @@ export default function AddDetailInfo() {
         ],
       },
     ],
-    []
+    [financialRatiosPeriodTypes, performanceMetricsPeriodTypes]
   );
 
   useEffect(() => {
@@ -630,9 +667,57 @@ export default function AddDetailInfo() {
           {...register(fullPath as any)}
           className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" // Added size, color, and focus styles
         />
-        <label htmlFor={fullPath} className="text-sm font-medium text-gray-700">
+        <label
+          htmlFor={fullPath}
+          className="text-sm font-medium text-gray-700"
+        >
           {label}
         </label>
+        {errorMessage && (
+          <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
+        )}
+      </div>
+    );
+  };
+
+  // New Helper component for Select fields
+  interface SelectFieldProps {
+    label: string;
+    name: string;
+    section: keyof Omit<FullStockResearchFormData, "stock">;
+    options: { value: string; label: string }[];
+    required?: boolean;
+  }
+
+  const SelectField: React.FC<SelectFieldProps> = ({
+    label,
+    name,
+    section,
+    options,
+    required = false,
+  }) => {
+    const fullPath = `${section}.${name}`;
+    const errorMessage = (errors as any)?.[section]?.[name]?.message;
+    return (
+      <div className="mb-4">
+        <label
+          htmlFor={fullPath}
+          className="block text-sm font-medium text-gray-700"
+        >
+          {label} {required && <span className="text-red-500">*</span>}
+        </label>
+        <select
+          id={fullPath}
+          {...register(fullPath as any)}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+        >
+          <option value="">Select {label}</option>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
         {errorMessage && (
           <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
         )}
@@ -700,6 +785,17 @@ export default function AddDetailInfo() {
                       label={field.label}
                       name={field.name}
                       section={sec.section}
+                    />
+                  );
+                } else if (field.type === "select" && field.options) {
+                  return (
+                    <SelectField
+                      key={field.name}
+                      label={field.label}
+                      name={field.name}
+                      section={sec.section}
+                      options={field.options}
+                      required={field.required}
                     />
                   );
                 }

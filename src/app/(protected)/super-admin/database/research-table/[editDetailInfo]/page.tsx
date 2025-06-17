@@ -25,6 +25,7 @@ interface FormField {
   required?: boolean;
   isTextArea?: boolean;
   isCheckbox?: boolean;
+  options?: { value: string; label: string }[]; // Added for select fields
 }
 
 interface FormSection {
@@ -36,7 +37,6 @@ interface FormSection {
   fields: FormField[];
 }
 
-
 export default function EditStockResearch() {
   const [companyOptions, setCompanyOptions] = useState<CompanyOption[]>([]);
   const [loadingCompanies, setLoadingCompanies] = useState<boolean>(true);
@@ -45,7 +45,9 @@ export default function EditStockResearch() {
 
   //router
   const router = useRouter();
-  const {editDetailInfo} =useParams();
+  const { editDetailInfo } = useParams();
+  const researchId = typeof editDetailInfo === 'string' ? editDetailInfo : (Array.isArray(editDetailInfo) ? editDetailInfo[0] : undefined);
+
 
   const {
     register,
@@ -73,9 +75,34 @@ export default function EditStockResearch() {
     },
     mode: "onTouched",
   });
-  
 
   const selectedCompanySymbol = watch("stock.symbol");
+
+  // Define period type options
+  const financialRatiosPeriodTypes = useMemo(
+    () => [
+      { value: "Annual", label: "Annual" },
+      { value: "Quarterly", label: "Quarterly" },
+      { value: "Half-Yearly", label: "Half-Yearly" },
+      { value: "YTD", label: "YTD" },
+    ],
+    []
+  );
+
+  const performanceMetricsPeriodTypes = useMemo(
+    () => [
+      { value: "1D", label: "1 Day" },
+      { value: "1W", label: "1 Week" },
+      { value: "1M", label: "1 Month" },
+      { value: "3M", label: "3 Months" },
+      { value: "6M", label: "6 Months" },
+      { value: "1Y", label: "1 Year" },
+      { value: "3Y", label: "3 Years" },
+      { value: "5Y", label: "5 Years" },
+      { value: "YTD", label: "Year to Date" },
+    ],
+    []
+  );
 
   // Define form sections configuration using useMemo for stability
   const formSections: FormSection[] = useMemo(
@@ -246,7 +273,12 @@ export default function EditStockResearch() {
         textColor: "text-teal-700",
         fields: [
           { name: "fiscal_year", label: "Fiscal Year", type: "number" },
-          { name: "period_type", label: "Period Type" },
+          {
+            name: "period_type",
+            label: "Period Type",
+            type: "select", // Custom type for select
+            options: financialRatiosPeriodTypes,
+          },
           { name: "roe", label: "ROE", type: "number", step: "0.01" },
           { name: "roce", label: "ROCE", type: "number", step: "0.01" },
           {
@@ -364,7 +396,12 @@ export default function EditStockResearch() {
         borderColor: "border-cyan-200",
         textColor: "text-cyan-700",
         fields: [
-          { name: "period_type", label: "Period Type" },
+          {
+            name: "period_type",
+            label: "Period Type",
+            type: "select", // Custom type for select
+            options: performanceMetricsPeriodTypes,
+          },
           {
             name: "stock_return",
             label: "Stock Return",
@@ -450,14 +487,19 @@ export default function EditStockResearch() {
         ],
       },
     ],
-    []
+    [financialRatiosPeriodTypes, performanceMetricsPeriodTypes]
   );
 
   useEffect(() => {
     fetchCompanyOptions();
-    fetchResearchData();
-  }, [editDetailInfo]);
-  
+    if (researchId) {
+      fetchResearchData(researchId);
+    } else {
+        setLoadingResearchData(false); // If no ID, stop loading research data
+    }
+  }, [researchId]); // Depend on researchId
+
+
   const fetchCompanyOptions = async () => {
     try {
       const response = await fetch(`/api/research-table/all/allCompanies`);
@@ -475,15 +517,10 @@ export default function EditStockResearch() {
     }
   };
 
-  const fetchResearchData = async () => {
-    if (!editDetailInfo) {
-      setLoadingResearchData(false);
-      return;
-    }
-
+  const fetchResearchData = async (id: string) => {
     try {
       const response = await fetch(
-        `/api/research-table/research-details/${editDetailInfo}`
+        `/api/research-table/research-details/${id}`
       );
       const data = await response.json();
 
@@ -492,11 +529,10 @@ export default function EditStockResearch() {
         return;
       }
 
-      // Pre-populate the form with existing data
       const researchData = data.data;
-      console.log("all data",researchData);
-      // Format dates for input fields (assuming they come as ISO strings)
-      const formatDate = (dateString: string) => {
+      console.log("all data", researchData);
+
+      const formatDate = (dateString: string | null | undefined) => {
         if (!dateString) return "";
         const date = new Date(dateString);
         return date.toISOString().split("T")[0]; // Format as YYYY-MM-DD
@@ -508,87 +544,22 @@ export default function EditStockResearch() {
       }
 
       // Populate each section if data exists
-      if (researchData.balance_sheet) {
-        Object.keys(researchData.balance_sheet).forEach((key) => {
-          setValue(
-            `balance_sheet.${key}` as any,
-            researchData.balance_sheet[key]
-          );
-        });
-      }
+      formSections.forEach(sec => {
+        const sectionData = researchData[sec.section];
+        if (sectionData) {
+          sec.fields.forEach(field => {
+            const value = sectionData[field.name];
+            if (value !== undefined && value !== null) {
+              if ((field.name === "report_date" || field.name === "snapshot_date") && typeof value === 'string') {
+                setValue(`${sec.section}.${field.name}` as any, formatDate(value));
+              } else {
+                setValue(`${sec.section}.${field.name}` as any, value);
+              }
+            }
+          });
+        }
+      });
 
-      if (researchData.details) {
-        Object.keys(researchData.details).forEach((key) => {
-          let value = researchData.details[key];
-          // Format date fields
-          if (key === "report_date" && value) {
-            value = formatDate(value);
-          }
-          setValue(`details.${key}` as any, value);
-        });
-      }
-
-      if (researchData.financial_ratios) {
-        Object.keys(researchData.financial_ratios).forEach((key) => {
-          setValue(
-            `financial_ratios.${key}` as any,
-            researchData.financial_ratios[key]
-          );
-        });
-      }
-
-      if (researchData.income_statement) {
-        Object.keys(researchData.income_statement).forEach((key) => {
-          setValue(
-            `income_statement.${key}` as any,
-            researchData.income_statement[key]
-          );
-        });
-      }
-
-      if (researchData.key_metrics) {
-        Object.keys(researchData.key_metrics).forEach((key) => {
-          let value = researchData.key_metrics[key];
-          // Format date fields
-          if (key === "snapshot_date" && value) {
-            value = formatDate(value);
-          }
-          setValue(`key_metrics.${key}` as any, value);
-        });
-      }
-
-      if (researchData.performance_metrics) {
-        Object.keys(researchData.performance_metrics).forEach((key) => {
-          setValue(
-            `performance_metrics.${key}` as any,
-            researchData.performance_metrics[key]
-          );
-        });
-      }
-
-      if (researchData.rd_investments) {
-        Object.keys(researchData.rd_investments).forEach((key) => {
-          setValue(
-            `rd_investments.${key}` as any,
-            researchData.rd_investments[key]
-          );
-        });
-      }
-
-      if (researchData.revenue_mix) {
-        Object.keys(researchData.revenue_mix).forEach((key) => {
-          setValue(`revenue_mix.${key}` as any, researchData.revenue_mix[key]);
-        });
-      }
-
-      if (researchData.shareholding_pattern) {
-        Object.keys(researchData.shareholding_pattern).forEach((key) => {
-          setValue(
-            `shareholding_pattern.${key}` as any,
-            researchData.shareholding_pattern[key]
-          );
-        });
-      }
     } catch (error) {
       console.error("Failed to fetch research data:", error);
       toast.error("Failed to load research data due to a network error.");
@@ -772,6 +743,51 @@ export default function EditStockResearch() {
     );
   };
 
+  // New Helper component for Select fields
+  interface SelectFieldProps {
+    label: string;
+    name: string;
+    section: keyof Omit<FullStockResearchFormData, "stock">;
+    options: { value: string; label: string }[];
+    required?: boolean;
+  }
+
+  const SelectField: React.FC<SelectFieldProps> = ({
+    label,
+    name,
+    section,
+    options,
+    required = false,
+  }) => {
+    const fullPath = `${section}.${name}`;
+    const errorMessage = (errors as any)?.[section]?.[name]?.message;
+    return (
+      <div className="mb-4">
+        <label
+          htmlFor={fullPath}
+          className="block text-sm font-medium text-gray-700"
+        >
+          {label} {required && <span className="text-red-500">*</span>}
+        </label>
+        <select
+          id={fullPath}
+          {...register(fullPath as any)}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+        >
+          <option value="">Select {label}</option>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        {errorMessage && (
+          <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="container mx-auto p-6 bg-white shadow-lg rounded-lg my-8">
       {/* Page Title */}
@@ -832,6 +848,17 @@ export default function EditStockResearch() {
                       label={field.label}
                       name={field.name}
                       section={sec.section}
+                    />
+                  );
+                } else if (field.type === "select" && field.options) {
+                  return (
+                    <SelectField
+                      key={field.name}
+                      label={field.label}
+                      name={field.name}
+                      section={sec.section}
+                      options={field.options}
+                      required={field.required}
                     />
                   );
                 }
